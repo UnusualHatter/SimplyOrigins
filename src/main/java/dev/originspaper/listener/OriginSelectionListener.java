@@ -20,7 +20,7 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 
-/** Drives the selection flow: join/quit, GUI clicks, forced reselection and Shulk bag saving. */
+/** Drives the selection flow: join/quit, GUI clicks and forced reselection until an origin is chosen. */
 public class OriginSelectionListener implements Listener {
 
     private final OriginsPaper plugin;
@@ -61,7 +61,6 @@ public class OriginSelectionListener implements Listener {
             e.setCancelled(true);
             handleDetailClick((Player) e.getWhoClicked(), detail, e.getRawSlot());
         }
-        // HoarderHolder: not cancelled, the player may freely move items in their bag.
     }
 
     private void handleSelectionClick(Player player, ItemStack clicked) {

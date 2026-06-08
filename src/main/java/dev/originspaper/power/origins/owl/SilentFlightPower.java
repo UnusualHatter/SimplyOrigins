@@ -1,30 +1,30 @@
 package dev.originspaper.power.origins.owl;
 
 import dev.originspaper.power.shared.AbstractPower;
-import dev.originspaper.util.AttributeUtil;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityTargetEvent;
 
-/** Reduces mob detection range drastically while gliding. */
+/**
+ * Reduces how far mobs can detect the owl while it is gliding. The player's own follow-range
+ * attribute has no effect on being detected, so we instead reject target acquisitions that
+ * originate from beyond a short range — a gliding owl is only noticed by very close mobs.
+ */
 public class SilentFlightPower extends AbstractPower {
+
+    /** Squared detection radius (blocks) while gliding. Beyond this, mobs lose/ignore the owl. */
+    private static final double SILENT_RANGE_SQUARED = 7.0 * 7.0;
 
     public SilentFlightPower(String id) {
         super(id);
     }
 
     @Override
-    public void onTick(Player player) {
-        // -75% detection range while gliding
-        if (player.isGliding()) {
-            AttributeUtil.set(player, Attribute.FOLLOW_RANGE, getId(), -0.75, AttributeModifier.Operation.ADD_SCALAR);
-        } else {
-            AttributeUtil.clear(player, Attribute.FOLLOW_RANGE, getId());
+    public void onEntityTarget(EntityTargetEvent e) {
+        if (!(e.getTarget() instanceof Player owl) || !owl.isGliding()) {
+            return;
         }
-    }
-
-    @Override
-    public void onRemove(Player player) {
-        AttributeUtil.clear(player, Attribute.FOLLOW_RANGE, getId());
+        if (e.getEntity().getLocation().distanceSquared(owl.getLocation()) > SILENT_RANGE_SQUARED) {
+            e.setCancelled(true);
+        }
     }
 }

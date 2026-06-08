@@ -15,8 +15,11 @@ public class BatGlidePower extends AbstractPower {
 
     @Override
     public void onTick(Player player) {
-        if (!GroundUtil.isOnGround(player) && player.getVelocity().getY() < -0.1) {
-            EffectUtil.apply(player, PotionEffectType.SLOW_FALLING, 20, 0);
+        // Trigger on any descent, not just fast falls: once slow falling is active it caps fall
+        // speed near -0.07, which would fail a stricter threshold and make the glide stutter.
+        // The 40-tick (2s) effect overlaps the 1s tick cadence so it stays continuous.
+        if (!GroundUtil.isOnGround(player) && player.getVelocity().getY() < 0) {
+            EffectUtil.apply(player, PotionEffectType.SLOW_FALLING, 40, 0);
         }
     }
 }

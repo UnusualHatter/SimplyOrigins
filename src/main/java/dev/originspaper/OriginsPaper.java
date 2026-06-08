@@ -31,7 +31,7 @@ public final class OriginsPaper extends JavaPlugin {
         this.log = new OriginsLogger(getLogger(), debug);
         log.info("Initialising OriginsPaper...");
 
-        this.originRegistry = new OriginRegistry(this);
+        this.originRegistry = new OriginRegistry();
         this.dataManager = new PlayerDataManager(this);
 
         getServer().getPluginManager().registerEvents(new PowerEventListener(this), this);

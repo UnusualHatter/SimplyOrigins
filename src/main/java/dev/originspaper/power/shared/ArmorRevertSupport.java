@@ -23,6 +23,12 @@ abstract class ArmorRevertSupport extends AbstractPower {
             if (current == null || current.getType().isAir()) {
                 return;
             }
+            // Only revert if the offending piece is still equipped. Another power (e.g. an
+            // ElytraFlightPower forcing wings back into the chest) may have already replaced it
+            // this same tick — in that case leave the new item alone instead of stripping it.
+            if (!current.isSimilar(piece)) {
+                return;
+            }
             player.getInventory().setItem(slot, null);
             Map<Integer, ItemStack> leftover = player.getInventory().addItem(current);
             for (ItemStack drop : leftover.values()) {

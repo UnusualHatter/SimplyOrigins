@@ -8,29 +8,34 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-/** Punished after spending out of water/rain for too long. */
+/**
+ * Punished after spending out of water/rain for too long. The window is measured in seconds
+ * because it is checked against {@link dev.originspaper.OriginsPaper#tick()}, which advances once
+ * per 20-tick cycle (i.e. once per second).
+ */
 public class WaterDependencyPower extends AbstractPower {
 
     private final ConcurrentHashMap<UUID, Long> lastWetTime = new ConcurrentHashMap<>();
-    private final long maxDryTicks;
+    private final long maxDrySeconds;
 
-    public WaterDependencyPower(String id, long maxDryTicks) {
+    public WaterDependencyPower(String id, long maxDrySeconds) {
         super(id);
-        this.maxDryTicks = maxDryTicks;
+        this.maxDrySeconds = maxDrySeconds;
     }
 
     @Override
     public void onTick(Player player) {
-        boolean isWet = player.isInWater() || (player.getWorld().hasStorm() && player.getLocation().getBlock().getLightFromSky() == 15);
-        long currentTick = plugin().tick();
-        
+        boolean isWet = player.isInWater()
+                || (player.getWorld().hasStorm() && player.getLocation().getBlock().getLightFromSky() == 15);
+        long now = plugin().tick();
+
         if (isWet) {
-            lastWetTime.put(player.getUniqueId(), currentTick);
+            lastWetTime.put(player.getUniqueId(), now);
             return;
         }
-        
-        long lastWet = lastWetTime.getOrDefault(player.getUniqueId(), currentTick);
-        if (currentTick - lastWet > maxDryTicks) {
+
+        long lastWet = lastWetTime.getOrDefault(player.getUniqueId(), now);
+        if (now - lastWet > maxDrySeconds) {
             EffectUtil.apply(player, PotionEffectType.SLOWNESS, 40, 0);
             EffectUtil.apply(player, PotionEffectType.WEAKNESS, 40, 0);
         }

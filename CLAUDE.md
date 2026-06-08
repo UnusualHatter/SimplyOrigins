@@ -38,28 +38,31 @@ Para testar: copiar o JAR para `plugins/` de um servidor Paper 26.1.2 local e ro
 
 ```
 src/main/java/dev/originspaper/
-├── OriginsPaper.java              # main class, registra listeners e scheduler
+├── OriginsPaper.java              # main class, registra listeners e o tick global
 ├── api/
-│   ├── Origin.java                # record com id, displayName, powers, skullTexture
-│   ├── PowerType.java             # interface base
+│   ├── Origin.java                # record: id, displayName, skullTexture, fallbackIcon, powers, infos
+│   ├── PowerType.java             # interface base (todos os hooks de evento são defaults opcionais)
 │   └── ActivePowerType.java       # extends PowerType, adiciona onActivate + getCooldownTicks
+├── command/
+│   └── OriginCommand.java         # /origin [set|reset|info] + tab-complete
 ├── registry/
-│   ├── OriginRegistry.java        # Map<String, Origin> das 16 origins
+│   ├── OriginRegistry.java        # Map<String, Origin> das 15 origins
+│   ├── PlayerDataManager.java     # aplica/remove powers, persiste, clamp de vida
 │   └── PlayerOriginData.java      # estado por jogador: origin, powers, cooldowns
 ├── listener/
-│   ├── OriginSelectionListener.java  # PlayerJoinEvent, InventoryClickEvent da GUI
+│   ├── OriginSelectionListener.java  # join/quit, clicks e fechamento das GUIs
 │   ├── ActiveSkillListener.java      # PlayerSwapHandItemsEvent + isSneaking
 │   └── PowerEventListener.java       # delega todos os eventos para os powers ativos
 ├── gui/
 │   ├── OriginSelectionGUI.java    # tela 1: grid de origins com cabeças
-│   └── OriginDetailGUI.java       # tela 2: detalhe + botões escolher/voltar
+│   ├── OriginDetailGUI.java       # tela 2: detalhe + botões escolher/voltar
+│   ├── SelectionHolder.java       # InventoryHolder marcador da tela 1
+│   └── DetailHolder.java          # InventoryHolder da tela 2 (lembra qual origin)
 ├── power/
-│   ├── shared/                    # powers reutilizáveis
-│   └── origins/                   # um subpacote por origin
-└── util/
-    ├── SkullBuilder.java          # helper para criar PLAYER_HEAD com textura
-    ├── PersistenceUtil.java       # save/load YAML por UUID
-    └── CooldownUtil.java          # Map<UUID, Long> + helpers de cooldown
+│   ├── shared/                    # powers reutilizáveis (parametrizáveis)
+│   └── origins/                   # um subpacote por origin com os powers específicos
+└── util/                          # SkullBuilder, PersistenceUtil, CooldownUtil, AttributeUtil,
+                                   # EffectUtil, FoodUtil, ArmorUtil, GroundUtil, TextUtil, OriginsLogger
 ```
 
 ---
@@ -67,12 +70,12 @@ src/main/java/dev/originspaper/
 ## Convenções de código
 
 - Cada `PowerType` é uma classe concreta no pacote `power/origins/<origin>/` ou `power/shared/`
-- `getId()` retorna `"<origin>:<power>"`, ex: `"merling:fins"`
-- `AttributeModifier` sempre usa `UUID.nameUUIDFromBytes(getId().getBytes())` — nunca UUID aleatório
-- Efeitos de poção permanentes: duração `999999`, `ambient=true`, `particles=false`, `icon=false`
+- `getId()` retorna `"<origin>:<power>"`, ex: `"otter:fins"`
+- `AttributeModifier` é sempre keado por um `NamespacedKey` derivado do `getId()` — use `AttributeUtil.set/clear`, que cuidam disso de forma idempotente. Nunca `UUID.randomUUID()`.
+- Efeitos de poção permanentes (`EffectUtil.PERMANENT = 999999`): `ambient=true`, `particles=false`, `icon=false`. Use `EffectUtil.ensure/clear` — `ensure` só reaplica se faltar.
 - Reaplicar efeitos permanentes no tick se o efeito não estiver ativo no player
-- Tick global: um único `runTaskTimer` de 20t que itera `Bukkit.getOnlinePlayers()` e chama `onTick` para cada power ativo. Nunca criar timer por power ou por player.
-- PDC key padrão para itens protegidos: `new NamespacedKey(plugin, "protected_item")`
+- Tick global: um único `runTaskTimer` de 20t que itera `Bukkit.getOnlinePlayers()` e chama `onTick` para cada power ativo. **`OriginsPaper.tick()` conta esses ciclos (1/segundo), não game-ticks** — cuidado com unidades em modulos e janelas de tempo. Nunca criar timer por power ou por player.
+- PDC: a GUI usa `NamespacedKey(plugin, "origin_id")` nas cabeças; cada `ElytraFlightPower` usa um marcador próprio por origin (ex.: `"dragon_wings"`).
 
 ---
 
@@ -80,8 +83,7 @@ src/main/java/dev/originspaper/
 
 - Arquivo: `plugins/OriginsPaper/data/<uuid>.yml`
 - Conteúdo: `origin: "<id>"`
-- Inventário extra do Shulk: `plugins/OriginsPaper/shulk_inv/<uuid>.yml`
-- Carregar no `PlayerJoinEvent`, salvar imediatamente após escolha
+- Carregar no `PlayerJoinEvent` (via `PlayerDataManager.load`), salvar imediatamente após a escolha
 
 ---
 
@@ -99,25 +101,28 @@ src/main/java/dev/originspaper/
 ## Skill ativa
 
 - Input: `PlayerSwapHandItemsEvent` com `player.isSneaking() == true`
-- Cancelar o evento sempre que for detectado como input de skill (não trocar os itens)
+- **Agachar + F é sempre consumido para qualquer jogador com origin** (o item nunca troca de mão enquanto agachado). Pressionar F sem agachar faz a troca vanilla normalmente.
+- Jogador sem origin selecionada (`!data.hasOrigin()`) → não cancelar, deixar a troca vanilla acontecer
 - Checar cooldown antes de chamar `onActivate`
 - Cooldown armazenado em `PlayerOriginData` como `Map<String, Long>` (powerId → timestamp em ms)
-- Se a origin não tem `ActivePowerType`, o input não faz nada (não cancelar o evento nesse caso)
+- Se a origin não tem `ActivePowerType`, o input é consumido (sem troca de item) mas nenhuma skill é ativada
 
 ---
 
 ## Origins implementadas
 
-16 origins, sem Phantom. Em ordem de complexidade crescente para implementar:
+15 origins, registradas em ordem de exibição na GUI (Human primeiro). Veja `OriginRegistry` para os powers de cada uma e `README.md` para a descrição completa:
 
-`human` → `blazeborn` → `rabbit` → `feline` → `enderian` → `wolf` → `dragon` → `shulk` → `merling` → `elytrian` → `owl` → `gryphon` → `goat` → `fox` → `arachnid` → `bear`
+`human` → `otter` → `deer` → `bat` → `rat` → `demon` → `wolf` → `fox` → `bear` → `rabbit` → `goat` → `feline` → `owl` → `gryphon` → `dragon`
+
+Com habilidade ativa (`ActivePowerType`, agachar + F): `demon` (Hell Pact), `wolf` (Alpha's Howl), `fox` (Pounce), `bear` (Hibernation), `goat` (Leap), `owl` (Echolocation), `gryphon` (Take Flight), `dragon` (Dragon's Breath). As demais são apenas passivas.
 
 ---
 
 ## Erros comuns a evitar
 
 - **Nunca** usar `ItemStack.getItemMeta()` dentro de `editMeta()` — undefined behavior
-- **Nunca** `UUID.randomUUID()` em `AttributeModifier` — use `nameUUIDFromBytes`
+- **Nunca** `UUID.randomUUID()` em `AttributeModifier` — use `AttributeUtil` (keado por `NamespacedKey`)
 - **Nunca** registrar um `Listener` mais de uma vez — registrar tudo uma vez no `onEnable`
 - **Nunca** abrir GUI diretamente no `PlayerJoinEvent` — usar `runTaskLater` com 20t de delay
 - `PlayerArmorChangeEvent` só é chamado para mudanças via inventário normal; equipamento via código não dispara o evento — considerar isso ao proteger itens de origin
@@ -127,8 +132,8 @@ src/main/java/dev/originspaper/
 
 ## O que NÃO está no escopo
 
-- Phantom (atravessar blocos requer NMS — excluído permanentemente)
-- Troca de origin pelo próprio jogador (só via admin command)
+- Qualquer poder que exija NMS/mixins (ex.: atravessar blocos) — fora do escopo permanentemente
+- Troca de origin pelo próprio jogador (apenas admin via `/origin set|reset`)
 - Suporte a datapack externo
 - Integração com outros plugins
 - Sons ou partículas customizadas além das vanilla

@@ -14,8 +14,7 @@ public class CaveMobilityPower extends AbstractPower {
 
     @Override
     public void onTick(Player player) {
-        if (plugin().tick() % 20 != 0) return;
-        
+        // onTick runs once per second; the 60-tick (3s) effects overlap to stay continuous in caves.
         if (player.getLocation().getY() < 64 && player.getLocation().getBlock().getLightFromSky() == 0) {
             EffectUtil.apply(player, PotionEffectType.SPEED, 60, 0);
             EffectUtil.apply(player, PotionEffectType.HASTE, 60, 0);

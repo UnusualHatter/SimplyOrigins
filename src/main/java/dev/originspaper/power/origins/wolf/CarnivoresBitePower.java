@@ -21,7 +21,7 @@ public class CarnivoresBitePower extends AbstractPower {
         Player player = e.getPlayer();
         plugin().getServer().getScheduler().runTaskLater(plugin(), () -> {
             double max = player.getAttribute(Attribute.MAX_HEALTH).getValue();
-            player.setHealth(Math.min(max, player.getHealth() + 2.0));
+            player.setHealth(Math.min(max, player.getHealth() + 1.0)); // half a heart
         }, 1L);
     }
 }

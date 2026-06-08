@@ -33,6 +33,8 @@ A base normal do Minecraft. Sem vantagens nem desvantagens.
 - **Forest Agility:** Mais rápido em florestas e taigas.
 - **Soft Landing:** Sofre 50% menos dano de queda.
 - **Natural Runner:** Correr em terrenos naturais (terra, grama, pedra) aumenta sua velocidade.
+- **Nimble Legs:** Passa por cima de obstáculos baixos sem precisar pular.
+- **Alert Leap:** Pula mais alto, sempre pronto para fugir do perigo.
 - **Fragile:** Possui 1 coração a menos.
 
 ### 🦇 Morcego (Bat)
@@ -148,9 +150,11 @@ A base normal do Minecraft. Sem vantagens nem desvantagens.
 
 ### 🐉 Dragão (Dragon)
 - **Asas de Dragão:** Elytra permanente que volta sozinha.
+- **Dragon's Breath:** `Agachar + F`: sopra um cone de fogo que causa dano e incendeia os alvos à frente.
 - **Reborn Magic:** Ganha regeneração no The End.
 - **Resistant Skin:** Possui 2 corações a mais.
 - **Sharp Claws:** Causa +1 coração de dano corpo a corpo.
+- **Apex Predator:** Só consegue comer carne.
 - **Scaled Body:** Não pode usar peitorais (mas usa as asas).
 - **Large Body:** Seu corpo é 10% maior.
 

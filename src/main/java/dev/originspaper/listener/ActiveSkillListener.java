@@ -25,18 +25,21 @@ public class ActiveSkillListener implements Listener {
     public void onSwap(PlayerSwapHandItemsEvent e) {
         Player player = e.getPlayer();
         if (!player.isSneaking()) {
-            return;
+            return; // F without crouch → normal hand swap, left untouched
         }
         PlayerOriginData data = plugin.data().get(player.getUniqueId());
-        if (data == null) {
-            return;
-        }
-        ActivePowerType active = findActive(data);
-        if (active == null) {
-            return; // no active power — let the normal hand swap happen
+        if (data == null || !data.hasOrigin()) {
+            return; // plugin isn't managing this player yet → leave the vanilla swap alone
         }
 
-        e.setCancelled(true); // consume the input, preventing any item swap
+        // Crouch + F is the origin skill input: always consume it so items never swap while
+        // sneaking, regardless of whether the origin actually has an active skill.
+        e.setCancelled(true);
+
+        ActivePowerType active = findActive(data);
+        if (active == null) {
+            return; // passive-only origin: input consumed, nothing to activate
+        }
 
         if (active.getCooldownTicks() > 0
                 && !CooldownUtil.isReady(data.getCooldowns(), active.getId(), active.getCooldownTicks())) {

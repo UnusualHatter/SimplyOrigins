@@ -46,7 +46,9 @@ public class PlayerDataManager {
             Origin origin = plugin.origins().get(originId);
             if (origin != null) {
                 plugin.log().info(player.getName() + " joined with origin: " + origin.displayName());
-                applyOrigin(player, d, origin);
+                // Join is not a deliberate (re)selection: never top players up to full, or
+                // relogging at low health would become a free heal.
+                applyOrigin(player, d, origin, false);
             } else {
                 plugin.log().warn(player.getName() + " had unknown saved origin '" + originId + "' — ignored.");
             }
@@ -59,11 +61,12 @@ public class PlayerDataManager {
     public void setOrigin(Player player, Origin origin) {
         PlayerOriginData d = getOrCreate(player.getUniqueId());
         plugin.log().info(player.getName() + " selected origin: " + origin.displayName());
-        applyOrigin(player, d, origin);
+        // Deliberate selection (GUI choice / admin set): fill the player up to the new max.
+        applyOrigin(player, d, origin, true);
         persistence.saveOrigin(player.getUniqueId(), origin.id());
     }
 
-    private void applyOrigin(Player player, PlayerOriginData d, Origin origin) {
+    private void applyOrigin(Player player, PlayerOriginData d, Origin origin, boolean healToFull) {
         removeAll(player, d);
         d.setOrigin(origin);
         d.getPowers().clear();
@@ -79,9 +82,9 @@ public class PlayerDataManager {
             }
         }
 
-        // After all powers are applied, clamp the player's current HP to the new max
-        // and heal them if the new max is higher (e.g. Dragon gaining extra hearts).
-        clampAndHeal(player);
+        // Always clamp current HP down to the new max (in case it shrank). Only top the player
+        // up to the new max on a deliberate selection — never on a plain join/load.
+        clampHealth(player, healToFull);
     }
 
     /** Removes the player's origin and deletes their save, forcing reselection. */
@@ -95,8 +98,8 @@ public class PlayerDataManager {
             d.getCooldowns().clear();
         }
         persistence.deleteOrigin(player.getUniqueId());
-        // Restore HP to vanilla max after all modifiers are cleared.
-        clampAndHeal(player);
+        // Clamp HP to the restored vanilla max after all modifiers are cleared (no free heal).
+        clampHealth(player, false);
     }
 
     private void removeAll(Player player, PlayerOriginData d) {
@@ -113,10 +116,12 @@ public class PlayerDataManager {
     }
 
     /**
-     * Clamps the player's health to their current max (in case it dropped) and heals them
-     * to full when the new max is higher than their previous health.
+     * Clamps the player's health to their current max (in case it dropped below). When
+     * {@code healToFull} is set — only on a deliberate origin selection — the player is also
+     * topped up to the new max. On a plain join/load this stays a pure clamp, so relogging at
+     * low health is never a free heal.
      */
-    private void clampAndHeal(Player player) {
+    private void clampHealth(Player player, boolean healToFull) {
         AttributeInstance maxHpAttr = player.getAttribute(Attribute.MAX_HEALTH);
         if (maxHpAttr == null) {
             return;
@@ -126,8 +131,8 @@ public class PlayerDataManager {
         if (current > newMax) {
             // Max shrank — clamp so the player isn't above max.
             player.setHealth(newMax);
-        } else if (newMax > current) {
-            // Max grew — fill the new hearts completely.
+        } else if (healToFull && newMax > current) {
+            // Deliberate selection — fill up to the new max.
             player.setHealth(newMax);
         }
     }

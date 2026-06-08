@@ -3,3 +3,5 @@
 force-selection-on-join: true
 # Delay in ticks before the selection GUI opens on join
 join-gui-delay-ticks: 20
+# Verbose logging: prints per-power apply/remove and skill activity to the console
+debug: false

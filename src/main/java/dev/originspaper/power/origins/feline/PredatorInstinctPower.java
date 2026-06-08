@@ -1,4 +1,4 @@
-package dev.originspaper.power.origins.feline; // Fixed package syntax issue
+package dev.originspaper.power.origins.feline;
 
 import dev.originspaper.power.shared.AbstractPower;
 import dev.originspaper.util.EffectUtil;
@@ -16,12 +16,10 @@ public class PredatorInstinctPower extends AbstractPower {
 
     @Override
     public void onTick(Player player) {
-        if (plugin().tick() % 10 != 0) {
-            return;
-        }
+        // Checked once per second; the 60-tick (3s) effect overlaps so the boost stays smooth while chasing.
         Entity target = player.getTargetEntity(30);
         if (target instanceof Monster) {
-            EffectUtil.apply(player, PotionEffectType.SPEED, 60, 0); // Speed I for 3 seconds
+            EffectUtil.apply(player, PotionEffectType.SPEED, 60, 0);
         }
     }
 

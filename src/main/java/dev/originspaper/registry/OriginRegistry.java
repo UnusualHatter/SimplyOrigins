@@ -1,6 +1,5 @@
 package dev.originspaper.registry;
 
-import dev.originspaper.OriginsPaper;
 import dev.originspaper.api.Origin;
 import dev.originspaper.api.Origin.PowerInfo;
 import dev.originspaper.api.PowerType;
@@ -11,6 +10,7 @@ import dev.originspaper.power.origins.bear.MightyPawsPower;
 import dev.originspaper.power.origins.deer.NaturalRunnerPower;
 import dev.originspaper.power.origins.demon.HellPactPower;
 import dev.originspaper.power.origins.demon.HolyVulnerabilityPower;
+import dev.originspaper.power.origins.dragon.DragonBreathPower;
 import dev.originspaper.power.origins.dragon.RebornMagicPower;
 import dev.originspaper.power.origins.feline.WeakArmsPower;
 import dev.originspaper.power.origins.fox.HuntPower;
@@ -73,7 +73,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-/** Builds and stores the 16 origins, in display order (Human first). */
+/** Builds and stores the 15 origins, in display order (Human first). */
 public class OriginRegistry {
 
     private static final Set<Biome> HOT_BIOMES = Set.of(
@@ -90,7 +90,7 @@ public class OriginRegistry {
 
     private final Map<String, Origin> origins = new LinkedHashMap<>();
 
-    public OriginRegistry(OriginsPaper plugin) {
+    public OriginRegistry() {
         registerAll();
     }
 
@@ -143,7 +143,7 @@ public class OriginRegistry {
                 new WetEyesPower("otter:wet_eyes"),
                 new FinsPower("otter:fins"),
                 new LikeWaterPower("otter:like_water"),
-                new WaterDependencyPower("otter:water_dependency", 12000L),
+                new WaterDependencyPower("otter:water_dependency", 600L), // 10 minutes (seconds)
                 new AttributeModifierPower("otter:small_body", Attribute.SCALE, -0.2));
         List<PowerInfo> infos = List.of(
                 new PowerInfo("Amphibious", "Respira perfeitamente debaixo d'água e na terra."),
@@ -161,11 +161,15 @@ public class OriginRegistry {
                 new BiomeEffectPower("deer:forest_speed", FOREST_BIOMES, true, 2, effect(PotionEffectType.SPEED, 60, 0)),
                 new DamageMultiplierPower("deer:soft_landing", 0.5, DamageCause.FALL),
                 new NaturalRunnerPower("deer:natural_runner"),
+                new AttributeModifierPower("deer:nimble_legs", Attribute.STEP_HEIGHT, 0.5),
+                new AttributeModifierPower("deer:alert_leap", Attribute.JUMP_STRENGTH, 0.1),
                 new AttributeModifierPower("deer:fragile", Attribute.MAX_HEALTH, -2.0));
         List<PowerInfo> infos = List.of(
                 new PowerInfo("Forest Agility", "Mais rápido em florestas e taigas."),
                 new PowerInfo("Soft Landing", "Sofre 50% menos dano de queda."),
                 new PowerInfo("Natural Runner", "Correr em terrenos naturais (terra, grama, pedra) aumenta sua velocidade."),
+                new PowerInfo("Nimble Legs", "Passa por cima de obstáculos baixos sem precisar pular."),
+                new PowerInfo("Alert Leap", "Pula mais alto, sempre pronto para fugir do perigo."),
                 new PowerInfo("Fragile", "Possui 1 coração a menos."));
         register(new Origin("deer", "Deer", null, Material.OAK_SAPLING, powers, infos));
     }
@@ -258,18 +262,22 @@ public class OriginRegistry {
     private void registerDragon() {
         List<PowerType> powers = List.of(
                 new ElytraFlightPower("dragon:wings", "dragon_wings", "Asas de Dragão"),
+                new DragonBreathPower("dragon:breath"),
                 new RebornMagicPower("dragon:reborn_magic"),
                 new AttributeModifierPower("dragon:resistant_skin", Attribute.MAX_HEALTH, 4.0),
                 new AttributeModifierPower("dragon:sharp_claws", Attribute.ATTACK_DAMAGE, 2.0),
+                new CarnivoreDietPower("dragon:apex_predator"),
                 new ArmorSlotRestrictPower("dragon:scaled_body", EquipmentSlot.CHEST,
                         item -> item.getType().name().endsWith("CHESTPLATE"),
                         "§cSuas escamas não permitem peitorais."),
                 new AttributeModifierPower("dragon:large_body", Attribute.SCALE, 0.1));
         List<PowerInfo> infos = List.of(
                 new PowerInfo("Asas de Dragão", "Elytra permanente que volta sozinha."),
+                new PowerInfo("Dragon's Breath", "Agachar + F: sopra um cone de fogo que causa dano e incendeia os alvos à frente."),
                 new PowerInfo("Reborn Magic", "Ganha regeneração no The End."),
                 new PowerInfo("Resistant Skin", "Possui 2 corações a mais."),
                 new PowerInfo("Sharp Claws", "Causa +1 coração de dano corpo a corpo."),
+                new PowerInfo("Apex Predator", "Só consegue comer carne."),
                 new PowerInfo("Scaled Body", "Não pode usar peitorais (mas usa as asas)."),
                 new PowerInfo("Large Body", "Seu corpo é 10% maior."));
         register(new Origin("dragon", "Dragon", null, Material.DRAGON_HEAD, powers, infos));
