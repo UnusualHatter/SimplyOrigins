@@ -1,0 +1,5 @@
+# OriginsPaper configuration
+# Whether players are forced to pick an origin on first join (cannot close the GUI until chosen)
+force-selection-on-join: true
+# Delay in ticks before the selection GUI opens on join
+join-gui-delay-ticks: 20
