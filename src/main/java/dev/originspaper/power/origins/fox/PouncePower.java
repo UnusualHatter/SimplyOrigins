@@ -6,6 +6,10 @@ import dev.originspaper.util.GroundUtil;
 import dev.originspaper.util.ParticleUtil;
 import org.bukkit.Location;
 import org.bukkit.Particle;
+import org.bukkit.Sound;
+import org.bukkit.World;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -15,8 +19,11 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-/** Active skill: a leaping pounce that deals bonus damage on the next hit while airborne. */
+/** Active skill: a leaping pounce — bonus damage on a mid-air hit, or a small blast on landing. */
 public class PouncePower extends AbstractPower implements ActivePowerType {
+
+    private static final double BLAST_RADIUS = 2.0;
+    private static final double BLAST_DAMAGE = 3.0;
 
     private final Map<UUID, Long> pouncing = new ConcurrentHashMap<>();
 
@@ -42,10 +49,10 @@ public class PouncePower extends AbstractPower implements ActivePowerType {
         if (!(e.getDamager() instanceof Player player)) {
             return;
         }
-        // Bonus damage on any hit while the pounce window is active (player is airborne).
+        // Bonus damage on a hit landed while still airborne; consumes the pounce (no landing blast).
         if (pouncing.containsKey(player.getUniqueId())) {
             e.setDamage(e.getDamage() + 3.0);
-            pouncing.remove(player.getUniqueId()); // consume — one bonus hit per pounce
+            pouncing.remove(player.getUniqueId());
         }
     }
 
@@ -57,16 +64,27 @@ public class PouncePower extends AbstractPower implements ActivePowerType {
             return;
         }
         if (System.currentTimeMillis() - time > 500L && GroundUtil.isOnGround(player)) {
-            // Landing impact.
-            Location feet = player.getLocation();
-            Object below = feet.clone().subtract(0, 0.2, 0).getBlock().getBlockData();
-            ParticleUtil.spawnGroundBurst(Particle.BLOCK, feet, 0.6, 12, 0.0, below);
-            ParticleUtil.spawn(Particle.DAMAGE_INDICATOR, feet.clone().add(0, 0.5, 0), 4, 0.3, 0.2, 0.3, 0.0);
-            ParticleUtil.spawnGroundBurst(Particle.POOF, feet, 0.4, 4, 0.02);
             pouncing.remove(player.getUniqueId());
+            landingBlast(player);
         } else {
             // Airborne crit trail.
             ParticleUtil.spawnTrail(Particle.CRIT, player.getLocation().add(0, 0.5, 0), 2, 0.2);
+        }
+    }
+
+    /** A small, block-safe explosion: damages nearby entities (no terrain damage). */
+    private void landingBlast(Player player) {
+        Location loc = player.getLocation();
+        World world = player.getWorld();
+        world.playSound(loc, Sound.ENTITY_GENERIC_EXPLODE, 0.6f, 1.4f);
+        ParticleUtil.spawn(Particle.EXPLOSION, loc.clone().add(0, 0.5, 0), 1, 0, 0, 0, 0.0);
+        Object below = loc.clone().subtract(0, 0.2, 0).getBlock().getBlockData();
+        ParticleUtil.spawnGroundBurst(Particle.BLOCK, loc, 0.6, 12, 0.0, below);
+        ParticleUtil.spawn(Particle.DAMAGE_INDICATOR, loc.clone().add(0, 0.5, 0), 4, 0.3, 0.2, 0.3, 0.0);
+        for (Entity entity : player.getNearbyEntities(BLAST_RADIUS, BLAST_RADIUS, BLAST_RADIUS)) {
+            if (entity instanceof LivingEntity target && !entity.equals(player)) {
+                target.damage(BLAST_DAMAGE, player); // knockback radiates from the player (blast centre)
+            }
         }
     }
 

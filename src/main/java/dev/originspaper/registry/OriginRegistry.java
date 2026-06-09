@@ -23,6 +23,11 @@ import dev.originspaper.power.origins.goat.BracePower;
 import dev.originspaper.power.origins.goat.LeapPower;
 import dev.originspaper.power.origins.goat.RamPower;
 import dev.originspaper.power.origins.gryphon.FreshAirPower;
+import dev.originspaper.power.origins.moth.DrawnToLightPower;
+import dev.originspaper.power.origins.moth.FlutterGlidePower;
+import dev.originspaper.power.origins.moth.FriendOfBeesPower;
+import dev.originspaper.power.origins.moth.MothVisualsPower;
+import dev.originspaper.power.origins.moth.PollinatorPower;
 import dev.originspaper.power.origins.otter.AmphibiousPower;
 import dev.originspaper.power.origins.otter.FinsPower;
 import dev.originspaper.power.origins.otter.LikeWaterPower;
@@ -40,6 +45,7 @@ import dev.originspaper.power.origins.wolf.CarnivoresBitePower;
 import dev.originspaper.power.origins.wolf.DayNightSpeedPower;
 import dev.originspaper.power.origins.wolf.HuntersSensePower;
 import dev.originspaper.power.origins.wolf.NightFangsPower;
+import dev.originspaper.power.shared.ArmorMaterialRestrictPower;
 import dev.originspaper.power.shared.ArmorSlotRestrictPower;
 import dev.originspaper.power.shared.AttributeModifierPower;
 import dev.originspaper.power.shared.BiomeEffectPower;
@@ -131,6 +137,7 @@ public class OriginRegistry {
         registerOwl();
         registerGryphon();
         registerDragon();
+        registerMoth();
     }
 
     private void registerHuman() {
@@ -376,13 +383,13 @@ public class OriginRegistry {
                 new BiomeParticlePower("goat:heat_visual", HOT_BIOMES, true, 3, 5,
                         Particle.DRIPPING_WATER, Particle.SMOKE));
         List<PowerInfo> infos = List.of(
-                new PowerInfo("Salto", "Agachar + F: um salto frontal poderoso."),
-                new PowerInfo("Investida", "Seus golpes empurram fortemente o alvo."),
-                new PowerInfo("Escora", "Agachar evita o dano de queda."),
+                new PowerInfo("Cabeçada", "Agachar + F: arremete em linha reta; explode em área ao atingir um inimigo ou ao parar."),
+                new PowerInfo("Investida", "Golpes correndo causam dano extra e forte empurrão."),
+                new PowerInfo("Escora", "Agachar anula o dano de queda."),
                 new PowerInfo("Isolado", "Imune ao congelamento da neve em pó."),
                 new PowerInfo("Casaco de Pelo", "Fica lento em biomas quentes."),
                 new PowerInfo("Pequeno", "Possui 2 corações a menos."),
-                new PowerInfo("Pastador", "Carne alimenta menos você."));
+                new PowerInfo("Pastador", "Carne alimenta menos."));
         register(new Origin("goat", "Cabra", null, Material.GOAT_HORN, powers, infos));
     }
 
@@ -406,7 +413,7 @@ public class OriginRegistry {
                 new NoShieldPower("fox:weak_shield"),
                 new AttributeModifierPower("fox:small_body", Attribute.SCALE, -0.1));
         List<PowerInfo> infos = List.of(
-                new PowerInfo("Bote", "Agachar + F: salto que causa dano ao cair."),
+                new PowerInfo("Bote", "Agachar + F: salto que explode em área ao aterrissar, ou causa dano extra se acertar no ar."),
                 new PowerInfo("Caçada", "Atacar a mesma presa repetidamente te fortalece."),
                 new PowerInfo("Agilidade", "Mais rápido, pula mais e cai mais leve."),
                 new PowerInfo("Raposice", "Mais sorte nos drops."),
@@ -432,7 +439,7 @@ public class OriginRegistry {
                         Particle.ASH, Particle.SMOKE),
                 new AttributeModifierPower("bear:towering", Attribute.ENTITY_INTERACTION_RANGE, 1.0),
                 new CumbersomeClawsPower("bear:cumbersome_claws"),
-                new AttributeModifierPower("bear:heavy_bones_speed", Attribute.MOVEMENT_SPEED, -0.03),
+                new AttributeModifierPower("bear:heavy_bones_speed", Attribute.MOVEMENT_SPEED, -0.015),
                 new AttributeModifierPower("bear:heavy_bones_atk", Attribute.ATTACK_SPEED, -0.5),
                 new BiomeEffectPower("bear:environmental_waning", FOREST_BIOMES, false, 2, effect(PotionEffectType.WEAKNESS, 60, 0)),
                 new ArmorSlotRestrictPower("bear:bulky_body", EquipmentSlot.CHEST,
@@ -475,5 +482,28 @@ public class OriginRegistry {
                 new PowerInfo("Reabastecimento", "Acelera o crescimento de plantações próximas."),
                 new PowerInfo("Corpo Pequeno", "Seu corpo é 20% menor."));
         register(new Origin("rabbit", "Coelho", null, Material.RABBIT_FOOT, powers, infos));
+    }
+
+    private void registerMoth() {
+        List<PowerType> powers = List.of(
+                new FlutterGlidePower("moth:flutter_wings"),
+                new PollinatorPower("moth:pollinator"),
+                new DrawnToLightPower("moth:drawn_to_light"),
+                new FriendOfBeesPower("moth:friend_of_bees"),
+                new MothVisualsPower("moth:wing_dust_visual"),
+                new AttributeModifierPower("moth:fragile", Attribute.MAX_HEALTH, -6.0),
+                new ArmorMaterialRestrictPower("moth:delicate_body",
+                        item -> item.getType().name().startsWith("DIAMOND_")
+                                || item.getType().name().startsWith("NETHERITE_"),
+                        "§cSeu corpo delicado não suporta armaduras pesadas."));
+        List<PowerInfo> infos = List.of(
+                new PowerInfo("Asas Trêmulas", "Suas asas delicadas reduzem sua velocidade de queda permanentemente."),
+                new PowerInfo("Voo Gracioso", "Plana suavemente durante quedas e nunca sofre dano de queda."),
+                new PowerInfo("Polinizadora", "Agachada, faz plantações e mudas próximas crescerem como se recebessem Farinha de Osso."),
+                new PowerInfo("Atraída pela Luz", "Recebe Regeneração I perto de luz artificial (tochas, lanternas, glowstone...) e fica lenta na escuridão total."),
+                new PowerInfo("Amiga das Abelhas", "Abelhas nunca ficam agressivas com você."),
+                new PowerInfo("Frágil", "Possui 3 corações a menos."),
+                new PowerInfo("Corpo Delicado", "Não pode usar armaduras de Diamante ou Netherite."));
+        register(new Origin("moth", "Mariposa", null, Material.PHANTOM_MEMBRANE, powers, infos));
     }
 }

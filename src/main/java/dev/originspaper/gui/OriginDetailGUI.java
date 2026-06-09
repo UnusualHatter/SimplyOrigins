@@ -15,10 +15,14 @@ import java.util.List;
 /** Screen 2: detail of a single origin, with Choose and Back buttons. */
 public final class OriginDetailGUI {
 
-    public static final int SLOT_HEAD = 13;
-    public static final int SLOT_BACK = 29;
-    public static final int SLOT_CHOOSE = 31;
-    private static final int[] POWER_SLOTS = {19, 20, 21, 22, 23, 24, 25};
+    public static final int SLOT_HEAD = 4;
+    public static final int SLOT_BACK = 48;
+    public static final int SLOT_CHOOSE = 50;
+
+    /** Two inner rows = 14 power slots, enough for the largest origin (11 powers). */
+    private static final int[] POWER_SLOTS = {
+            10, 11, 12, 13, 14, 15, 16,
+            19, 20, 21, 22, 23, 24, 25};
 
     private OriginDetailGUI() {}
 

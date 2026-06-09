@@ -10,8 +10,15 @@ bin/
 .project
 out/
 
-# AI assistant docs (not published to GitHub)
+# AI assistant docs / tooling (not published to GitHub)
 agents.md
 CLAUDE.md
 originspaper-claude-code-prompt.md
+.github/modernize/
+
+# Logs and OS files
+*.log
+logs/
+.DS_Store
+Thumbs.db
 

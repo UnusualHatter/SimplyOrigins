@@ -7,6 +7,9 @@ import dev.originspaper.util.ParticleUtil;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
+import org.bukkit.World;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.util.Vector;
@@ -15,8 +18,12 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-/** Active skill: a strong forward leap with an explosive takeoff and a dusty landing. */
+/** Active skill: a flat, headbutt-like charge that detonates a small blast on impact or at the end. */
 public class LeapPower extends AbstractPower implements ActivePowerType {
+
+    private static final double BLAST_RADIUS = 1.5;
+    private static final double BLAST_DAMAGE = 5.0;
+    private static final double HIT_RADIUS = 1.2; // how close to the charge path counts as a headbutt
 
     private final Map<UUID, Long> leaping = new ConcurrentHashMap<>();
 
@@ -26,10 +33,16 @@ public class LeapPower extends AbstractPower implements ActivePowerType {
 
     @Override
     public void onActivate(Player player) {
-        Vector dir = player.getLocation().getDirection().multiply(1.8).setY(0.5);
-        player.setVelocity(dir);
-        leaping.put(player.getUniqueId(), System.currentTimeMillis());
+        // Straight headbutt charge: follow the look direction on the horizontal plane, no lift.
+        Vector look = player.getEyeLocation().getDirection();
+        Vector flat = new Vector(look.getX(), 0, look.getZ());
+        if (flat.lengthSquared() < 1.0e-6) {
+            flat = new Vector(0, 0, 1); // looking straight up/down → default forward
+        }
+        flat.normalize().multiply(2.2);
+        player.setVelocity(new Vector(flat.getX(), 0.1, flat.getZ())); // tiny Y so it skims, never lifts
 
+        leaping.put(player.getUniqueId(), System.currentTimeMillis());
         Location feet = player.getLocation();
         player.getWorld().playSound(feet, Sound.ENTITY_GOAT_LONG_JUMP, 1.0f, 1.0f);
         ParticleUtil.spawnGroundBurst(Particle.POOF, feet, 0.5, 6, 0.05);
@@ -43,16 +56,60 @@ public class LeapPower extends AbstractPower implements ActivePowerType {
         if (time == null) {
             return;
         }
-        if (System.currentTimeMillis() - time > 500L && GroundUtil.isOnGround(player)) {
-            Location feet = player.getLocation();
-            Object below = feet.clone().subtract(0, 0.2, 0).getBlock().getBlockData();
-            ParticleUtil.spawnGroundBurst(Particle.BLOCK, feet, 0.6, 12, 0.0, below);
-            ParticleUtil.spawnGroundBurst(Particle.DUST_PLUME, feet, 0.5, 6, 0.05);
+        // Headbutt: sweep the whole move segment so a fast charge can't tunnel past a target.
+        LivingEntity hit = findTargetAlong(e.getFrom(), e.getTo(), player);
+        if (hit != null) {
             leaping.remove(player.getUniqueId());
+            player.setVelocity(new Vector(0, 0, 0)); // recoil to a halt on impact
+            blastAt(hit.getLocation(), player); // detonate on the entity we ran into
+            return;
+        }
+        // Otherwise detonate when the charge runs its course and the goat is back on the ground.
+        if (System.currentTimeMillis() - time > 500L && GroundUtil.isOnGround(player)) {
+            leaping.remove(player.getUniqueId());
+            blastAt(player.getLocation(), player);
         } else {
-            // Airborne falling-dust trail tinted by the block under the goat.
             Object below = player.getLocation().clone().subtract(0, 0.2, 0).getBlock().getBlockData();
             ParticleUtil.spawnTrail(Particle.FALLING_DUST, player.getLocation().add(0, 0.2, 0), 2, 0.2, below);
+        }
+    }
+
+    /** Closest living entity within {@link #HIT_RADIUS} of the path travelled this tick, if any. */
+    private LivingEntity findTargetAlong(Location from, Location to, Player player) {
+        Vector a = from.toVector();
+        Vector seg = to.toVector().subtract(a);
+        double segLen2 = seg.lengthSquared();
+        double search = BLAST_RADIUS + Math.sqrt(segLen2) + 1.0;
+        LivingEntity best = null;
+        double bestDist2 = Double.MAX_VALUE;
+        for (Entity entity : to.getWorld().getNearbyEntities(to, search, search, search)) {
+            if (!(entity instanceof LivingEntity living) || entity.equals(player)) {
+                continue;
+            }
+            Vector p = entity.getLocation().toVector();
+            double t = segLen2 < 1.0e-6 ? 0.0 : p.clone().subtract(a).dot(seg) / segLen2;
+            t = Math.max(0.0, Math.min(1.0, t));
+            double d2 = a.clone().add(seg.clone().multiply(t)).distanceSquared(p);
+            if (d2 <= HIT_RADIUS * HIT_RADIUS && d2 < bestDist2) {
+                bestDist2 = d2;
+                best = living;
+            }
+        }
+        return best;
+    }
+
+    /** A small, block-safe explosion centred on {@code center}: damages nearby entities only. */
+    private void blastAt(Location center, Player owner) {
+        World world = center.getWorld();
+        world.playSound(center, Sound.ENTITY_GENERIC_EXPLODE, 0.7f, 1.2f);
+        ParticleUtil.spawn(Particle.EXPLOSION, center.clone().add(0, 0.5, 0), 1, 0, 0, 0, 0.0);
+        Object below = center.clone().subtract(0, 0.2, 0).getBlock().getBlockData();
+        ParticleUtil.spawnGroundBurst(Particle.BLOCK, center, 0.6, 12, 0.0, below);
+        ParticleUtil.spawnGroundBurst(Particle.DUST_PLUME, center, 0.5, 6, 0.05);
+        for (Entity entity : world.getNearbyEntities(center, BLAST_RADIUS, BLAST_RADIUS, BLAST_RADIUS)) {
+            if (entity instanceof LivingEntity target && !entity.equals(owner)) {
+                target.damage(BLAST_DAMAGE, owner); // knockback radiates from the blast centre
+            }
         }
     }
 

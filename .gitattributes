@@ -1,0 +1,13 @@
+# Normalize line endings to LF in the repository (consistent across OSes on GitHub)
+* text=auto
+
+# Platform-specific scripts keep their native endings
+*.bat  text eol=crlf
+*.cmd  text eol=crlf
+*.sh   text eol=lf
+gradlew text eol=lf
+
+# Binary files Git must not touch
+*.jar  binary
+*.png  binary
+*.ico  binary
