@@ -2,6 +2,8 @@ package dev.originspaper.power.origins.wolf;
 
 import dev.originspaper.power.shared.AbstractPower;
 import dev.originspaper.util.FoodUtil;
+import dev.originspaper.util.ParticleUtil;
+import org.bukkit.Particle;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
@@ -19,6 +21,8 @@ public class CarnivoresBitePower extends AbstractPower {
             return;
         }
         Player player = e.getPlayer();
+        ParticleUtil.spawnTrail(Particle.HEART, player.getLocation().add(0, 1.0, 0), 3, 0.3);
+        ParticleUtil.spawnTrail(Particle.HAPPY_VILLAGER, player.getLocation().add(0, 1.0, 0), 2, 0.3);
         plugin().getServer().getScheduler().runTaskLater(plugin(), () -> {
             double max = player.getAttribute(Attribute.MAX_HEALTH).getValue();
             player.setHealth(Math.min(max, player.getHealth() + 1.0)); // half a heart

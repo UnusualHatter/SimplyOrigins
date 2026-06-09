@@ -3,6 +3,9 @@ package dev.originspaper.power.origins.wolf;
 import dev.originspaper.power.shared.AbstractPower;
 import dev.originspaper.power.shared.NightTimeEffectPower;
 import dev.originspaper.util.AttributeUtil;
+import dev.originspaper.util.ParticleUtil;
+import org.bukkit.Location;
+import org.bukkit.Particle;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Player;
@@ -16,9 +19,16 @@ public class DayNightSpeedPower extends AbstractPower {
 
     @Override
     public void onTick(Player player) {
-        double amount = NightTimeEffectPower.isNight(player) ? 0.20 : 0.15;
+        boolean night = NightTimeEffectPower.isNight(player);
+        double amount = night ? 0.20 : 0.15;
         AttributeUtil.set(player, Attribute.MOVEMENT_SPEED, id, amount,
                 AttributeModifier.Operation.ADD_SCALAR);
+        if (night && plugin().tick() % 2 == 0
+                && (player.isSprinting() || player.getVelocity().lengthSquared() > 0.01)) {
+            Location loc = player.getLocation().add(0, 0.2, 0);
+            ParticleUtil.spawnTrail(Particle.END_ROD, loc, 2, 0.2);
+            ParticleUtil.spawnTrail(Particle.CRIT, loc, 2, 0.2);
+        }
     }
 
     @Override

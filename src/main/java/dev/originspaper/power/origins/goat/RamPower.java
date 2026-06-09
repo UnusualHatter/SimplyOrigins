@@ -1,6 +1,9 @@
 package dev.originspaper.power.origins.goat;
 
 import dev.originspaper.power.shared.AbstractPower;
+import dev.originspaper.util.ParticleUtil;
+import org.bukkit.Location;
+import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.util.Vector;
@@ -22,6 +25,10 @@ public class RamPower extends AbstractPower {
         }
         // Bonus damage from the headbutt impact.
         e.setDamage(e.getDamage() + 4.0);
+
+        Location loc = e.getEntity().getLocation().add(0, 0.5, 0);
+        ParticleUtil.spawnGroundBurst(Particle.POOF, loc, 0.4, 5, 0.05);
+        ParticleUtil.spawnGroundBurst(Particle.CLOUD, loc, 0.4, 6, 0.05);
 
         Vector dir = e.getEntity().getLocation().toVector()
                 .subtract(player.getLocation().toVector());

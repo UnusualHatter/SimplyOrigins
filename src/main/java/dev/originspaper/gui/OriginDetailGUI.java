@@ -49,10 +49,10 @@ public final class OriginDetailGUI {
             inv.setItem(POWER_SLOTS[i], SkullBuilder.create(Material.PAPER, "§e" + info.name(), lore));
         }
 
-        inv.setItem(SLOT_CHOOSE, SkullBuilder.create(Material.LIME_WOOL, "§a§lEscolher esta Origin",
+        inv.setItem(SLOT_CHOOSE, SkullBuilder.create(Material.LIME_WOOL, "§a§lEscolher esta Origem",
                 List.of("§7Confirma sua escolha.", "§7Não poderá trocar depois.")));
         inv.setItem(SLOT_BACK, SkullBuilder.create(Material.ARROW, "§c§l← Voltar",
-                List.of("§7Volta para a lista de origins.")));
+                List.of("§7Volta para a lista de origens.")));
 
         player.openInventory(inv);
     }

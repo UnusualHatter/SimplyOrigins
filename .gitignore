@@ -9,3 +9,9 @@ bin/
 .classpath
 .project
 out/
+
+# AI assistant docs (not published to GitHub)
+agents.md
+CLAUDE.md
+originspaper-claude-code-prompt.md
+

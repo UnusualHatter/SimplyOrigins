@@ -2,16 +2,16 @@ name: OriginsPaper
 version: "1.0.0"
 main: dev.originspaper.OriginsPaper
 api-version: "26.1"
-description: Origins system for Paper 26.1.2
+description: Sistema de Origens (Origins) para Paper 26.1.2
 authors: [OriginsPaper]
 commands:
   origin:
-    description: Manage your origin
-    usage: /origin [set|reset|info] [player] [origin]
+    description: Gerencie sua origem
+    usage: /origin [set|reset|info] [jogador] [origem]
 permissions:
   originspaper.select:
-    description: Allows opening the origin selection GUI and viewing info
+    description: Permite abrir o menu de seleção de origem e ver informações
     default: true
   originspaper.admin:
-    description: Allows managing other players' origins
+    description: Permite gerenciar as origens de outros jogadores
     default: op

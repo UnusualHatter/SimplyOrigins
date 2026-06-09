@@ -46,7 +46,7 @@ public class OriginCommand implements CommandExecutor, TabCompleter {
         PlayerOriginData data = plugin.data().get(player.getUniqueId());
         boolean admin = player.hasPermission("originspaper.admin");
         if (data != null && data.hasOrigin() && !admin) {
-            player.sendMessage(TextUtil.msg("§cVocê já possui uma origin. Use §f/origin info§c."));
+            player.sendMessage(TextUtil.msg("§cVocê já possui uma origem. Use §f/origin info§c."));
             return true;
         }
         OriginSelectionGUI.open(player);
@@ -59,7 +59,7 @@ public class OriginCommand implements CommandExecutor, TabCompleter {
             return;
         }
         if (args.length < 3) {
-            sender.sendMessage(TextUtil.msg("§cUso: /origin set <jogador> <origin>"));
+            sender.sendMessage(TextUtil.msg("§cUso: /origin set <jogador> <origem>"));
             return;
         }
         Player target = Bukkit.getPlayerExact(args[1]);
@@ -69,11 +69,11 @@ public class OriginCommand implements CommandExecutor, TabCompleter {
         }
         Origin origin = plugin.origins().get(args[2]);
         if (origin == null) {
-            sender.sendMessage(TextUtil.msg("§cOrigin desconhecida: §f" + args[2]));
+            sender.sendMessage(TextUtil.msg("§cOrigem desconhecida: §f" + args[2]));
             return;
         }
         plugin.data().setOrigin(target, origin);
-        target.sendMessage(TextUtil.msg("§6Sua origin agora é §f" + origin.displayName() + "§6."));
+        target.sendMessage(TextUtil.msg("§6Sua origem agora é §f" + origin.displayName() + "§6."));
         sender.sendMessage(TextUtil.msg("§aDefinido §f" + target.getName() + "§a como §f" + origin.displayName() + "§a."));
     }
 
@@ -116,11 +116,11 @@ public class OriginCommand implements CommandExecutor, TabCompleter {
         }
         PlayerOriginData data = plugin.data().get(target.getUniqueId());
         if (data == null || !data.hasOrigin()) {
-            sender.sendMessage(TextUtil.msg("§7" + target.getName() + " ainda não escolheu uma origin."));
+            sender.sendMessage(TextUtil.msg("§7" + target.getName() + " ainda não escolheu uma origem."));
             return;
         }
         Origin origin = data.getOrigin();
-        sender.sendMessage(TextUtil.msg("§6⬛ Origin de §f" + target.getName() + "§6: §e" + origin.displayName()));
+        sender.sendMessage(TextUtil.msg("§6⬛ Origem de §f" + target.getName() + "§6: §e" + origin.displayName()));
         sender.sendMessage(TextUtil.msg("§8§m                                        "));
         for (Origin.PowerInfo info : origin.infos()) {
             sender.sendMessage(TextUtil.msg("§e⚡ " + info.name()));

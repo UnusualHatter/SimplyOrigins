@@ -33,7 +33,7 @@ public final class OriginSelectionGUI {
     public static void open(Player player) {
         OriginsPaper plugin = OriginsPaper.instance();
         SelectionHolder holder = new SelectionHolder();
-        Inventory inv = Bukkit.createInventory(holder, 54, TextUtil.item("§6Escolha sua Origin"));
+        Inventory inv = Bukkit.createInventory(holder, 54, TextUtil.item("§6Escolha sua Origem"));
         holder.setInventory(inv);
 
         ItemStack filler = SkullBuilder.filler();

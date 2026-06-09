@@ -36,6 +36,16 @@ public class ActiveBuffPower extends AbstractPower implements ActivePowerType {
         return cooldownTicks;
     }
 
+    /** True while any of this skill's buff effects is still on the player (used for aura visuals). */
+    protected boolean isBuffActive(Player player) {
+        for (PotionEffect effect : effects) {
+            if (player.hasPotionEffect(effect.getType())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     public void onRemove(Player player) {
         for (PotionEffect effect : effects) {

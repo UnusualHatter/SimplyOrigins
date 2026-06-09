@@ -2,6 +2,7 @@ package dev.originspaper.power.origins.dragon;
 
 import dev.originspaper.api.ActivePowerType;
 import dev.originspaper.power.shared.AbstractPower;
+import dev.originspaper.util.ParticleUtil;
 import dev.originspaper.util.TextUtil;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -69,12 +70,14 @@ public class DragonBreathPower extends AbstractPower implements ActivePowerType 
     }
 
     private void spawnConeParticles(World world, Location eye, Vector dir) {
-        for (double d = 1.0; d <= RANGE; d += 0.5) {
-            Location point = eye.clone().add(dir.clone().multiply(d));
-            double spread = 0.12 * d; // cone widens with distance
-            world.spawnParticle(Particle.FLAME, point, 6, spread, spread, spread, 0.01);
-            world.spawnParticle(Particle.DRAGON_BREATH, point, 4, spread, spread, spread, 0.0);
-        }
+        // Core fire: flame + lava + the signature dragon breath haze.
+        ParticleUtil.spawnCone(Particle.FLAME, eye, dir, RANGE, 0.6, 0.5, 6, 0.01);
+        ParticleUtil.spawnCone(Particle.LAVA, eye, dir, RANGE, 0.6, 0.7, 1, 0.0);
+        ParticleUtil.spawnCone(Particle.DRAGON_BREATH, eye, dir, RANGE, 0.6, 0.5, 4, 0.0);
+        // Smoky cone edges + a lingering residual smoke.
+        ParticleUtil.spawnCone(Particle.ASH, eye, dir, RANGE, 0.7, 1.0, 3, 0.0);
+        ParticleUtil.spawnCone(Particle.LARGE_SMOKE, eye, dir, RANGE, 0.7, 1.0, 1, 0.0);
+        ParticleUtil.spawnCone(Particle.CAMPFIRE_COSY_SMOKE, eye, dir, RANGE, 0.5, 1.5, 1, 0.0);
     }
 
     @Override

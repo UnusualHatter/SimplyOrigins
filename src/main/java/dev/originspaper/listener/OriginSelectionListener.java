@@ -91,7 +91,7 @@ public class OriginSelectionListener implements Listener {
                 return;
             }
             plugin.data().setOrigin(player, origin);
-            player.sendMessage(TextUtil.msg("§6Você escolheu a origin §f" + origin.displayName() + "§6!"));
+            player.sendMessage(TextUtil.msg("§6Você escolheu a origem §f" + origin.displayName() + "§6!"));
             player.closeInventory();
         }
     }

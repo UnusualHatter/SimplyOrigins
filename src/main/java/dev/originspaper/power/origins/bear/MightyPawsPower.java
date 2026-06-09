@@ -1,7 +1,10 @@
 package dev.originspaper.power.origins.bear;
 
 import dev.originspaper.power.shared.AbstractPower;
+import dev.originspaper.util.ParticleUtil;
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.util.Vector;
@@ -28,5 +31,11 @@ public class MightyPawsPower extends AbstractPower {
             dir = player.getLocation().getDirection();
         }
         e.getEntity().setVelocity(dir.normalize().multiply(1.4).setY(0.5));
+
+        // Crushing blow: crits plus a heavy crunch tinted by the ground under the target.
+        Location loc = e.getEntity().getLocation();
+        ParticleUtil.spawnTrail(Particle.CRIT, loc.clone().add(0, 1.0, 0), 8, 0.4);
+        Object below = loc.clone().subtract(0, 0.2, 0).getBlock().getBlockData();
+        ParticleUtil.spawnGroundBurst(Particle.BLOCK, loc, 0.4, 6, 0.0, below);
     }
 }

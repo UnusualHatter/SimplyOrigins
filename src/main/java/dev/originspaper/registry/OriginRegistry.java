@@ -6,10 +6,13 @@ import dev.originspaper.api.PowerType;
 import dev.originspaper.power.origins.bat.BatGlidePower;
 import dev.originspaper.power.origins.bat.CaveMobilityPower;
 import dev.originspaper.power.origins.bear.CumbersomeClawsPower;
+import dev.originspaper.power.origins.bear.HibernationPower;
 import dev.originspaper.power.origins.bear.MightyPawsPower;
 import dev.originspaper.power.origins.deer.NaturalRunnerPower;
 import dev.originspaper.power.origins.demon.HellPactPower;
 import dev.originspaper.power.origins.demon.HolyVulnerabilityPower;
+import dev.originspaper.power.origins.demon.InfernalVisualsPower;
+import dev.originspaper.power.origins.dragon.DragonAuraPower;
 import dev.originspaper.power.origins.dragon.DragonBreathPower;
 import dev.originspaper.power.origins.dragon.RebornMagicPower;
 import dev.originspaper.power.origins.feline.WeakArmsPower;
@@ -32,14 +35,15 @@ import dev.originspaper.power.origins.owl.NightHunterPower;
 import dev.originspaper.power.origins.owl.PredatorDivePower;
 import dev.originspaper.power.origins.owl.SilentFlightPower;
 import dev.originspaper.power.origins.rabbit.ReplenishPower;
+import dev.originspaper.power.origins.wolf.AlphaHowlPower;
 import dev.originspaper.power.origins.wolf.CarnivoresBitePower;
 import dev.originspaper.power.origins.wolf.DayNightSpeedPower;
 import dev.originspaper.power.origins.wolf.HuntersSensePower;
 import dev.originspaper.power.origins.wolf.NightFangsPower;
-import dev.originspaper.power.shared.ActiveBuffPower;
 import dev.originspaper.power.shared.ArmorSlotRestrictPower;
 import dev.originspaper.power.shared.AttributeModifierPower;
 import dev.originspaper.power.shared.BiomeEffectPower;
+import dev.originspaper.power.shared.BiomeParticlePower;
 import dev.originspaper.power.shared.CarnivoreDietPower;
 import dev.originspaper.power.shared.DamageImmunityPower;
 import dev.originspaper.power.shared.DamageMultiplierPower;
@@ -59,6 +63,7 @@ import dev.originspaper.power.shared.PotionImmunityPower;
 import dev.originspaper.power.shared.SilentStepsPower;
 import dev.originspaper.util.FoodUtil;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Biome;
 import org.bukkit.entity.EntityType;
@@ -129,7 +134,7 @@ public class OriginRegistry {
     }
 
     private void registerHuman() {
-        register(new Origin("human", "Human",
+        register(new Origin("human", "Humano",
                 "http://textures.minecraft.net/texture/b3fbd454b599df593f57101bfca34e67d292a8861213d2202bb575da7fd091ac",
                 Material.PLAYER_HEAD,
                 List.of(),
@@ -146,14 +151,14 @@ public class OriginRegistry {
                 new WaterDependencyPower("otter:water_dependency", 600L), // 10 minutes (seconds)
                 new AttributeModifierPower("otter:small_body", Attribute.SCALE, -0.2));
         List<PowerInfo> infos = List.of(
-                new PowerInfo("Amphibious", "Respira perfeitamente debaixo d'água e na terra."),
-                new PowerInfo("Aqua Affinity", "Minera na velocidade normal mesmo submerso."),
-                new PowerInfo("Wet Eyes", "Enxerga com clareza e ganha graça do golfinho na água."),
-                new PowerInfo("Fins", "Nada muito mais rápido quando submerso."),
-                new PowerInfo("Like Water", "Maior controle de movimento embaixo d'água."),
-                new PowerInfo("Water Dependency", "Recebe fraqueza e lentidão se ficar 10 minutos sem tocar na água ou chuva."),
-                new PowerInfo("Small Body", "Seu corpo é 20% menor."));
-        register(new Origin("otter", "Otter", null, Material.KELP, powers, infos));
+                new PowerInfo("Anfíbio", "Respira perfeitamente debaixo d'água e na terra."),
+                new PowerInfo("Afinidade Aquática", "Minera na velocidade normal mesmo submerso."),
+                new PowerInfo("Olhos Aquáticos", "Enxerga com clareza e ganha graça do golfinho na água."),
+                new PowerInfo("Nadadeiras", "Nada muito mais rápido quando submerso."),
+                new PowerInfo("Como a Água", "Maior controle de movimento embaixo d'água."),
+                new PowerInfo("Dependência de Água", "Recebe fraqueza e lentidão se ficar 10 minutos sem tocar na água ou chuva."),
+                new PowerInfo("Corpo Pequeno", "Seu corpo é 20% menor."));
+        register(new Origin("otter", "Lontra", null, Material.KELP, powers, infos));
     }
 
     private void registerDeer() {
@@ -165,13 +170,13 @@ public class OriginRegistry {
                 new AttributeModifierPower("deer:alert_leap", Attribute.JUMP_STRENGTH, 0.1),
                 new AttributeModifierPower("deer:fragile", Attribute.MAX_HEALTH, -2.0));
         List<PowerInfo> infos = List.of(
-                new PowerInfo("Forest Agility", "Mais rápido em florestas e taigas."),
-                new PowerInfo("Soft Landing", "Sofre 50% menos dano de queda."),
-                new PowerInfo("Natural Runner", "Correr em terrenos naturais (terra, grama, pedra) aumenta sua velocidade."),
-                new PowerInfo("Nimble Legs", "Passa por cima de obstáculos baixos sem precisar pular."),
-                new PowerInfo("Alert Leap", "Pula mais alto, sempre pronto para fugir do perigo."),
-                new PowerInfo("Fragile", "Possui 1 coração a menos."));
-        register(new Origin("deer", "Deer", null, Material.OAK_SAPLING, powers, infos));
+                new PowerInfo("Agilidade Florestal", "Mais rápido em florestas e taigas."),
+                new PowerInfo("Aterrissagem Suave", "Sofre 50% menos dano de queda."),
+                new PowerInfo("Corredor Natural", "Correr em terrenos naturais (terra, grama, pedra) aumenta sua velocidade."),
+                new PowerInfo("Pernas Ágeis", "Passa por cima de obstáculos baixos sem precisar pular."),
+                new PowerInfo("Salto de Alerta", "Pula mais alto, sempre pronto para fugir do perigo."),
+                new PowerInfo("Frágil", "Possui 1 coração a menos."));
+        register(new Origin("deer", "Cervo", null, Material.OAK_SAPLING, powers, infos));
     }
 
     private void registerBat() {
@@ -183,13 +188,13 @@ public class OriginRegistry {
                 new AttributeModifierPower("bat:fragile", Attribute.MAX_HEALTH, -4.0),
                 new AttributeModifierPower("bat:tiny_body", Attribute.SCALE, -0.3));
         List<PowerInfo> infos = List.of(
-                new PowerInfo("Dark Vision", "Visão noturna permanente."),
-                new PowerInfo("Bat Wings", "Cai lentamente (planagem) ao cair no ar."),
-                new PowerInfo("Cave Mobility", "Mais rápido e minera velozmente no fundo de cavernas escuras."),
-                new PowerInfo("Sun Averse", "Fica exausto e fraco sob a luz solar direta."),
-                new PowerInfo("Fragile", "Possui 2 corações a menos."),
-                new PowerInfo("Tiny Body", "Seu corpo é 30% menor."));
-        register(new Origin("bat", "Bat", null, Material.BAT_SPAWN_EGG, powers, infos));
+                new PowerInfo("Visão Noturna", "Visão noturna permanente."),
+                new PowerInfo("Asas de Morcego", "Cai lentamente (planagem) ao cair no ar."),
+                new PowerInfo("Mobilidade nas Cavernas", "Mais rápido e minera velozmente no fundo de cavernas escuras."),
+                new PowerInfo("Aversão ao Sol", "Fica exausto e fraco sob a luz solar direta."),
+                new PowerInfo("Frágil", "Possui 2 corações a menos."),
+                new PowerInfo("Corpo Minúsculo", "Seu corpo é 30% menor."));
+        register(new Origin("bat", "Morcego", null, Material.BAT_SPAWN_EGG, powers, infos));
     }
 
     private void registerRat() {
@@ -202,13 +207,13 @@ public class OriginRegistry {
                 new AttributeModifierPower("rat:short_reach_block", Attribute.BLOCK_INTERACTION_RANGE, -1.0),
                 new AttributeModifierPower("rat:short_reach_entity", Attribute.ENTITY_INTERACTION_RANGE, -1.0));
         List<PowerInfo> infos = List.of(
-                new PowerInfo("Small Body", "Seu corpo é 30% menor."),
-                new PowerInfo("Evasion", "Você tem 30% de chance de desviar completamente de projéteis."),
-                new PowerInfo("Silent Steps", "Passos silenciosos (cosmético)."),
-                new PowerInfo("Swift", "Mais rápido ao andar e correr."),
-                new PowerInfo("Fragile", "Possui 2 corações a menos."),
-                new PowerInfo("Short Reach", "Seus bracinhos não alcançam tão longe."));
-        register(new Origin("rat", "Rat", null, Material.BEETROOT, powers, infos));
+                new PowerInfo("Corpo Pequeno", "Seu corpo é 30% menor."),
+                new PowerInfo("Evasão", "Você tem 30% de chance de desviar completamente de projéteis."),
+                new PowerInfo("Passos Silenciosos", "Passos silenciosos (cosmético)."),
+                new PowerInfo("Veloz", "Mais rápido ao andar e correr."),
+                new PowerInfo("Frágil", "Possui 2 corações a menos."),
+                new PowerInfo("Alcance Curto", "Seus bracinhos não alcançam tão longe."));
+        register(new Origin("rat", "Rato", null, Material.BEETROOT, powers, infos));
     }
 
     private void registerDemon() {
@@ -219,16 +224,18 @@ public class OriginRegistry {
                 new HellPactPower("demon:hell_pact"),
                 new DayDazedPower("demon:sun_averse"),
                 new HolyVulnerabilityPower("demon:holy_vulnerability"),
-                new BiomeEffectPower("demon:cold_weakness", COLD_BIOMES, true, 2, effect(PotionEffectType.SLOWNESS, 60, 0)));
+                new BiomeEffectPower("demon:cold_weakness", COLD_BIOMES, true, 2, effect(PotionEffectType.SLOWNESS, 60, 0)),
+                new InfernalVisualsPower("demon:infernal_visual"),
+                new BiomeParticlePower("demon:cold_visual", COLD_BIOMES, true, 3, 5, Particle.ASH, Particle.SMOKE));
         List<PowerInfo> infos = List.of(
-                new PowerInfo("Hellborn", "Imune a fogo, lava e chão quente."),
-                new PowerInfo("Infernal Power", "Causa +1 coração de dano corpo a corpo."),
-                new PowerInfo("Dark Vision", "Visão noturna permanente."),
-                new PowerInfo("Hell Pact", "Agachar + F: Ganha Força I por 10s. Depois sofre Fraqueza e Fome por 5s."),
-                new PowerInfo("Sun Averse", "Fica exausto e fraco sob a luz solar direta."),
-                new PowerInfo("Holy Vulnerability", "Sofre o dobro de dano de magia e poções."),
-                new PowerInfo("Cold Weakness", "Fica lento em biomas nevados e congelados."));
-        register(new Origin("demon", "Demon", null, Material.NETHER_WART, powers, infos));
+                new PowerInfo("Filho do Inferno", "Imune a fogo, lava e chão quente."),
+                new PowerInfo("Poder Infernal", "Causa +1 coração de dano corpo a corpo."),
+                new PowerInfo("Visão Noturna", "Visão noturna permanente."),
+                new PowerInfo("Pacto Infernal", "Agachar + F: Ganha Força I por 10s. Depois sofre Fraqueza e Fome por 5s."),
+                new PowerInfo("Aversão ao Sol", "Fica exausto e fraco sob a luz solar direta."),
+                new PowerInfo("Vulnerabilidade Sagrada", "Sofre o dobro de dano de magia e poções."),
+                new PowerInfo("Fraqueza ao Frio", "Fica lento em biomas nevados e congelados."));
+        register(new Origin("demon", "Demônio", null, Material.NETHER_WART, powers, infos));
     }
 
     private void registerFeline() {
@@ -244,17 +251,17 @@ public class OriginRegistry {
                 new dev.originspaper.power.origins.feline.PredatorInstinctPower("feline:predator_instinct"),
                 new AttributeModifierPower("feline:small_body", Attribute.SCALE, -0.1));
         List<PowerInfo> infos = List.of(
-                new PowerInfo("Acrobatics", "Não sofre dano de queda."),
-                new PowerInfo("Strong Ankles", "Pula um pouco mais alto."),
-                new PowerInfo("Velvet Paws", "Passos silenciosos (cosmético)."),
-                new PowerInfo("Nine Lives", "Possui 1 coração a menos."),
-                new PowerInfo("Weak Arms", "Não arranca pedra muito incrustada sem picareta."),
-                new PowerInfo("Scare Creepers", "Creepers têm medo e não te atacam."),
-                new PowerInfo("Cat Vision", "Visão noturna permanente."),
-                new PowerInfo("Feline Grace", "Levemente mais rápido."),
-                new PowerInfo("Predator Instinct", "Ganha velocidade extra ao perseguir criaturas hostis."),
-                new PowerInfo("Small Body", "Seu corpo é 10% menor."));
-        register(new Origin("feline", "Feline", null, Material.OCELOT_SPAWN_EGG, powers, infos));
+                new PowerInfo("Acrobacia", "Não sofre dano de queda."),
+                new PowerInfo("Tornozelos Fortes", "Pula um pouco mais alto."),
+                new PowerInfo("Patas de Veludo", "Passos silenciosos (cosmético)."),
+                new PowerInfo("Sete Vidas", "Possui 1 coração a menos."),
+                new PowerInfo("Braços Fracos", "Não arranca pedra muito incrustada sem picareta."),
+                new PowerInfo("Assusta Creepers", "Creepers têm medo e não te atacam."),
+                new PowerInfo("Visão Felina", "Visão noturna permanente."),
+                new PowerInfo("Graça Felina", "Levemente mais rápido."),
+                new PowerInfo("Instinto Predador", "Ganha velocidade extra ao perseguir criaturas hostis."),
+                new PowerInfo("Corpo Pequeno", "Seu corpo é 10% menor."));
+        register(new Origin("feline", "Felino", null, Material.OCELOT_SPAWN_EGG, powers, infos));
     }
 
 
@@ -270,17 +277,18 @@ public class OriginRegistry {
                 new ArmorSlotRestrictPower("dragon:scaled_body", EquipmentSlot.CHEST,
                         item -> item.getType().name().endsWith("CHESTPLATE"),
                         "§cSuas escamas não permitem peitorais."),
-                new AttributeModifierPower("dragon:large_body", Attribute.SCALE, 0.1));
+                new AttributeModifierPower("dragon:large_body", Attribute.SCALE, 0.1),
+                new DragonAuraPower("dragon:aura_visual"));
         List<PowerInfo> infos = List.of(
                 new PowerInfo("Asas de Dragão", "Elytra permanente que volta sozinha."),
-                new PowerInfo("Dragon's Breath", "Agachar + F: sopra um cone de fogo que causa dano e incendeia os alvos à frente."),
-                new PowerInfo("Reborn Magic", "Ganha regeneração no The End."),
-                new PowerInfo("Resistant Skin", "Possui 2 corações a mais."),
-                new PowerInfo("Sharp Claws", "Causa +1 coração de dano corpo a corpo."),
-                new PowerInfo("Apex Predator", "Só consegue comer carne."),
-                new PowerInfo("Scaled Body", "Não pode usar peitorais (mas usa as asas)."),
-                new PowerInfo("Large Body", "Seu corpo é 10% maior."));
-        register(new Origin("dragon", "Dragon", null, Material.DRAGON_HEAD, powers, infos));
+                new PowerInfo("Sopro do Dragão", "Agachar + F: sopra um cone de fogo que causa dano e incendeia os alvos à frente."),
+                new PowerInfo("Magia Renascida", "Ganha regeneração no The End."),
+                new PowerInfo("Pele Resistente", "Possui 2 corações a mais."),
+                new PowerInfo("Garras Afiadas", "Causa +1 coração de dano corpo a corpo."),
+                new PowerInfo("Predador Supremo", "Só consegue comer carne."),
+                new PowerInfo("Corpo Escamado", "Não pode usar peitorais (mas usa as asas)."),
+                new PowerInfo("Corpo Grande", "Seu corpo é 10% maior."));
+        register(new Origin("dragon", "Dragão", null, Material.DRAGON_HEAD, powers, infos));
     }
 
     private void registerWolf() {
@@ -292,18 +300,18 @@ public class OriginRegistry {
                 new CarnivoresBitePower("wolf:carnivore_bite"),
                 new NightFangsPower("wolf:night_fangs"),
                 new HuntersSensePower("wolf:hunters_sense"),
-                new ActiveBuffPower("wolf:alpha_howl", 2400L, org.bukkit.Sound.ENTITY_WOLF_GROWL,
+                new AlphaHowlPower("wolf:alpha_howl", 2400L, org.bukkit.Sound.ENTITY_WOLF_GROWL,
                         effect(PotionEffectType.ABSORPTION, 200, 1)));
         List<PowerInfo> infos = List.of(
-                new PowerInfo("Canine Eyes", "Visão noturna permanente."),
-                new PowerInfo("Night Runner", "Mais rápido à noite, ainda ágil de dia."),
-                new PowerInfo("Wolf Metabolism", "Gasta mais energia à noite."),
-                new PowerInfo("Poison Immunity", "Imune a veneno."),
-                new PowerInfo("Carnivore's Bite", "Comer carne cura meio coração extra."),
-                new PowerInfo("Night Fangs", "Causa +2 de dano à noite."),
-                new PowerInfo("Hunter's Sense", "Destaca criaturas próximas."),
-                new PowerInfo("Alpha's Howl", "Agachar + F: ganha absorção e uiva."));
-        register(new Origin("wolf", "Wolf", null, Material.BONE, powers, infos));
+                new PowerInfo("Olhos Caninos", "Visão noturna permanente."),
+                new PowerInfo("Corredor Noturno", "Mais rápido à noite, ainda ágil de dia."),
+                new PowerInfo("Metabolismo de Lobo", "Gasta mais energia à noite."),
+                new PowerInfo("Imunidade a Veneno", "Imune a veneno."),
+                new PowerInfo("Mordida Carnívora", "Comer carne cura meio coração extra."),
+                new PowerInfo("Presas Noturnas", "Causa +2 de dano à noite."),
+                new PowerInfo("Sentido de Caçador", "Destaca criaturas próximas."),
+                new PowerInfo("Uivo do Alfa", "Agachar + F: ganha absorção e uiva."));
+        register(new Origin("wolf", "Lobo", null, Material.BONE, powers, infos));
     }
 
 
@@ -322,16 +330,16 @@ public class OriginRegistry {
                 new AttributeModifierPower("owl:small_body", Attribute.SCALE, -0.1));
         List<PowerInfo> infos = List.of(
                 new PowerInfo("Asas de Coruja", "Elytra permanente que volta sozinha."),
-                new PowerInfo("Silent Flight", "Reduz o alcance de detecção dos mobs ao planar."),
-                new PowerInfo("Night Hunter", "De noite ganha Velocidade I, Visão Noturna e bônus de dano."),
-                new PowerInfo("Predator Dive", "Atacar mergulhando causa dano massivo e sangramento."),
-                new PowerInfo("Echolocation", "Agachar + F: Revela entidades próximas através das paredes."),
-                new PowerInfo("Soft Landing", "Não sofre dano de queda."),
-                new PowerInfo("Carnivore", "Apenas carne."),
-                new PowerInfo("Day Blindness", "Fica exausto e fraco sob a luz solar direta."),
-                new PowerInfo("Lightweight", "Sem armaduras pesadas."),
-                new PowerInfo("Small Body", "Seu corpo é 10% menor."));
-        register(new Origin("owl", "Owl", null, Material.FEATHER, powers, infos));
+                new PowerInfo("Voo Silencioso", "Reduz o alcance de detecção dos mobs ao planar."),
+                new PowerInfo("Caçador Noturno", "De noite ganha Velocidade I, Visão Noturna e bônus de dano."),
+                new PowerInfo("Mergulho Predador", "Atacar mergulhando causa dano massivo e sangramento."),
+                new PowerInfo("Ecolocalização", "Agachar + F: Revela entidades próximas através das paredes."),
+                new PowerInfo("Aterrissagem Suave", "Não sofre dano de queda."),
+                new PowerInfo("Carnívoro", "Apenas carne."),
+                new PowerInfo("Cegueira Diurna", "Fica exausto e fraco sob a luz solar direta."),
+                new PowerInfo("Leve", "Sem armaduras pesadas."),
+                new PowerInfo("Corpo Pequeno", "Seu corpo é 10% menor."));
+        register(new Origin("owl", "Coruja", null, Material.FEATHER, powers, infos));
     }
 
     private void registerGryphon() {
@@ -352,8 +360,8 @@ public class OriginRegistry {
                 new PowerInfo("Carnívoro", "Só consegue comer carne."),
                 new PowerInfo("Ar Fresco", "Só dorme a 86 blocos de altura ou mais."),
                 new PowerInfo("Mobilidade", "Não pode usar armadura pesada."),
-                new PowerInfo("Large Body", "Seu corpo é 10% maior."));
-        register(new Origin("gryphon", "Gryphon", null, Material.GOLDEN_HORSE_ARMOR, powers, infos));
+                new PowerInfo("Corpo Grande", "Seu corpo é 10% maior."));
+        register(new Origin("gryphon", "Grifo", null, Material.GOLDEN_HORSE_ARMOR, powers, infos));
     }
 
     private void registerGoat() {
@@ -364,16 +372,18 @@ public class OriginRegistry {
                 new DamageImmunityPower("goat:insulated", DamageCause.FREEZE),
                 new BiomeEffectPower("goat:fur_coat", HOT_BIOMES, true, 2, effect(PotionEffectType.SLOWNESS, 60, 0)),
                 new AttributeModifierPower("goat:small", Attribute.MAX_HEALTH, -4.0),
-                new NutritionPower("goat:browser", FoodUtil::isMeat, 0.4));
+                new NutritionPower("goat:browser", FoodUtil::isMeat, 0.4),
+                new BiomeParticlePower("goat:heat_visual", HOT_BIOMES, true, 3, 5,
+                        Particle.DRIPPING_WATER, Particle.SMOKE));
         List<PowerInfo> infos = List.of(
-                new PowerInfo("Leap", "Agachar + F: um salto frontal poderoso."),
-                new PowerInfo("Ram", "Seus golpes empurram fortemente o alvo."),
-                new PowerInfo("Brace", "Agachar evita o dano de queda."),
-                new PowerInfo("Insulated", "Imune ao congelamento da neve em pó."),
-                new PowerInfo("Fur Coat", "Fica lento em biomas quentes."),
-                new PowerInfo("Small", "Possui 2 corações a menos."),
-                new PowerInfo("Browser", "Carne alimenta menos você."));
-        register(new Origin("goat", "Goat", null, Material.GOAT_HORN, powers, infos));
+                new PowerInfo("Salto", "Agachar + F: um salto frontal poderoso."),
+                new PowerInfo("Investida", "Seus golpes empurram fortemente o alvo."),
+                new PowerInfo("Escora", "Agachar evita o dano de queda."),
+                new PowerInfo("Isolado", "Imune ao congelamento da neve em pó."),
+                new PowerInfo("Casaco de Pelo", "Fica lento em biomas quentes."),
+                new PowerInfo("Pequeno", "Possui 2 corações a menos."),
+                new PowerInfo("Pastador", "Carne alimenta menos você."));
+        register(new Origin("goat", "Cabra", null, Material.GOAT_HORN, powers, infos));
     }
 
     private void registerFox() {
@@ -396,17 +406,17 @@ public class OriginRegistry {
                 new NoShieldPower("fox:weak_shield"),
                 new AttributeModifierPower("fox:small_body", Attribute.SCALE, -0.1));
         List<PowerInfo> infos = List.of(
-                new PowerInfo("Pounce", "Agachar + F: salto que causa dano ao cair."),
-                new PowerInfo("Hunt", "Atacar a mesma presa repetidamente te fortalece."),
-                new PowerInfo("Agility", "Mais rápido, pula mais e cai mais leve."),
-                new PowerInfo("Foxiality", "Mais sorte nos drops."),
-                new PowerInfo("Fluffy", "Imune ao frio, mas frágil ao fogo."),
-                new PowerInfo("Smol", "Possui 2 corações a menos."),
-                new PowerInfo("Unique Taste", "Come apenas carnes e algumas frutas."),
-                new PowerInfo("Timidity", "Fica fraco com pouca vida."),
-                new PowerInfo("Weak", "Não usa escudo nem armadura pesada."),
-                new PowerInfo("Small Body", "Seu corpo é 10% menor."));
-        register(new Origin("fox", "Fox", null, Material.SWEET_BERRIES, powers, infos));
+                new PowerInfo("Bote", "Agachar + F: salto que causa dano ao cair."),
+                new PowerInfo("Caçada", "Atacar a mesma presa repetidamente te fortalece."),
+                new PowerInfo("Agilidade", "Mais rápido, pula mais e cai mais leve."),
+                new PowerInfo("Raposice", "Mais sorte nos drops."),
+                new PowerInfo("Fofo", "Imune ao frio, mas frágil ao fogo."),
+                new PowerInfo("Pequenininho", "Possui 2 corações a menos."),
+                new PowerInfo("Paladar Único", "Come apenas carnes e algumas frutas."),
+                new PowerInfo("Timidez", "Fica fraco com pouca vida."),
+                new PowerInfo("Fraco", "Não usa escudo nem armadura pesada."),
+                new PowerInfo("Corpo Pequeno", "Seu corpo é 10% menor."));
+        register(new Origin("fox", "Raposa", null, Material.SWEET_BERRIES, powers, infos));
     }
 
     private void registerBear() {
@@ -415,8 +425,11 @@ public class OriginRegistry {
                 new AttributeModifierPower("bear:thick_fur_armor", Attribute.ARMOR, 4.0),
                 new DamageImmunityPower("bear:thick_fur_cold", DamageCause.FREEZE),
                 new NutritionPower("bear:primal_appetite", FoodUtil::isRawMeat, 2.0),
-                new ActiveBuffPower("bear:hibernation", 2400L, null,
+                new HibernationPower("bear:hibernation", 2400L, org.bukkit.Sound.ENTITY_POLAR_BEAR_WARNING,
                         effect(PotionEffectType.STRENGTH, 200, 1), effect(PotionEffectType.RESISTANCE, 200, 0)),
+                new BiomeParticlePower("bear:cold_frost_visual", COLD_BIOMES, true, 2, 6, Particle.SNOWFLAKE),
+                new BiomeParticlePower("bear:away_from_forest_visual", FOREST_BIOMES, false, 3, 4,
+                        Particle.ASH, Particle.SMOKE),
                 new AttributeModifierPower("bear:towering", Attribute.ENTITY_INTERACTION_RANGE, 1.0),
                 new CumbersomeClawsPower("bear:cumbersome_claws"),
                 new AttributeModifierPower("bear:heavy_bones_speed", Attribute.MOVEMENT_SPEED, -0.03),
@@ -428,18 +441,18 @@ public class OriginRegistry {
                 new ExhaustionPower("bear:large_appetite", 0.005f, false),
                 new AttributeModifierPower("bear:large_body", Attribute.SCALE, 0.1));
         List<PowerInfo> infos = List.of(
-                new PowerInfo("Mighty Paws", "Mãos vazias causam +3 de dano e forte empurrão."),
-                new PowerInfo("Thick Fur", "Armadura natural e imunidade ao frio."),
-                new PowerInfo("Primal Appetite", "Carne crua sacia muito mais."),
-                new PowerInfo("Hibernation", "Agachar + F: força e resistência temporárias."),
-                new PowerInfo("Towering Stature", "Alcance maior."),
-                new PowerInfo("Cumbersome Claws", "Não maneja espadas nem machados."),
-                new PowerInfo("Heavy Bones", "Mais lento e ataca devagar."),
-                new PowerInfo("Environmental Waning", "Fica fraco longe de florestas."),
-                new PowerInfo("Bulky Body", "Não usa peitorais de diamante ou netherite."),
-                new PowerInfo("Large Appetite", "Fica com fome mais rápido."),
-                new PowerInfo("Large Body", "Seu corpo é 10% maior."));
-        register(new Origin("bear", "Bear", null, Material.HONEYCOMB, powers, infos));
+                new PowerInfo("Patas Poderosas", "Mãos vazias causam +3 de dano e forte empurrão."),
+                new PowerInfo("Pelo Grosso", "Armadura natural e imunidade ao frio."),
+                new PowerInfo("Apetite Primal", "Carne crua sacia muito mais."),
+                new PowerInfo("Hibernação", "Agachar + F: força e resistência temporárias."),
+                new PowerInfo("Estatura Imponente", "Alcance maior."),
+                new PowerInfo("Garras Desajeitadas", "Não maneja espadas nem machados."),
+                new PowerInfo("Ossos Pesados", "Mais lento e ataca devagar."),
+                new PowerInfo("Definhamento Ambiental", "Fica fraco longe de florestas."),
+                new PowerInfo("Corpo Volumoso", "Não usa peitorais de diamante ou netherite."),
+                new PowerInfo("Grande Apetite", "Fica com fome mais rápido."),
+                new PowerInfo("Corpo Grande", "Seu corpo é 10% maior."));
+        register(new Origin("bear", "Urso", null, Material.HONEYCOMB, powers, infos));
     }
 
     private void registerRabbit() {
@@ -455,12 +468,12 @@ public class OriginRegistry {
                 new ReplenishPower("rabbit:replenish"),
                 new AttributeModifierPower("rabbit:small_body", Attribute.SCALE, -0.2));
         List<PowerInfo> infos = List.of(
-                new PowerInfo("High Carotene", "Visão noturna permanente."),
-                new PowerInfo("Prey", "Menos vida, porém mais veloz."),
-                new PowerInfo("Special Diet", "Só come cenouras, que alimentam o dobro."),
-                new PowerInfo("Bouncing Aura", "Impulso de pulo permanente."),
-                new PowerInfo("Replenish", "Acelera o crescimento de plantações próximas."),
-                new PowerInfo("Small Body", "Seu corpo é 20% menor."));
-        register(new Origin("rabbit", "Rabbit", null, Material.RABBIT_FOOT, powers, infos));
+                new PowerInfo("Rico em Caroteno", "Visão noturna permanente."),
+                new PowerInfo("Presa", "Menos vida, porém mais veloz."),
+                new PowerInfo("Dieta Especial", "Só come cenouras, que alimentam o dobro."),
+                new PowerInfo("Aura Saltitante", "Impulso de pulo permanente."),
+                new PowerInfo("Reabastecimento", "Acelera o crescimento de plantações próximas."),
+                new PowerInfo("Corpo Pequeno", "Seu corpo é 20% menor."));
+        register(new Origin("rabbit", "Coelho", null, Material.RABBIT_FOOT, powers, infos));
     }
 }

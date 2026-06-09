@@ -1,6 +1,8 @@
 package dev.originspaper.power.origins.owl;
 
 import dev.originspaper.power.shared.AbstractPower;
+import dev.originspaper.util.ParticleUtil;
+import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityTargetEvent;
 
@@ -25,6 +27,13 @@ public class SilentFlightPower extends AbstractPower {
         }
         if (e.getEntity().getLocation().distanceSquared(owl.getLocation()) > SILENT_RANGE_SQUARED) {
             e.setCancelled(true);
+        }
+    }
+
+    @Override
+    public void onTick(Player player) {
+        if (player.isGliding()) {
+            ParticleUtil.spawnTrail(Particle.WHITE_ASH, player.getLocation(), 2, 0.3);
         }
     }
 }

@@ -1,5 +1,8 @@
 package dev.originspaper.power.shared;
 
+import dev.originspaper.util.ParticleUtil;
+import org.bukkit.Location;
+import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
@@ -22,6 +25,9 @@ public class DivePower extends AbstractPower {
         }
         if (player.isGliding() && player.getVelocity().getY() < maxFallY) {
             e.setDamage(e.getDamage() * multiplier);
+            Location hit = e.getEntity().getLocation().add(0, 1.0, 0);
+            ParticleUtil.spawn(Particle.SWEEP_ATTACK, hit, 1, 0, 0, 0, 0.0);
+            ParticleUtil.spawnTrail(Particle.CRIT, hit, 6, 0.3);
         }
     }
 }
