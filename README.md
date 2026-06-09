@@ -31,7 +31,6 @@ Sem vantagens nem desvantagens.
 ### 🦌 Cervo
 - **Agilidade Florestal:** mais rápido em florestas e taigas.
 - **Aterrissagem Suave:** 50% menos dano de queda.
-- **Corredor Natural:** mais rápido correndo em terreno natural (terra, grama, pedra).
 - **Pernas Ágeis:** sobe obstáculos baixos sem pular.
 - **Salto de Alerta:** pula mais alto.
 - **Frágil:** 1 coração a menos.
