@@ -106,19 +106,19 @@ Sem vantagens nem desvantagens.
 ### 🐐 Cabra
 - **Cabeçada** (`Agachar + F`): arremete em linha reta; explode em área ao atingir um inimigo ou ao parar.
 - **Investida:** golpes correndo causam dano extra e forte empurrão.
-- **Escora:** agachar anula o dano de queda.
+- **Passo Firme:** nunca sofre dano de queda.
+- **Salto Montanhês:** pulo permanente, salta cerca de 2 blocos de altura.
 - **Isolado:** imune ao congelamento da neve em pó.
 - **Casaco de Pelo:** lento em biomas quentes.
 - **Pequeno:** 2 corações a menos.
-- **Pastador:** carne alimenta menos.
+- **Herbívoro:** não consegue comer carne.
 
 ### 🐈 Felino
 - **Acrobacia:** sem dano de queda.
 - **Tornozelos Fortes:** pula um pouco mais alto.
 - **Patas de Veludo:** passos silenciosos (cosmético).
 - **Sete Vidas:** 1 coração a menos.
-- **Braços Fracos:** não arranca pedra muito incrustada sem picareta.
-- **Assusta Creepers:** creepers não atacam você.
+- **Assusta Creepers:** creepers têm medo de você, nunca te atacam e fogem se você se aproximar.
 - **Visão Felina:** noturna permanente.
 - **Graça Felina:** levemente mais rápido.
 - **Instinto Predador:** velocidade extra ao perseguir criaturas hostis.
@@ -128,7 +128,6 @@ Sem vantagens nem desvantagens.
 - **Asas de Coruja:** elytra permanente que volta sozinha.
 - **Voo Silencioso:** reduz a detecção dos mobs ao planar.
 - **Caçador Noturno:** à noite ganha Velocidade I, Visão Noturna e bônus de dano.
-- **Mergulho Predador:** atacar mergulhando causa dano massivo e sangramento.
 - **Ecolocalização** (`Agachar + F`): revela entidades próximas através das paredes.
 - **Aterrissagem Suave:** sem dano de queda.
 - **Carnívoro:** só carne.
@@ -139,7 +138,6 @@ Sem vantagens nem desvantagens.
 ### 🦅 Grifo
 - **Asas de Grifo:** elytra permanente que volta sozinha.
 - **Decolar** (`Agachar + F`): impulso forte para o céu e planagem.
-- **Mergulho:** dano extra ao atacar mergulhando.
 - **Pouso Seguro:** sem dano de queda.
 - **Carnívoro:** só carne.
 - **Ar Fresco:** só dorme a 86 blocos de altura ou mais.
@@ -150,7 +148,7 @@ Sem vantagens nem desvantagens.
 - **Asas de Dragão:** elytra permanente que volta sozinha.
 - **Sopro do Dragão** (`Agachar + F`): cone de fogo que causa dano e incendeia os alvos à frente.
 - **Magia Renascida:** regeneração no The End.
-- **Pele Resistente:** 2 corações a mais.
+- **Fragilidade do Nether:** perde 1 coração de vida máxima no Nether.
 - **Garras Afiadas:** +1 coração de dano corpo a corpo.
 - **Predador Supremo:** só carne.
 - **Corpo Escamado:** não usa peitorais (mas usa as asas).

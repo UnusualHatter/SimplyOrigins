@@ -15,11 +15,9 @@ import dev.originspaper.power.origins.demon.InfernalVisualsPower;
 import dev.originspaper.power.origins.dragon.DragonAuraPower;
 import dev.originspaper.power.origins.dragon.DragonBreathPower;
 import dev.originspaper.power.origins.dragon.RebornMagicPower;
-import dev.originspaper.power.origins.feline.WeakArmsPower;
 import dev.originspaper.power.origins.fox.HuntPower;
 import dev.originspaper.power.origins.fox.PouncePower;
 import dev.originspaper.power.origins.fox.TimidityPower;
-import dev.originspaper.power.origins.goat.BracePower;
 import dev.originspaper.power.origins.goat.LeapPower;
 import dev.originspaper.power.origins.goat.RamPower;
 import dev.originspaper.power.origins.gryphon.FreshAirPower;
@@ -37,7 +35,6 @@ import dev.originspaper.power.origins.rat.EvasionPower;
 import dev.originspaper.power.origins.owl.DayDazedPower;
 import dev.originspaper.power.origins.owl.EcholocationPower;
 import dev.originspaper.power.origins.owl.NightHunterPower;
-import dev.originspaper.power.origins.owl.PredatorDivePower;
 import dev.originspaper.power.origins.owl.SilentFlightPower;
 import dev.originspaper.power.origins.rabbit.ReplenishPower;
 import dev.originspaper.power.origins.wolf.AlphaHowlPower;
@@ -54,11 +51,12 @@ import dev.originspaper.power.shared.CarnivoreDietPower;
 import dev.originspaper.power.shared.DamageImmunityPower;
 import dev.originspaper.power.shared.DamageMultiplierPower;
 import dev.originspaper.power.shared.DietPower;
-import dev.originspaper.power.shared.DivePower;
+import dev.originspaper.power.shared.DimensionAttributePower;
 import dev.originspaper.power.shared.ElytraFlightPower;
 import dev.originspaper.power.shared.ExhaustionPower;
 import dev.originspaper.power.shared.FireImmunityPower;
 import dev.originspaper.power.shared.FlightLaunchPower;
+import dev.originspaper.power.shared.HerbivoreDietPower;
 import dev.originspaper.power.shared.LightArmorOnlyPower;
 import dev.originspaper.power.shared.NightVisionPower;
 import dev.originspaper.power.shared.NoFallDamagePower;
@@ -70,6 +68,7 @@ import dev.originspaper.power.shared.SilentStepsPower;
 import dev.originspaper.util.FoodUtil;
 import org.bukkit.Material;
 import org.bukkit.Particle;
+import org.bukkit.World.Environment;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Biome;
 import org.bukkit.entity.EntityType;
@@ -251,7 +250,6 @@ public class OriginRegistry {
                 new AttributeModifierPower("feline:strong_ankles", Attribute.JUMP_STRENGTH, 0.1),
                 new SilentStepsPower("feline:velvet_paws"),
                 new AttributeModifierPower("feline:nine_lives", Attribute.MAX_HEALTH, -2.0),
-                new WeakArmsPower("feline:weak_arms"),
                 new dev.originspaper.power.shared.ScareEntityPower("feline:scare_creepers", EntityType.CREEPER),
                 new NightVisionPower("feline:cat_vision"),
                 new AttributeModifierPower("feline:feline_grace", Attribute.MOVEMENT_SPEED, 0.02),
@@ -262,8 +260,7 @@ public class OriginRegistry {
                 new PowerInfo("Tornozelos Fortes", "Pula um pouco mais alto."),
                 new PowerInfo("Patas de Veludo", "Passos silenciosos (cosmético)."),
                 new PowerInfo("Sete Vidas", "Possui 1 coração a menos."),
-                new PowerInfo("Braços Fracos", "Não arranca pedra muito incrustada sem picareta."),
-                new PowerInfo("Assusta Creepers", "Creepers têm medo e não te atacam."),
+                new PowerInfo("Assusta Creepers", "Creepers têm medo de você: nunca te atacam e fogem se você se aproximar."),
                 new PowerInfo("Visão Felina", "Visão noturna permanente."),
                 new PowerInfo("Graça Felina", "Levemente mais rápido."),
                 new PowerInfo("Instinto Predador", "Ganha velocidade extra ao perseguir criaturas hostis."),
@@ -278,7 +275,7 @@ public class OriginRegistry {
                 new ElytraFlightPower("dragon:wings", "dragon_wings", "Asas de Dragão"),
                 new DragonBreathPower("dragon:breath"),
                 new RebornMagicPower("dragon:reborn_magic"),
-                new AttributeModifierPower("dragon:resistant_skin", Attribute.MAX_HEALTH, 4.0),
+                new DimensionAttributePower("dragon:nether_frailty", Environment.NETHER, Attribute.MAX_HEALTH, -2.0),
                 new AttributeModifierPower("dragon:sharp_claws", Attribute.ATTACK_DAMAGE, 2.0),
                 new CarnivoreDietPower("dragon:apex_predator"),
                 new ArmorSlotRestrictPower("dragon:scaled_body", EquipmentSlot.CHEST,
@@ -290,7 +287,7 @@ public class OriginRegistry {
                 new PowerInfo("Asas de Dragão", "Elytra permanente que volta sozinha."),
                 new PowerInfo("Sopro do Dragão", "Agachar + F: sopra um cone de fogo que causa dano e incendeia os alvos à frente."),
                 new PowerInfo("Magia Renascida", "Ganha regeneração no The End."),
-                new PowerInfo("Pele Resistente", "Possui 2 corações a mais."),
+                new PowerInfo("Fragilidade do Nether", "Perde 1 coração de vida máxima enquanto estiver no Nether."),
                 new PowerInfo("Garras Afiadas", "Causa +1 coração de dano corpo a corpo."),
                 new PowerInfo("Predador Supremo", "Só consegue comer carne."),
                 new PowerInfo("Corpo Escamado", "Não pode usar peitorais (mas usa as asas)."),
@@ -328,7 +325,6 @@ public class OriginRegistry {
                 new ElytraFlightPower("owl:wings", "owl_wings", "Asas de Coruja"),
                 new SilentFlightPower("owl:silent_flight"),
                 new NightHunterPower("owl:night_hunter"),
-                new PredatorDivePower("owl:predator_dive", 3.0),
                 new EcholocationPower("owl:echolocation"),
                 new NoFallDamagePower("owl:soft_landing"),
                 new CarnivoreDietPower("owl:carnivore"),
@@ -339,7 +335,6 @@ public class OriginRegistry {
                 new PowerInfo("Asas de Coruja", "Elytra permanente que volta sozinha."),
                 new PowerInfo("Voo Silencioso", "Reduz o alcance de detecção dos mobs ao planar."),
                 new PowerInfo("Caçador Noturno", "De noite ganha Velocidade I, Visão Noturna e bônus de dano."),
-                new PowerInfo("Mergulho Predador", "Atacar mergulhando causa dano massivo e sangramento."),
                 new PowerInfo("Ecolocalização", "Agachar + F: Revela entidades próximas através das paredes."),
                 new PowerInfo("Aterrissagem Suave", "Não sofre dano de queda."),
                 new PowerInfo("Carnívoro", "Apenas carne."),
@@ -353,7 +348,6 @@ public class OriginRegistry {
         List<PowerType> powers = List.of(
                 new ElytraFlightPower("gryphon:wings", "gryphon_wings", "Asas de Grifo"),
                 new FlightLaunchPower("gryphon:take_flight", 400L, 2.5, 3L),
-                new DivePower("gryphon:dive_strike", 2.5, -0.3),
                 new NoFallDamagePower("gryphon:sure_landing"),
                 new CarnivoreDietPower("gryphon:carnivore"),
                 new FreshAirPower("gryphon:fresh_air"),
@@ -362,7 +356,6 @@ public class OriginRegistry {
         List<PowerInfo> infos = List.of(
                 new PowerInfo("Asas de Grifo", "Elytra permanente que volta sozinha."),
                 new PowerInfo("Decolar", "Agachar + F: impulso forte para o céu e planagem."),
-                new PowerInfo("Mergulho", "Dano extra ao atacar mergulhando."),
                 new PowerInfo("Pouso Seguro", "Não sofre dano de queda."),
                 new PowerInfo("Carnívoro", "Só consegue comer carne."),
                 new PowerInfo("Ar Fresco", "Só dorme a 86 blocos de altura ou mais."),
@@ -375,21 +368,23 @@ public class OriginRegistry {
         List<PowerType> powers = List.of(
                 new LeapPower("goat:leap"),
                 new RamPower("goat:ram"),
-                new BracePower("goat:brace"),
+                new NoFallDamagePower("goat:sure_footed"),
+                new PermanentEffectPower("goat:mountain_leap", PotionEffectType.JUMP_BOOST, 1),
                 new DamageImmunityPower("goat:insulated", DamageCause.FREEZE),
                 new BiomeEffectPower("goat:fur_coat", HOT_BIOMES, true, 2, effect(PotionEffectType.SLOWNESS, 60, 0)),
                 new AttributeModifierPower("goat:small", Attribute.MAX_HEALTH, -4.0),
-                new NutritionPower("goat:browser", FoodUtil::isMeat, 0.4),
+                new HerbivoreDietPower("goat:herbivore", "§cSeu estômago de cabra não digere carne."),
                 new BiomeParticlePower("goat:heat_visual", HOT_BIOMES, true, 3, 5,
                         Particle.DRIPPING_WATER, Particle.SMOKE));
         List<PowerInfo> infos = List.of(
                 new PowerInfo("Cabeçada", "Agachar + F: arremete em linha reta; explode em área ao atingir um inimigo ou ao parar."),
                 new PowerInfo("Investida", "Golpes correndo causam dano extra e forte empurrão."),
-                new PowerInfo("Escora", "Agachar anula o dano de queda."),
+                new PowerInfo("Passo Firme", "Nunca sofre dano de queda."),
+                new PowerInfo("Salto Montanhês", "Pulo permanente: salta cerca de 2 blocos de altura."),
                 new PowerInfo("Isolado", "Imune ao congelamento da neve em pó."),
                 new PowerInfo("Casaco de Pelo", "Fica lento em biomas quentes."),
                 new PowerInfo("Pequeno", "Possui 2 corações a menos."),
-                new PowerInfo("Pastador", "Carne alimenta menos."));
+                new PowerInfo("Herbívoro", "Não consegue comer carne."));
         register(new Origin("goat", "Cabra", null, Material.GOAT_HORN, powers, infos));
     }
 

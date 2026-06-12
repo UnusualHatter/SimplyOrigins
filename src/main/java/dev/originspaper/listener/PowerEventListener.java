@@ -5,6 +5,7 @@ import com.destroystokyo.paper.event.player.PlayerLaunchProjectileEvent;
 import dev.originspaper.OriginsPaper;
 import dev.originspaper.api.PowerType;
 import dev.originspaper.registry.PlayerOriginData;
+import dev.originspaper.util.SitStackUtil;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -129,6 +130,15 @@ public class PowerEventListener implements Listener {
     public void onEntityTarget(EntityTargetEvent e) {
         if (e.getTarget() instanceof Player target) {
             dispatch(target, p -> p.onEntityTarget(e));
+            // A player riding (or being ridden by) another via plugins like GSit's
+            // player-sit counts as the same "target" for protective powers, e.g. a
+            // feline's creeper-scare aura should also cover whoever it's stacked with.
+            for (Player linked : SitStackUtil.linkedPlayers(target)) {
+                if (e.isCancelled()) {
+                    break;
+                }
+                dispatch(linked, p -> p.onEntityTarget(e));
+            }
         }
     }
 
