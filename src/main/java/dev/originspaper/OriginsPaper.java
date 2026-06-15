@@ -3,6 +3,7 @@ package dev.originspaper;
 import dev.originspaper.api.PowerType;
 import dev.originspaper.command.OriginCommand;
 import dev.originspaper.listener.ActiveSkillListener;
+import dev.originspaper.listener.ElytraGuardListener;
 import dev.originspaper.listener.OriginSelectionListener;
 import dev.originspaper.listener.PowerEventListener;
 import dev.originspaper.registry.OriginRegistry;
@@ -37,6 +38,7 @@ public final class OriginsPaper extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PowerEventListener(this), this);
         getServer().getPluginManager().registerEvents(new ActiveSkillListener(this), this);
         getServer().getPluginManager().registerEvents(new OriginSelectionListener(this), this);
+        getServer().getPluginManager().registerEvents(new ElytraGuardListener(this), this);
 
         OriginCommand command = new OriginCommand(this);
         if (getCommand("origin") != null) {

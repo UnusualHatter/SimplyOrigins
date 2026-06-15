@@ -8,16 +8,20 @@ import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Ageable;
+import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
-/** While sneaking, nearby crops, saplings and stalks grow as if bone-mealed. */
+/** While sneaking, nearby crops, saplings and stalks grow as if bone-mealed; pollen blinds foes. */
 public class PollinatorPower extends AbstractPower {
 
     private static final int RADIUS = 3;
     private static final double CHANCE_PER_BLOCK = 0.40;
+    private static final double BLIND_RADIUS = 4.0;
 
     /** Supported non-sapling plants. Saplings/propagules/azaleas are matched by name. */
     private static final Set<Material> PLANTS = Set.of(
@@ -38,6 +42,9 @@ public class PollinatorPower extends AbstractPower {
         // Continuous pollen aura — visible feedback that the effect is active while crouched.
         ParticleUtil.spawnTrail(Particle.HAPPY_VILLAGER, player.getLocation().add(0, 0.6, 0), 1, 0.4);
 
+        // The moth's one bit of teeth: pollen blinds hostiles that crowd it while it pollinates.
+        blindNearbyFoes(player);
+
         // Growth runs on a steady cadence off the global tick (every ~2s). Because it is driven by
         // the tick — not by the crouch action — holding crouch keeps pollinating on its own, and
         // tapping crouch repeatedly cannot speed it up.
@@ -54,6 +61,16 @@ public class PollinatorPower extends AbstractPower {
                     grow(base.clone().add(dx, dy, dz).getBlock());
                 }
             }
+        }
+    }
+
+    /** Blinds hostile mobs lingering next to the pollinating moth, with a small spore puff. */
+    private void blindNearbyFoes(Player player) {
+        for (Monster monster : player.getWorld()
+                .getNearbyEntitiesByType(Monster.class, player.getLocation(), BLIND_RADIUS)) {
+            monster.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 80, 0, true, false, false));
+            monster.setTarget(null);
+            ParticleUtil.spawnTrail(Particle.SPORE_BLOSSOM_AIR, monster.getEyeLocation(), 4, 0.3);
         }
     }
 

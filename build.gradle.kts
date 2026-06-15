@@ -3,7 +3,7 @@ plugins {
 }
 
 group = "dev.originspaper"
-version = "1.0.0"
+version = "1.1.0"
 
 repositories {
     mavenCentral()
@@ -25,6 +25,6 @@ tasks.withType<JavaCompile> {
 
 tasks.jar {
     archiveBaseName.set("originspaper")
-    archiveVersion.set("1.0.0")
+    archiveVersion.set("1.1.0")
     archiveClassifier.set("")
 }

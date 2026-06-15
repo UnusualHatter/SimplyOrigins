@@ -1,6 +1,7 @@
 package dev.originspaper.power.shared;
 
 import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
+import dev.originspaper.OriginsPaper;
 import dev.originspaper.util.TextUtil;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -15,6 +16,9 @@ import java.util.Map;
 /** Grants a permanent, protected Elytra in the chest slot that re-equips itself if removed. */
 public class ElytraFlightPower extends AbstractPower {
 
+    /** Shared marker on every origin's wings, so a single guard can recognise them generically. */
+    private static final String PROTECTED_MARKER = "protected_wings";
+
     private final NamespacedKey markerKey;
     private final String displayName;
 
@@ -28,10 +32,27 @@ public class ElytraFlightPower extends AbstractPower {
         ItemStack wings = new ItemStack(Material.ELYTRA);
         wings.editMeta(meta -> {
             meta.getPersistentDataContainer().set(markerKey, PersistentDataType.BYTE, (byte) 1);
+            meta.getPersistentDataContainer().set(protectedKey(), PersistentDataType.BYTE, (byte) 1);
             meta.setUnbreakable(true);
             meta.displayName(TextUtil.item("§d" + displayName));
         });
         return wings;
+    }
+
+    private static NamespacedKey protectedKey() {
+        return new NamespacedKey(OriginsPaper.instance(), PROTECTED_MARKER);
+    }
+
+    /**
+     * True for any origin's permanent wings, regardless of which origin minted them. Used by the
+     * inventory/death guard to keep these items locked to the chest slot (anti-duplication).
+     */
+    public static boolean isProtectedWings(ItemStack item) {
+        return item != null
+                && item.getType() == Material.ELYTRA
+                && item.hasItemMeta()
+                && item.getItemMeta().getPersistentDataContainer()
+                .has(protectedKey(), PersistentDataType.BYTE);
     }
 
     private boolean isWings(ItemStack item) {

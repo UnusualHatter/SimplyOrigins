@@ -18,6 +18,7 @@ import dev.originspaper.power.origins.dragon.RebornMagicPower;
 import dev.originspaper.power.origins.fox.HuntPower;
 import dev.originspaper.power.origins.fox.PouncePower;
 import dev.originspaper.power.origins.fox.TimidityPower;
+import dev.originspaper.power.origins.goat.GoatGrazePower;
 import dev.originspaper.power.origins.goat.LeapPower;
 import dev.originspaper.power.origins.goat.RamPower;
 import dev.originspaper.power.origins.gryphon.FreshAirPower;
@@ -28,6 +29,7 @@ import dev.originspaper.power.origins.moth.MothVisualsPower;
 import dev.originspaper.power.origins.moth.PollinatorPower;
 import dev.originspaper.power.origins.otter.AmphibiousPower;
 import dev.originspaper.power.origins.otter.FinsPower;
+import dev.originspaper.power.origins.otter.LandStridePower;
 import dev.originspaper.power.origins.otter.LikeWaterPower;
 import dev.originspaper.power.origins.otter.WaterDependencyPower;
 import dev.originspaper.power.origins.otter.WetEyesPower;
@@ -36,12 +38,13 @@ import dev.originspaper.power.origins.owl.DayDazedPower;
 import dev.originspaper.power.origins.owl.EcholocationPower;
 import dev.originspaper.power.origins.owl.NightHunterPower;
 import dev.originspaper.power.origins.owl.SilentFlightPower;
-import dev.originspaper.power.origins.rabbit.ReplenishPower;
+import dev.originspaper.power.origins.rabbit.PredatorScentPower;
 import dev.originspaper.power.origins.wolf.AlphaHowlPower;
 import dev.originspaper.power.origins.wolf.CarnivoresBitePower;
 import dev.originspaper.power.origins.wolf.DayNightSpeedPower;
 import dev.originspaper.power.origins.wolf.HuntersSensePower;
 import dev.originspaper.power.origins.wolf.NightFangsPower;
+import dev.originspaper.power.shared.ActiveBuffPower;
 import dev.originspaper.power.shared.ArmorMaterialRestrictPower;
 import dev.originspaper.power.shared.ArmorSlotRestrictPower;
 import dev.originspaper.power.shared.AttributeModifierPower;
@@ -56,7 +59,6 @@ import dev.originspaper.power.shared.ElytraFlightPower;
 import dev.originspaper.power.shared.ExhaustionPower;
 import dev.originspaper.power.shared.FireImmunityPower;
 import dev.originspaper.power.shared.FlightLaunchPower;
-import dev.originspaper.power.shared.HerbivoreDietPower;
 import dev.originspaper.power.shared.LightArmorOnlyPower;
 import dev.originspaper.power.shared.NightVisionPower;
 import dev.originspaper.power.shared.NoFallDamagePower;
@@ -86,13 +88,17 @@ import java.util.Set;
 /** Builds and stores the 15 origins, in display order (Human first). */
 public class OriginRegistry {
 
-    private static final Set<Biome> HOT_BIOMES = Set.of(
-            Biome.DESERT, Biome.SAVANNA, Biome.SAVANNA_PLATEAU, Biome.WINDSWEPT_SAVANNA,
-            Biome.BADLANDS, Biome.ERODED_BADLANDS, Biome.WOODED_BADLANDS);
-
     private static final Set<Biome> FOREST_BIOMES = Set.of(
             Biome.FOREST, Biome.TAIGA, Biome.OLD_GROWTH_BIRCH_FOREST, Biome.OLD_GROWTH_PINE_TAIGA,
             Biome.OLD_GROWTH_SPRUCE_TAIGA, Biome.GROVE, Biome.WINDSWEPT_FOREST, Biome.MEADOW);
+
+    // Deer roam wider than the dense forests the bear claims: also savannas and swamps.
+    private static final Set<Biome> DEER_HABITAT = Set.of(
+            Biome.FOREST, Biome.FLOWER_FOREST, Biome.BIRCH_FOREST, Biome.DARK_FOREST,
+            Biome.TAIGA, Biome.OLD_GROWTH_BIRCH_FOREST, Biome.OLD_GROWTH_PINE_TAIGA,
+            Biome.OLD_GROWTH_SPRUCE_TAIGA, Biome.GROVE, Biome.WINDSWEPT_FOREST, Biome.MEADOW,
+            Biome.SAVANNA, Biome.SAVANNA_PLATEAU, Biome.WINDSWEPT_SAVANNA,
+            Biome.SWAMP, Biome.MANGROVE_SWAMP);
 
     private static final Set<Biome> COLD_BIOMES = Set.of(
             Biome.SNOWY_PLAINS, Biome.ICE_SPIKES, Biome.SNOWY_TAIGA, Biome.SNOWY_BEACH,
@@ -154,6 +160,7 @@ public class OriginRegistry {
                 new WetEyesPower("otter:wet_eyes"),
                 new FinsPower("otter:fins"),
                 new LikeWaterPower("otter:like_water"),
+                new LandStridePower("otter:land_stride", 0),
                 new WaterDependencyPower("otter:water_dependency", 600L), // 10 minutes (seconds)
                 new AttributeModifierPower("otter:small_body", Attribute.SCALE, -0.2));
         List<PowerInfo> infos = List.of(
@@ -162,6 +169,7 @@ public class OriginRegistry {
                 new PowerInfo("Olhos Aquáticos", "Enxerga com clareza e ganha graça do golfinho na água."),
                 new PowerInfo("Nadadeiras", "Nada muito mais rápido quando submerso."),
                 new PowerInfo("Como a Água", "Maior controle de movimento embaixo d'água."),
+                new PowerInfo("Passo Terrestre", "Velocidade I em terra firme, mesmo longe da água."),
                 new PowerInfo("Dependência de Água", "Recebe fraqueza e lentidão se ficar 10 minutos sem tocar na água ou chuva."),
                 new PowerInfo("Corpo Pequeno", "Seu corpo é 20% menor."));
         register(new Origin("otter", "Lontra", null, Material.KELP, powers, infos));
@@ -169,14 +177,14 @@ public class OriginRegistry {
 
     private void registerDeer() {
         List<PowerType> powers = List.of(
-                new BiomeEffectPower("deer:forest_speed", FOREST_BIOMES, true, 2, effect(PotionEffectType.SPEED, 60, 0)),
+                new BiomeEffectPower("deer:forest_speed", DEER_HABITAT, true, 2, effect(PotionEffectType.SPEED, 60, 0)),
                 new DamageMultiplierPower("deer:soft_landing", 0.5, DamageCause.FALL),
                 new NaturalRunnerPower("deer:natural_runner"),
                 new AttributeModifierPower("deer:nimble_legs", Attribute.STEP_HEIGHT, 0.5),
                 new AttributeModifierPower("deer:alert_leap", Attribute.JUMP_STRENGTH, 0.1),
                 new AttributeModifierPower("deer:fragile", Attribute.MAX_HEALTH, -2.0));
         List<PowerInfo> infos = List.of(
-                new PowerInfo("Agilidade Florestal", "Mais rápido em florestas e taigas."),
+                new PowerInfo("Agilidade Selvagem", "Mais rápido em florestas, taigas, savanas e pântanos."),
                 new PowerInfo("Aterrissagem Suave", "Sofre 50% menos dano de queda."),
                 new PowerInfo("Corredor Natural", "Correr em terrenos naturais (terra, grama, pedra) aumenta sua velocidade."),
                 new PowerInfo("Pernas Ágeis", "Passa por cima de obstáculos baixos sem precisar pular."),
@@ -207,6 +215,8 @@ public class OriginRegistry {
         List<PowerType> powers = List.of(
                 new AttributeModifierPower("rat:small_body", Attribute.SCALE, -0.3),
                 new EvasionPower("rat:evasion"),
+                new ActiveBuffPower("rat:scurry", 160L, org.bukkit.Sound.ENTITY_RABBIT_JUMP,
+                        effect(PotionEffectType.SPEED, 30, 2)),
                 new SilentStepsPower("rat:silent_steps"),
                 new AttributeModifierPower("rat:swift", Attribute.MOVEMENT_SPEED, 0.03),
                 new AttributeModifierPower("rat:fragile", Attribute.MAX_HEALTH, -4.0),
@@ -215,6 +225,7 @@ public class OriginRegistry {
         List<PowerInfo> infos = List.of(
                 new PowerInfo("Corpo Pequeno", "Seu corpo é 30% menor."),
                 new PowerInfo("Evasão", "Você tem 30% de chance de desviar completamente de projéteis."),
+                new PowerInfo("Disparada", "Agachar + F: corrida explosiva (Velocidade III por 1,5s)."),
                 new PowerInfo("Passos Silenciosos", "Passos silenciosos (cosmético)."),
                 new PowerInfo("Veloz", "Mais rápido ao andar e correr."),
                 new PowerInfo("Frágil", "Possui 2 corações a menos."),
@@ -230,17 +241,14 @@ public class OriginRegistry {
                 new HellPactPower("demon:hell_pact"),
                 new DayDazedPower("demon:sun_averse"),
                 new HolyVulnerabilityPower("demon:holy_vulnerability"),
-                new BiomeEffectPower("demon:cold_weakness", COLD_BIOMES, true, 2, effect(PotionEffectType.SLOWNESS, 60, 0)),
-                new InfernalVisualsPower("demon:infernal_visual"),
-                new BiomeParticlePower("demon:cold_visual", COLD_BIOMES, true, 3, 5, Particle.ASH, Particle.SMOKE));
+                new InfernalVisualsPower("demon:infernal_visual"));
         List<PowerInfo> infos = List.of(
                 new PowerInfo("Filho do Inferno", "Imune a fogo, lava e chão quente."),
                 new PowerInfo("Poder Infernal", "Causa +1 coração de dano corpo a corpo."),
                 new PowerInfo("Visão Noturna", "Visão noturna permanente."),
                 new PowerInfo("Pacto Infernal", "Agachar + F: Ganha Força I por 10s. Depois sofre Fraqueza e Fome por 5s."),
                 new PowerInfo("Aversão ao Sol", "Fica exausto e fraco sob a luz solar direta."),
-                new PowerInfo("Vulnerabilidade Sagrada", "Sofre o dobro de dano de magia e poções."),
-                new PowerInfo("Fraqueza ao Frio", "Fica lento em biomas nevados e congelados."));
+                new PowerInfo("Vulnerabilidade Sagrada", "Sofre o dobro de dano de magia e poções."));
         register(new Origin("demon", "Demônio", null, Material.NETHER_WART, powers, infos));
     }
 
@@ -275,7 +283,7 @@ public class OriginRegistry {
                 new ElytraFlightPower("dragon:wings", "dragon_wings", "Asas de Dragão"),
                 new DragonBreathPower("dragon:breath"),
                 new RebornMagicPower("dragon:reborn_magic"),
-                new DimensionAttributePower("dragon:nether_frailty", Environment.NETHER, Attribute.MAX_HEALTH, -2.0),
+                new DimensionAttributePower("dragon:nether_frailty", Environment.NETHER, Attribute.MAX_HEALTH, -4.0),
                 new AttributeModifierPower("dragon:sharp_claws", Attribute.ATTACK_DAMAGE, 2.0),
                 new CarnivoreDietPower("dragon:apex_predator"),
                 new ArmorSlotRestrictPower("dragon:scaled_body", EquipmentSlot.CHEST,
@@ -287,7 +295,7 @@ public class OriginRegistry {
                 new PowerInfo("Asas de Dragão", "Elytra permanente que volta sozinha."),
                 new PowerInfo("Sopro do Dragão", "Agachar + F: sopra um cone de fogo que causa dano e incendeia os alvos à frente."),
                 new PowerInfo("Magia Renascida", "Ganha regeneração no The End."),
-                new PowerInfo("Fragilidade do Nether", "Perde 1 coração de vida máxima enquanto estiver no Nether."),
+                new PowerInfo("Fragilidade do Nether", "Perde 2 corações de vida máxima enquanto estiver no Nether."),
                 new PowerInfo("Garras Afiadas", "Causa +1 coração de dano corpo a corpo."),
                 new PowerInfo("Predador Supremo", "Só consegue comer carne."),
                 new PowerInfo("Corpo Escamado", "Não pode usar peitorais (mas usa as asas)."),
@@ -348,7 +356,6 @@ public class OriginRegistry {
         List<PowerType> powers = List.of(
                 new ElytraFlightPower("gryphon:wings", "gryphon_wings", "Asas de Grifo"),
                 new FlightLaunchPower("gryphon:take_flight", 400L, 2.5, 3L),
-                new NoFallDamagePower("gryphon:sure_landing"),
                 new CarnivoreDietPower("gryphon:carnivore"),
                 new FreshAirPower("gryphon:fresh_air"),
                 new LightArmorOnlyPower("gryphon:need_mobility", 5),
@@ -356,9 +363,8 @@ public class OriginRegistry {
         List<PowerInfo> infos = List.of(
                 new PowerInfo("Asas de Grifo", "Elytra permanente que volta sozinha."),
                 new PowerInfo("Decolar", "Agachar + F: impulso forte para o céu e planagem."),
-                new PowerInfo("Pouso Seguro", "Não sofre dano de queda."),
                 new PowerInfo("Carnívoro", "Só consegue comer carne."),
-                new PowerInfo("Ar Fresco", "Só dorme a 86 blocos de altura ou mais."),
+                new PowerInfo("Ar Fresco", "Dorme mal perto do chão (acorda grogue); só descansa bem em grandes altitudes."),
                 new PowerInfo("Mobilidade", "Não pode usar armadura pesada."),
                 new PowerInfo("Corpo Grande", "Seu corpo é 10% maior."));
         register(new Origin("gryphon", "Grifo", null, Material.GOLDEN_HORSE_ARMOR, powers, infos));
@@ -371,20 +377,16 @@ public class OriginRegistry {
                 new NoFallDamagePower("goat:sure_footed"),
                 new PermanentEffectPower("goat:mountain_leap", PotionEffectType.JUMP_BOOST, 1),
                 new DamageImmunityPower("goat:insulated", DamageCause.FREEZE),
-                new BiomeEffectPower("goat:fur_coat", HOT_BIOMES, true, 2, effect(PotionEffectType.SLOWNESS, 60, 0)),
                 new AttributeModifierPower("goat:small", Attribute.MAX_HEALTH, -4.0),
-                new HerbivoreDietPower("goat:herbivore", "§cSeu estômago de cabra não digere carne."),
-                new BiomeParticlePower("goat:heat_visual", HOT_BIOMES, true, 3, 5,
-                        Particle.DRIPPING_WATER, Particle.SMOKE));
+                new GoatGrazePower("goat:graze"));
         List<PowerInfo> infos = List.of(
                 new PowerInfo("Cabeçada", "Agachar + F: arremete em linha reta; explode em área ao atingir um inimigo ou ao parar."),
                 new PowerInfo("Investida", "Golpes correndo causam dano extra e forte empurrão."),
                 new PowerInfo("Passo Firme", "Nunca sofre dano de queda."),
                 new PowerInfo("Salto Montanhês", "Pulo permanente: salta cerca de 2 blocos de altura."),
                 new PowerInfo("Isolado", "Imune ao congelamento da neve em pó."),
-                new PowerInfo("Casaco de Pelo", "Fica lento em biomas quentes."),
                 new PowerInfo("Pequeno", "Possui 2 corações a menos."),
-                new PowerInfo("Herbívoro", "Não consegue comer carne."));
+                new PowerInfo("Estômago de Cabra", "Come qualquer coisa. Agachar + clique no ar com um bloco na mão para mordiscá-lo e recuperar meio ponto de fome."));
         register(new Origin("goat", "Cabra", null, Material.GOAT_HORN, powers, infos));
     }
 
@@ -404,7 +406,6 @@ public class OriginRegistry {
                                 Material.SWEET_BERRIES, Material.GLOW_BERRIES, Material.MELON_SLICE),
                         "§cVocê não tem gosto por este alimento."),
                 new TimidityPower("fox:timidity"),
-                new LightArmorOnlyPower("fox:weak_armor", 5),
                 new NoShieldPower("fox:weak_shield"),
                 new AttributeModifierPower("fox:small_body", Attribute.SCALE, -0.1));
         List<PowerInfo> infos = List.of(
@@ -416,16 +417,17 @@ public class OriginRegistry {
                 new PowerInfo("Pequenininho", "Possui 2 corações a menos."),
                 new PowerInfo("Paladar Único", "Come apenas carnes e algumas frutas."),
                 new PowerInfo("Timidez", "Fica fraco com pouca vida."),
-                new PowerInfo("Fraco", "Não usa escudo nem armadura pesada."),
+                new PowerInfo("Fraco", "Não consegue usar escudo."),
                 new PowerInfo("Corpo Pequeno", "Seu corpo é 10% menor."));
         register(new Origin("fox", "Raposa", null, Material.SWEET_BERRIES, powers, infos));
     }
 
     private void registerBear() {
         List<PowerType> powers = List.of(
-                new MightyPawsPower("bear:mighty_paws"),
+                new MightyPawsPower("bear:mighty_paws", FOREST_BIOMES, 300L),
                 new AttributeModifierPower("bear:thick_fur_armor", Attribute.ARMOR, 4.0),
                 new DamageImmunityPower("bear:thick_fur_cold", DamageCause.FREEZE),
+                new PermanentEffectPower("bear:resilient_hide", PotionEffectType.RESISTANCE, 0),
                 new NutritionPower("bear:primal_appetite", FoodUtil::isRawMeat, 2.0),
                 new HibernationPower("bear:hibernation", 2400L, org.bukkit.Sound.ENTITY_POLAR_BEAR_WARNING,
                         effect(PotionEffectType.STRENGTH, 200, 1), effect(PotionEffectType.RESISTANCE, 200, 0)),
@@ -436,21 +438,21 @@ public class OriginRegistry {
                 new CumbersomeClawsPower("bear:cumbersome_claws"),
                 new AttributeModifierPower("bear:heavy_bones_speed", Attribute.MOVEMENT_SPEED, -0.015),
                 new AttributeModifierPower("bear:heavy_bones_atk", Attribute.ATTACK_SPEED, -0.5),
-                new BiomeEffectPower("bear:environmental_waning", FOREST_BIOMES, false, 2, effect(PotionEffectType.WEAKNESS, 60, 0)),
                 new ArmorSlotRestrictPower("bear:bulky_body", EquipmentSlot.CHEST,
                         item -> item.getType() == Material.NETHERITE_CHESTPLATE || item.getType() == Material.DIAMOND_CHESTPLATE,
                         "§cSeu corpo volumoso não cabe neste peitoral."),
                 new ExhaustionPower("bear:large_appetite", 0.005f, false),
                 new AttributeModifierPower("bear:large_body", Attribute.SCALE, 0.1));
         List<PowerInfo> infos = List.of(
-                new PowerInfo("Patas Poderosas", "Mãos vazias causam +3 de dano e forte empurrão."),
+                new PowerInfo("Patas Poderosas", "Mãos vazias causam +3 de dano e forte empurrão (perto da floresta)."),
                 new PowerInfo("Pelo Grosso", "Armadura natural e imunidade ao frio."),
+                new PowerInfo("Couro Resistente", "Resistência I permanente."),
                 new PowerInfo("Apetite Primal", "Carne crua sacia muito mais."),
                 new PowerInfo("Hibernação", "Agachar + F: força e resistência temporárias."),
                 new PowerInfo("Estatura Imponente", "Alcance maior."),
                 new PowerInfo("Garras Desajeitadas", "Não maneja espadas nem machados."),
                 new PowerInfo("Ossos Pesados", "Mais lento e ataca devagar."),
-                new PowerInfo("Definhamento Ambiental", "Fica fraco longe de florestas."),
+                new PowerInfo("Marcação Territorial", "Longe de florestas por muito tempo, perde o bônus das garras (mas não perde vida)."),
                 new PowerInfo("Corpo Volumoso", "Não usa peitorais de diamante ou netherite."),
                 new PowerInfo("Grande Apetite", "Fica com fome mais rápido."),
                 new PowerInfo("Corpo Grande", "Seu corpo é 10% maior."));
@@ -465,16 +467,16 @@ public class OriginRegistry {
                 new DietPower("rabbit:special_diet", false, Set.of(Material.CARROT, Material.GOLDEN_CARROT),
                         "§cVocê só consegue comer cenouras."),
                 new NutritionPower("rabbit:carrot_boost",
-                        m -> m == Material.CARROT || m == Material.GOLDEN_CARROT, 2.0),
+                        m -> m == Material.CARROT || m == Material.GOLDEN_CARROT, 1.5),
                 new PermanentEffectPower("rabbit:bouncing", PotionEffectType.JUMP_BOOST, 1),
-                new ReplenishPower("rabbit:replenish"),
+                new PredatorScentPower("rabbit:predator_scent"),
                 new AttributeModifierPower("rabbit:small_body", Attribute.SCALE, -0.2));
         List<PowerInfo> infos = List.of(
                 new PowerInfo("Rico em Caroteno", "Visão noturna permanente."),
                 new PowerInfo("Presa", "Menos vida, porém mais veloz."),
-                new PowerInfo("Dieta Especial", "Só come cenouras, que alimentam o dobro."),
+                new PowerInfo("Dieta Especial", "Só come cenouras, que alimentam 50% a mais."),
                 new PowerInfo("Aura Saltitante", "Impulso de pulo permanente."),
-                new PowerInfo("Reabastecimento", "Acelera o crescimento de plantações próximas."),
+                new PowerInfo("Faro de Predador", "Sente lobos, raposas e gatos próximos e os destaca, dando tempo de fugir."),
                 new PowerInfo("Corpo Pequeno", "Seu corpo é 20% menor."));
         register(new Origin("rabbit", "Coelho", null, Material.RABBIT_FOOT, powers, infos));
     }
@@ -486,7 +488,7 @@ public class OriginRegistry {
                 new DrawnToLightPower("moth:drawn_to_light"),
                 new FriendOfBeesPower("moth:friend_of_bees"),
                 new MothVisualsPower("moth:wing_dust_visual"),
-                new AttributeModifierPower("moth:fragile", Attribute.MAX_HEALTH, -6.0),
+                new AttributeModifierPower("moth:fragile", Attribute.MAX_HEALTH, -4.0),
                 new ArmorMaterialRestrictPower("moth:delicate_body",
                         item -> item.getType().name().startsWith("DIAMOND_")
                                 || item.getType().name().startsWith("NETHERITE_"),
@@ -494,10 +496,10 @@ public class OriginRegistry {
         List<PowerInfo> infos = List.of(
                 new PowerInfo("Asas Trêmulas", "Suas asas delicadas reduzem sua velocidade de queda permanentemente."),
                 new PowerInfo("Voo Gracioso", "Plana suavemente durante quedas e nunca sofre dano de queda."),
-                new PowerInfo("Polinizadora", "Agachada, faz plantações e mudas próximas crescerem como se recebessem Farinha de Osso."),
+                new PowerInfo("Polinizadora", "Agachada, faz plantações e mudas próximas crescerem como se recebessem Farinha de Osso, e o pólen cega inimigos por perto."),
                 new PowerInfo("Atraída pela Luz", "Recebe Regeneração I perto de luz artificial (tochas, lanternas, glowstone...) e fica lenta na escuridão total."),
                 new PowerInfo("Amiga das Abelhas", "Abelhas nunca ficam agressivas com você."),
-                new PowerInfo("Frágil", "Possui 3 corações a menos."),
+                new PowerInfo("Frágil", "Possui 2 corações a menos."),
                 new PowerInfo("Corpo Delicado", "Não pode usar armaduras de Diamante ou Netherite."));
         register(new Origin("moth", "Mariposa", null, Material.PHANTOM_MEMBRANE, powers, infos));
     }

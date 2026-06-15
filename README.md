@@ -25,11 +25,12 @@ Sem vantagens nem desvantagens.
 - **Olhos Aquáticos:** enxerga bem e ganha graça do golfinho na água.
 - **Nadadeiras:** nada muito mais rápido quando submerso.
 - **Como a Água:** mais controle de movimento embaixo d'água.
+- **Passo Terrestre:** Velocidade I em terra firme, mesmo longe da água.
 - **Dependência de Água:** fraqueza e lentidão após 10 minutos sem tocar em água ou chuva.
 - **Corpo Pequeno:** 20% menor.
 
 ### 🦌 Cervo
-- **Agilidade Florestal:** mais rápido em florestas e taigas.
+- **Agilidade Selvagem:** mais rápido em florestas, taigas, savanas e pântanos.
 - **Aterrissagem Suave:** 50% menos dano de queda.
 - **Pernas Ágeis:** sobe obstáculos baixos sem pular.
 - **Salto de Alerta:** pula mais alto.
@@ -46,6 +47,7 @@ Sem vantagens nem desvantagens.
 ### 🐀 Rato
 - **Corpo Pequeno:** 30% menor.
 - **Evasão:** 30% de chance de desviar de projéteis.
+- **Disparada** (`Agachar + F`): corrida explosiva (Velocidade III por 1,5s, recarga de 8s).
 - **Passos Silenciosos:** cosmético.
 - **Veloz:** mais rápido andando e correndo.
 - **Frágil:** 2 corações a menos.
@@ -58,7 +60,6 @@ Sem vantagens nem desvantagens.
 - **Pacto Infernal** (`Agachar + F`): Força I por 10s, depois Fraqueza e Fome por 5s.
 - **Aversão ao Sol:** exausto e fraco sob luz solar direta.
 - **Vulnerabilidade Sagrada:** dobro de dano de magia e poções.
-- **Fraqueza ao Frio:** lento em biomas nevados e congelados.
 
 ### 🐺 Lobo
 - **Olhos Caninos:** visão noturna permanente.
@@ -66,7 +67,7 @@ Sem vantagens nem desvantagens.
 - **Metabolismo de Lobo:** gasta mais energia à noite.
 - **Imunidade a Veneno.**
 - **Mordida Carnívora:** comer carne cura meio coração extra.
-- **Presas Noturnas:** +2 de dano à noite.
+- **Presas Noturnas:** +1 de dano à noite.
 - **Sentido de Caçador:** destaca criaturas próximas.
 - **Uivo do Alfa** (`Agachar + F`): ganha absorção e uiva.
 
@@ -79,18 +80,19 @@ Sem vantagens nem desvantagens.
 - **Pequenininho:** 2 corações a menos.
 - **Paladar Único:** come só carnes e algumas frutas.
 - **Timidez:** fica fraco com pouca vida.
-- **Fraco:** sem escudo nem armadura pesada.
+- **Fraco:** não consegue usar escudo.
 - **Corpo Pequeno:** 10% menor.
 
 ### 🐻 Urso
-- **Patas Poderosas:** mãos vazias causam +3 de dano e empurrão.
+- **Patas Poderosas:** mãos vazias causam +3 de dano e empurrão (perto da floresta).
 - **Pelo Grosso:** armadura natural e imunidade ao frio.
+- **Couro Resistente:** Resistência I permanente.
 - **Apetite Primal:** carne crua sacia muito mais.
 - **Hibernação** (`Agachar + F`): força e resistência temporárias.
 - **Estatura Imponente:** maior alcance.
 - **Garras Desajeitadas:** não usa espadas nem machados.
 - **Ossos Pesados:** um pouco mais lento e ataca devagar.
-- **Definhamento Ambiental:** fraco longe de florestas.
+- **Marcação Territorial:** longe de florestas por muito tempo, perde o bônus das garras (mas não perde vida).
 - **Corpo Volumoso:** não usa peitorais de diamante ou netherite.
 - **Grande Apetite:** fica com fome mais rápido.
 - **Corpo Grande:** 10% maior.
@@ -109,9 +111,8 @@ Sem vantagens nem desvantagens.
 - **Passo Firme:** nunca sofre dano de queda.
 - **Salto Montanhês:** pulo permanente, salta cerca de 2 blocos de altura.
 - **Isolado:** imune ao congelamento da neve em pó.
-- **Casaco de Pelo:** lento em biomas quentes.
 - **Pequeno:** 2 corações a menos.
-- **Herbívoro:** não consegue comer carne.
+- **Estômago de Cabra:** come qualquer coisa; agachar + clique no ar com um bloco na mão o mordisca (recupera meio ponto de fome).
 
 ### 🐈 Felino
 - **Acrobacia:** sem dano de queda.
@@ -128,7 +129,7 @@ Sem vantagens nem desvantagens.
 - **Asas de Coruja:** elytra permanente que volta sozinha.
 - **Voo Silencioso:** reduz a detecção dos mobs ao planar.
 - **Caçador Noturno:** à noite ganha Velocidade I, Visão Noturna e bônus de dano.
-- **Ecolocalização** (`Agachar + F`): revela entidades próximas através das paredes.
+- **Ecolocalização** (`Agachar + F`): revela entidades próximas (alcance curto) através das paredes; recarga de 30s.
 - **Aterrissagem Suave:** sem dano de queda.
 - **Carnívoro:** só carne.
 - **Cegueira Diurna:** exausto e fraco sob luz solar direta.
@@ -138,9 +139,8 @@ Sem vantagens nem desvantagens.
 ### 🦅 Grifo
 - **Asas de Grifo:** elytra permanente que volta sozinha.
 - **Decolar** (`Agachar + F`): impulso forte para o céu e planagem.
-- **Pouso Seguro:** sem dano de queda.
 - **Carnívoro:** só carne.
-- **Ar Fresco:** só dorme a 86 blocos de altura ou mais.
+- **Ar Fresco:** dorme mal perto do chão (acorda grogue); só descansa bem em grandes altitudes.
 - **Mobilidade:** sem armadura pesada.
 - **Corpo Grande:** 10% maior.
 
@@ -148,7 +148,7 @@ Sem vantagens nem desvantagens.
 - **Asas de Dragão:** elytra permanente que volta sozinha.
 - **Sopro do Dragão** (`Agachar + F`): cone de fogo que causa dano e incendeia os alvos à frente.
 - **Magia Renascida:** regeneração no The End.
-- **Fragilidade do Nether:** perde 1 coração de vida máxima no Nether.
+- **Fragilidade do Nether:** perde 2 corações de vida máxima no Nether.
 - **Garras Afiadas:** +1 coração de dano corpo a corpo.
 - **Predador Supremo:** só carne.
 - **Corpo Escamado:** não usa peitorais (mas usa as asas).
@@ -158,10 +158,10 @@ Sem vantagens nem desvantagens.
 Origem de suporte focada em agricultura, exploração e mobilidade. Sem combate direto.
 - **Asas Trêmulas:** velocidade de queda reduzida permanentemente.
 - **Voo Gracioso:** plana suavemente durante quedas e nunca sofre dano de queda.
-- **Polinizadora:** agachada, faz plantações e mudas próximas crescerem como se recebessem Farinha de Osso.
+- **Polinizadora:** agachada, faz plantações e mudas próximas crescerem como se recebessem Farinha de Osso, e o pólen cega inimigos por perto.
 - **Atraída pela Luz:** Regeneração I perto de luz artificial; fica lenta na escuridão total.
 - **Amiga das Abelhas:** abelhas nunca ficam agressivas com você.
-- **Frágil:** 3 corações a menos.
+- **Frágil:** 2 corações a menos.
 - **Corpo Delicado:** não usa armadura de Diamante ou Netherite.
 
 ---
@@ -186,4 +186,4 @@ Usa o Gradle Wrapper interno (precisa só de Java 25 instalado).
 ./gradlew build --stacktrace    # compila mostrando detalhes de erros
 ```
 
-O `.jar` sai em `build/libs/originspaper-1.0.0.jar`. Copie para a pasta `plugins/` de um servidor Paper 26.1.2 e inicie o servidor.
+O `.jar` sai em `build/libs/originspaper-1.1.0.jar`. Copie para a pasta `plugins/` de um servidor Paper 26.1.2 e inicie o servidor.

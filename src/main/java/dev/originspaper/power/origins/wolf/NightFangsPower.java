@@ -15,7 +15,7 @@ public class NightFangsPower extends AbstractPower {
     @Override
     public void onDamageByEntity(EntityDamageByEntityEvent e) {
         if (e.getDamager() instanceof Player player && NightTimeEffectPower.isNight(player)) {
-            e.setDamage(e.getDamage() + 2.0);
+            e.setDamage(e.getDamage() + 1.0);
         }
     }
 }

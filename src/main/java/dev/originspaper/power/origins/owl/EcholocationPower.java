@@ -15,7 +15,7 @@ import org.bukkit.potion.PotionEffectType;
 /** Reveals nearby living entities with the Glowing effect — a magical sonar pulse. */
 public class EcholocationPower extends AbstractPower implements ActivePowerType {
 
-    private static final double RANGE = 40.0;
+    private static final double RANGE = 12.0;
 
     public EcholocationPower(String id) {
         super(id);
