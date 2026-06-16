@@ -21,6 +21,9 @@ public class FreshAirPower extends AbstractPower {
         super(id);
     }
 
+    // Intentionally uses the deprecated BedEnterResult API — it's the reliable way to tell whether
+    // the player will actually sleep before applying the low-altitude torpor.
+    @SuppressWarnings("deprecation")
     @Override
     public void onBedEnter(PlayerBedEnterEvent e) {
         // Only react to a sleep that will actually happen, and only near the ground. High up, the
