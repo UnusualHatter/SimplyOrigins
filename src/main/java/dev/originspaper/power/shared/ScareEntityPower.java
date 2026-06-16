@@ -41,6 +41,10 @@ public class ScareEntityPower extends AbstractPower {
 
     @Override
     public void onTick(Player player) {
+        // Re-issue flee paths every ~2s: still responsive (creepers move slowly) at half the cost.
+        if (plugin().tick() % 2 != 0) {
+            return;
+        }
         for (LivingEntity entity : player.getWorld().getNearbyEntitiesByType(LivingEntity.class, player.getLocation(), SCARE_RADIUS)) {
             if (entity.getType() != type || !(entity instanceof Mob mob)) {
                 continue;
@@ -58,6 +62,9 @@ public class ScareEntityPower extends AbstractPower {
         }
         away.normalize().multiply(FLEE_DISTANCE);
         Location fleeTo = mob.getLocation().add(away);
-        mob.getPathfinder().moveTo(fleeTo, FLEE_SPEED);
+        var pathfinder = mob.getPathfinder();
+        if (pathfinder != null) {
+            pathfinder.moveTo(fleeTo, FLEE_SPEED);
+        }
     }
 }

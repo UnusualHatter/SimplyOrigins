@@ -33,9 +33,19 @@ public class OriginCommand implements CommandExecutor, TabCompleter {
             case "set" -> handleSet(sender, args);
             case "reset" -> handleReset(sender, args);
             case "info" -> handleInfo(sender, args);
-            default -> sender.sendMessage(TextUtil.msg("§cUso: /origin [set|reset|info]"));
+            case "reload" -> handleReload(sender);
+            default -> sender.sendMessage(TextUtil.msg("§cUso: /origin [set|reset|info|reload]"));
         }
         return true;
+    }
+
+    private void handleReload(CommandSender sender) {
+        if (!sender.hasPermission("originspaper.admin")) {
+            sender.sendMessage(TextUtil.msg("§cSem permissão."));
+            return;
+        }
+        plugin.reload();
+        sender.sendMessage(TextUtil.msg("§aOriginsPaper recarregado: config e origens atualizadas."));
     }
 
     private boolean openSelf(CommandSender sender) {
@@ -135,7 +145,7 @@ public class OriginCommand implements CommandExecutor, TabCompleter {
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         List<String> out = new ArrayList<>();
         if (args.length == 1) {
-            for (String sub : List.of("set", "reset", "info")) {
+            for (String sub : List.of("set", "reset", "info", "reload")) {
                 if (sub.startsWith(args[0].toLowerCase())) {
                     out.add(sub);
                 }

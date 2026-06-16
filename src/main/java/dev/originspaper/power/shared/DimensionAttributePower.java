@@ -30,19 +30,24 @@ public class DimensionAttributePower extends AbstractPower {
 
     @Override
     public void onTick(Player player) {
-        if (player.getWorld().getEnvironment() == environment) {
+        AttributeInstance inst = player.getAttribute(attribute);
+        if (inst == null) {
+            return;
+        }
+        boolean inDimension = player.getWorld().getEnvironment() == environment;
+        boolean applied = inst.getModifier(AttributeUtil.key(id)) != null;
+        if (inDimension == applied) {
+            return; // already in the correct state — act only on transitions, no per-tick churn
+        }
+        if (inDimension) {
             AttributeUtil.set(player, attribute, id, amount, operation);
+            // Clamp current health down once, on entry, if the new max is lower (e.g. a full-health
+            // Dragon stepping into the Nether shouldn't sit above its reduced max).
+            if (attribute == Attribute.MAX_HEALTH && player.getHealth() > inst.getValue()) {
+                player.setHealth(inst.getValue());
+            }
         } else {
             AttributeUtil.clear(player, attribute, id);
-        }
-        // A shrinking MAX_HEALTH modifier doesn't auto-clamp current health (unlike the one-time
-        // apply/remove path, which goes through PlayerDataManager#clampHealth). Clamp down here
-        // too, e.g. so a full-health Dragon entering the Nether doesn't end up above their new max.
-        if (attribute == Attribute.MAX_HEALTH) {
-            AttributeInstance maxHpAttr = player.getAttribute(Attribute.MAX_HEALTH);
-            if (maxHpAttr != null && player.getHealth() > maxHpAttr.getValue()) {
-                player.setHealth(maxHpAttr.getValue());
-            }
         }
     }
 

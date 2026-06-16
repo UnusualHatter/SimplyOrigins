@@ -86,6 +86,30 @@ public final class OriginsPaper extends JavaPlugin {
         }
     }
 
+    /**
+     * Reloads {@code config.yml} and rebuilds the origin registry, then re-applies every online
+     * player's saved origin from the fresh registry. Safe to call at runtime via {@code /origin reload}.
+     */
+    public void reload() {
+        reloadConfig();
+        boolean debug = getConfig().getBoolean("debug", false);
+        this.log = new OriginsLogger(getLogger(), debug);
+        log.info("Reloading OriginsPaper...");
+
+        // Strip every online player's current powers cleanly, rebuild the registry (fresh power
+        // instances), then re-apply each player's origin from disk against the new registry.
+        for (Player player : getServer().getOnlinePlayers()) {
+            dataManager.unload(player, true);
+        }
+        this.originRegistry = new OriginRegistry();
+        for (Player player : getServer().getOnlinePlayers()) {
+            dataManager.load(player);
+        }
+
+        log.info("Reloaded — " + originRegistry.all().size() + " origins, config refreshed."
+                + (debug ? " [DEBUG mode ON]" : ""));
+    }
+
     /** Monotonic counter incremented once per 20-tick cycle; powers use it for slower cadences. */
     public long tick() {
         return tick;
