@@ -37,11 +37,15 @@ public class DragonBreathPower extends AbstractPower implements ActivePowerType 
         Vector dir = eye.getDirection().normalize();
         World world = player.getWorld();
 
+        int level = levelOf(player);
+        double range = RANGE + (level >= 3 ? 2.0 : 0.0);          // Nv3 "Chama Longa"
+        int fireTicks = FIRE_TICKS + (level >= 10 ? 60 : 0);       // Nv10 "Cataclismo"
+
         world.playSound(eye, Sound.ENTITY_ENDER_DRAGON_GROWL, 1.0f, 1.2f);
-        spawnConeParticles(world, eye, dir);
+        spawnConeParticles(world, eye, dir, range);
 
         int hits = 0;
-        for (Entity entity : player.getNearbyEntities(RANGE, RANGE, RANGE)) {
+        for (Entity entity : player.getNearbyEntities(range, range, range)) {
             if (!(entity instanceof LivingEntity target) || entity.equals(player)
                     || entity instanceof ArmorStand) {
                 continue;
@@ -50,7 +54,7 @@ public class DragonBreathPower extends AbstractPower implements ActivePowerType 
             Vector toTarget = target.getLocation().add(0, target.getHeight() * 0.5, 0)
                     .toVector().subtract(eye.toVector());
             double distance = toTarget.length();
-            if (distance < 0.001 || distance > RANGE) {
+            if (distance < 0.001 || distance > range) {
                 continue;
             }
             if (toTarget.normalize().dot(dir) < HALF_ANGLE_COS) {
@@ -60,28 +64,38 @@ public class DragonBreathPower extends AbstractPower implements ActivePowerType 
                 continue; // fire doesn't curve around walls
             }
             target.damage(DIRECT_DAMAGE, player); // attribute the hit so kills credit the dragon
-            target.setFireTicks(FIRE_TICKS);
+            target.setFireTicks(fireTicks);
             hits++;
         }
 
         if (hits > 0) {
+            plugin().progression().awardXp(player, 5 * hits); // "Queimar inimigos com o Sopro"
             player.sendActionBar(TextUtil.msg("§6Sopro de dragão atingiu §f" + hits + "§6 alvo(s)!"));
         }
     }
 
-    private void spawnConeParticles(World world, Location eye, Vector dir) {
+    private int levelOf(Player player) {
+        var data = plugin().data().get(player.getUniqueId());
+        return data == null ? 1 : data.level();
+    }
+
+    private void spawnConeParticles(World world, Location eye, Vector dir, double range) {
         // Core fire: flame + lava + the signature dragon breath haze.
-        ParticleUtil.spawnCone(Particle.FLAME, eye, dir, RANGE, 0.6, 0.5, 6, 0.01);
-        ParticleUtil.spawnCone(Particle.LAVA, eye, dir, RANGE, 0.6, 0.7, 1, 0.0);
-        ParticleUtil.spawnCone(Particle.DRAGON_BREATH, eye, dir, RANGE, 0.6, 0.5, 4, 0.0);
+        ParticleUtil.spawnCone(Particle.FLAME, eye, dir, range, 0.6, 0.5, 6, 0.01);
+        ParticleUtil.spawnCone(Particle.LAVA, eye, dir, range, 0.6, 0.7, 1, 0.0);
+        ParticleUtil.spawnCone(Particle.DRAGON_BREATH, eye, dir, range, 0.6, 0.5, 4, 0.0);
         // Smoky cone edges + a lingering residual smoke.
-        ParticleUtil.spawnCone(Particle.ASH, eye, dir, RANGE, 0.7, 1.0, 3, 0.0);
-        ParticleUtil.spawnCone(Particle.LARGE_SMOKE, eye, dir, RANGE, 0.7, 1.0, 1, 0.0);
-        ParticleUtil.spawnCone(Particle.CAMPFIRE_COSY_SMOKE, eye, dir, RANGE, 0.5, 1.5, 1, 0.0);
+        ParticleUtil.spawnCone(Particle.ASH, eye, dir, range, 0.7, 1.0, 3, 0.0);
+        ParticleUtil.spawnCone(Particle.LARGE_SMOKE, eye, dir, range, 0.7, 1.0, 1, 0.0);
+        ParticleUtil.spawnCone(Particle.CAMPFIRE_COSY_SMOKE, eye, dir, range, 0.5, 1.5, 1, 0.0);
     }
 
     @Override
-    public long getCooldownTicks() {
+    public long getCooldownTicks(Player player) {
+        // Nv6 "Brasa Eterna": the breath recharges faster.
+        if (levelOf(player) >= 6) {
+            return (long) (COOLDOWN_TICKS * 0.6);
+        }
         return COOLDOWN_TICKS;
     }
 }

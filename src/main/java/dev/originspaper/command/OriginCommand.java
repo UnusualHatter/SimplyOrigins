@@ -2,7 +2,10 @@ package dev.originspaper.command;
 
 import dev.originspaper.OriginsPaper;
 import dev.originspaper.api.Origin;
+import dev.originspaper.gui.OriginProgressGUI;
 import dev.originspaper.gui.OriginSelectionGUI;
+import dev.originspaper.progression.OriginProgress;
+import dev.originspaper.progression.ProgressionManager;
 import dev.originspaper.registry.PlayerOriginData;
 import dev.originspaper.util.TextUtil;
 import org.bukkit.Bukkit;
@@ -34,7 +37,9 @@ public class OriginCommand implements CommandExecutor, TabCompleter {
             case "reset" -> handleReset(sender, args);
             case "info" -> handleInfo(sender, args);
             case "reload" -> handleReload(sender);
-            default -> sender.sendMessage(TextUtil.msg("§cUso: /origin [set|reset|info|reload]"));
+            case "addxp" -> handleAddXp(sender, args);
+            case "setlevel" -> handleSetLevel(sender, args);
+            default -> sender.sendMessage(TextUtil.msg("§cUso: /origin [set|reset|info|reload|addxp|setlevel]"));
         }
         return true;
     }
@@ -48,15 +53,65 @@ public class OriginCommand implements CommandExecutor, TabCompleter {
         sender.sendMessage(TextUtil.msg("§aOriginsPaper recarregado: config e origens atualizadas."));
     }
 
+    private void handleAddXp(CommandSender sender, String[] args) {
+        if (!sender.hasPermission("originspaper.admin")) {
+            sender.sendMessage(TextUtil.msg("§cSem permissão."));
+            return;
+        }
+        if (args.length < 3) {
+            sender.sendMessage(TextUtil.msg("§cUso: /origin addxp <jogador> <quantidade>"));
+            return;
+        }
+        Player target = Bukkit.getPlayerExact(args[1]);
+        if (target == null) {
+            sender.sendMessage(TextUtil.msg("§cJogador não encontrado."));
+            return;
+        }
+        int amount;
+        try {
+            amount = Integer.parseInt(args[2]);
+        } catch (NumberFormatException e) {
+            sender.sendMessage(TextUtil.msg("§cQuantidade inválida: §f" + args[2]));
+            return;
+        }
+        plugin.progression().awardXp(target, amount);
+        sender.sendMessage(TextUtil.msg("§aConcedido §f" + amount + " XP§a a §f" + target.getName() + "§a."));
+    }
+
+    private void handleSetLevel(CommandSender sender, String[] args) {
+        if (!sender.hasPermission("originspaper.admin")) {
+            sender.sendMessage(TextUtil.msg("§cSem permissão."));
+            return;
+        }
+        if (args.length < 3) {
+            sender.sendMessage(TextUtil.msg("§cUso: /origin setlevel <jogador> <nível>"));
+            return;
+        }
+        Player target = Bukkit.getPlayerExact(args[1]);
+        if (target == null) {
+            sender.sendMessage(TextUtil.msg("§cJogador não encontrado."));
+            return;
+        }
+        int level;
+        try {
+            level = Integer.parseInt(args[2]);
+        } catch (NumberFormatException e) {
+            sender.sendMessage(TextUtil.msg("§cNível inválido: §f" + args[2]));
+            return;
+        }
+        plugin.progression().setLevel(target, level);
+        sender.sendMessage(TextUtil.msg("§aNível de §f" + target.getName() + "§a definido para §f"
+                + Math.max(1, Math.min(OriginProgress.MAX_LEVEL, level)) + "§a."));
+    }
+
     private boolean openSelf(CommandSender sender) {
         if (!(sender instanceof Player player)) {
             sender.sendMessage(TextUtil.msg("§cApenas jogadores podem abrir a seleção."));
             return true;
         }
         PlayerOriginData data = plugin.data().get(player.getUniqueId());
-        boolean admin = player.hasPermission("originspaper.admin");
-        if (data != null && data.hasOrigin() && !admin) {
-            player.sendMessage(TextUtil.msg("§cVocê já possui uma origem. Use §f/origin info§c."));
+        if (data != null && data.hasOrigin()) {
+            OriginProgressGUI.open(player); // já tem origem → tela "Minha Origem" (nível/desbloqueios)
             return true;
         }
         OriginSelectionGUI.open(player);
@@ -131,6 +186,15 @@ public class OriginCommand implements CommandExecutor, TabCompleter {
         }
         Origin origin = data.getOrigin();
         sender.sendMessage(TextUtil.msg("§6⬛ Origem de §f" + target.getName() + "§6: §e" + origin.displayName()));
+        OriginProgress prog = data.currentProgress();
+        if (prog != null) {
+            if (prog.isMax()) {
+                sender.sendMessage(TextUtil.msg("§7Nível: §6" + prog.level() + " §6(MÁX)"));
+            } else {
+                sender.sendMessage(TextUtil.msg("§7Nível: §e" + prog.level() + " §8• §e"
+                        + prog.xp() + "§7/§e" + ProgressionManager.xpToNext(prog.level()) + " §7XP"));
+            }
+        }
         sender.sendMessage(TextUtil.msg("§8§m                                        "));
         for (Origin.PowerInfo info : origin.infos()) {
             sender.sendMessage(TextUtil.msg("§e⚡ " + info.name()));
@@ -143,21 +207,29 @@ public class OriginCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        boolean admin = sender.hasPermission("originspaper.admin");
+        // "info" is the only subcommand non-admins may use; the rest are admin-only and stay hidden.
+        List<String> adminSubs = List.of("set", "reset", "reload", "addxp", "setlevel");
         List<String> out = new ArrayList<>();
         if (args.length == 1) {
-            for (String sub : List.of("set", "reset", "info", "reload")) {
-                if (sub.startsWith(args[0].toLowerCase())) {
-                    out.add(sub);
+            if ("info".startsWith(args[0].toLowerCase())) {
+                out.add("info");
+            }
+            if (admin) {
+                for (String sub : adminSubs) {
+                    if (sub.startsWith(args[0].toLowerCase())) {
+                        out.add(sub);
+                    }
                 }
             }
-        } else if (args.length == 2 && (args[0].equalsIgnoreCase("set")
-                || args[0].equalsIgnoreCase("reset") || args[0].equalsIgnoreCase("info"))) {
+        } else if (args.length == 2 && (args[0].equalsIgnoreCase("info")
+                || (admin && adminSubs.contains(args[0].toLowerCase())))) {
             for (Player p : Bukkit.getOnlinePlayers()) {
                 if (p.getName().toLowerCase().startsWith(args[1].toLowerCase())) {
                     out.add(p.getName());
                 }
             }
-        } else if (args.length == 3 && args[0].equalsIgnoreCase("set")) {
+        } else if (args.length == 3 && admin && args[0].equalsIgnoreCase("set")) {
             for (Origin origin : plugin.origins().all()) {
                 if (origin.id().startsWith(args[2].toLowerCase())) {
                     out.add(origin.id());

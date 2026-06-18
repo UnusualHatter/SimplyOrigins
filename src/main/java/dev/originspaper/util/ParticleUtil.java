@@ -18,9 +18,9 @@ import org.bukkit.util.Vector;
  * {@link Particle.DustOptions}, {@code BLOCK}/{@code FALLING_DUST} need {@link BlockData},
  * {@code ENTITY_EFFECT}/{@code AMBIENT_ENTITY_EFFECT} need a {@link Color}). Because effects can't
  * be unit-tested on a live server cheaply, the core {@link #spawn} inspects
- * {@link Particle#getDataType()} and supplies a sensible default when the caller didn't pass one —
- * so a power can never crash the tick/skill the way the original Dragon's Breath did. If a particle
- * needs data we don't know how to build, we skip it rather than throw.
+ * {@link Particle#getDataType()} and supplies a sensible default when the caller didn't pass one,
+ * so a power can never crash the tick/skill it runs in. If a particle needs data we don't know how
+ * to build, we skip it rather than throw.
  */
 public final class ParticleUtil {
 

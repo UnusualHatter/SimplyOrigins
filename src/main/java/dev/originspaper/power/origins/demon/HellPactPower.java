@@ -80,7 +80,7 @@ public class HellPactPower extends AbstractPower implements ActivePowerType {
     }
 
     @Override
-    public long getCooldownTicks() {
+    public long getCooldownTicks(Player player) {
         return 600L; // 30 seconds cooldown
     }
 

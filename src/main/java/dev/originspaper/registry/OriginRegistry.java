@@ -44,7 +44,22 @@ import dev.originspaper.power.origins.wolf.CarnivoresBitePower;
 import dev.originspaper.power.origins.wolf.DayNightSpeedPower;
 import dev.originspaper.power.origins.wolf.HuntersSensePower;
 import dev.originspaper.power.origins.wolf.NightFangsPower;
-import dev.originspaper.power.shared.ActiveBuffPower;
+import dev.originspaper.power.origins.human.HumanProgressionPower;
+import dev.originspaper.power.origins.otter.OtterProgressionPower;
+import dev.originspaper.power.origins.deer.DeerProgressionPower;
+import dev.originspaper.power.origins.bat.BatProgressionPower;
+import dev.originspaper.power.origins.rat.RatProgressionPower;
+import dev.originspaper.power.origins.rat.ScurryPower;
+import dev.originspaper.power.origins.demon.DemonProgressionPower;
+import dev.originspaper.power.origins.fox.FoxProgressionPower;
+import dev.originspaper.power.origins.bear.BearProgressionPower;
+import dev.originspaper.power.origins.rabbit.RabbitProgressionPower;
+import dev.originspaper.power.origins.goat.GoatProgressionPower;
+import dev.originspaper.power.origins.feline.FelineProgressionPower;
+import dev.originspaper.power.origins.owl.OwlProgressionPower;
+import dev.originspaper.power.origins.gryphon.GryphonProgressionPower;
+import dev.originspaper.power.origins.dragon.DragonProgressionPower;
+import dev.originspaper.power.origins.moth.MothProgressionPower;
 import dev.originspaper.power.shared.ArmorMaterialRestrictPower;
 import dev.originspaper.power.shared.ArmorSlotRestrictPower;
 import dev.originspaper.power.shared.AttributeModifierPower;
@@ -149,7 +164,7 @@ public class OriginRegistry {
         register(new Origin("human", "Humano",
                 "http://textures.minecraft.net/texture/b3fbd454b599df593f57101bfca34e67d292a8861213d2202bb575da7fd091ac",
                 Material.PLAYER_HEAD,
-                List.of(),
+                List.of(new HumanProgressionPower("human:progression")),
                 List.of()));
     }
 
@@ -162,7 +177,8 @@ public class OriginRegistry {
                 new LikeWaterPower("otter:like_water"),
                 new LandStridePower("otter:land_stride", 0),
                 new WaterDependencyPower("otter:water_dependency", 600L), // 10 minutes (seconds)
-                new AttributeModifierPower("otter:small_body", Attribute.SCALE, -0.2));
+                new AttributeModifierPower("otter:small_body", Attribute.SCALE, -0.2),
+                new OtterProgressionPower("otter:progression"));
         List<PowerInfo> infos = List.of(
                 new PowerInfo("Anfíbio", "Respira perfeitamente debaixo d'água e na terra."),
                 new PowerInfo("Afinidade Aquática", "Minera na velocidade normal mesmo submerso."),
@@ -182,7 +198,8 @@ public class OriginRegistry {
                 new NaturalRunnerPower("deer:natural_runner"),
                 new AttributeModifierPower("deer:nimble_legs", Attribute.STEP_HEIGHT, 0.5),
                 new AttributeModifierPower("deer:alert_leap", Attribute.JUMP_STRENGTH, 0.1),
-                new AttributeModifierPower("deer:fragile", Attribute.MAX_HEALTH, -2.0));
+                new AttributeModifierPower("deer:fragile", Attribute.MAX_HEALTH, -2.0),
+                new DeerProgressionPower("deer:progression"));
         List<PowerInfo> infos = List.of(
                 new PowerInfo("Agilidade Selvagem", "Mais rápido em florestas, taigas, savanas e pântanos."),
                 new PowerInfo("Aterrissagem Suave", "Sofre 50% menos dano de queda."),
@@ -200,7 +217,8 @@ public class OriginRegistry {
                 new CaveMobilityPower("bat:cave_mobility"),
                 new DayDazedPower("bat:sun_averse"),
                 new AttributeModifierPower("bat:fragile", Attribute.MAX_HEALTH, -4.0),
-                new AttributeModifierPower("bat:tiny_body", Attribute.SCALE, -0.3));
+                new AttributeModifierPower("bat:tiny_body", Attribute.SCALE, -0.3),
+                new BatProgressionPower("bat:progression"));
         List<PowerInfo> infos = List.of(
                 new PowerInfo("Visão Noturna", "Visão noturna permanente."),
                 new PowerInfo("Asas de Morcego", "Cai lentamente (planagem) ao cair no ar."),
@@ -215,13 +233,14 @@ public class OriginRegistry {
         List<PowerType> powers = List.of(
                 new AttributeModifierPower("rat:small_body", Attribute.SCALE, -0.3),
                 new EvasionPower("rat:evasion"),
-                new ActiveBuffPower("rat:scurry", 160L, org.bukkit.Sound.ENTITY_RABBIT_JUMP,
+                new ScurryPower("rat:scurry", 160L, org.bukkit.Sound.ENTITY_RABBIT_JUMP,
                         effect(PotionEffectType.SPEED, 30, 2)),
                 new SilentStepsPower("rat:silent_steps"),
                 new AttributeModifierPower("rat:swift", Attribute.MOVEMENT_SPEED, 0.03),
                 new AttributeModifierPower("rat:fragile", Attribute.MAX_HEALTH, -4.0),
                 new AttributeModifierPower("rat:short_reach_block", Attribute.BLOCK_INTERACTION_RANGE, -1.0),
-                new AttributeModifierPower("rat:short_reach_entity", Attribute.ENTITY_INTERACTION_RANGE, -1.0));
+                new AttributeModifierPower("rat:short_reach_entity", Attribute.ENTITY_INTERACTION_RANGE, -1.0),
+                new RatProgressionPower("rat:progression"));
         List<PowerInfo> infos = List.of(
                 new PowerInfo("Corpo Pequeno", "Seu corpo é 30% menor."),
                 new PowerInfo("Evasão", "Você tem 30% de chance de desviar completamente de projéteis."),
@@ -241,7 +260,8 @@ public class OriginRegistry {
                 new HellPactPower("demon:hell_pact"),
                 new DayDazedPower("demon:sun_averse"),
                 new HolyVulnerabilityPower("demon:holy_vulnerability"),
-                new InfernalVisualsPower("demon:infernal_visual"));
+                new InfernalVisualsPower("demon:infernal_visual"),
+                new DemonProgressionPower("demon:progression"));
         List<PowerInfo> infos = List.of(
                 new PowerInfo("Filho do Inferno", "Imune a fogo, lava e chão quente."),
                 new PowerInfo("Poder Infernal", "Causa +1 coração de dano corpo a corpo."),
@@ -262,7 +282,8 @@ public class OriginRegistry {
                 new NightVisionPower("feline:cat_vision"),
                 new AttributeModifierPower("feline:feline_grace", Attribute.MOVEMENT_SPEED, 0.02),
                 new dev.originspaper.power.origins.feline.PredatorInstinctPower("feline:predator_instinct"),
-                new AttributeModifierPower("feline:small_body", Attribute.SCALE, -0.1));
+                new AttributeModifierPower("feline:small_body", Attribute.SCALE, -0.1),
+                new FelineProgressionPower("feline:progression"));
         List<PowerInfo> infos = List.of(
                 new PowerInfo("Acrobacia", "Não sofre dano de queda."),
                 new PowerInfo("Tornozelos Fortes", "Pula um pouco mais alto."),
@@ -290,7 +311,8 @@ public class OriginRegistry {
                         item -> item.getType().name().endsWith("CHESTPLATE"),
                         "§cSuas escamas não permitem peitorais."),
                 new AttributeModifierPower("dragon:large_body", Attribute.SCALE, 0.1),
-                new DragonAuraPower("dragon:aura_visual"));
+                new DragonAuraPower("dragon:aura_visual"),
+                new DragonProgressionPower("dragon:progression"));
         List<PowerInfo> infos = List.of(
                 new PowerInfo("Asas de Dragão", "Elytra permanente que volta sozinha."),
                 new PowerInfo("Sopro do Dragão", "Agachar + F: sopra um cone de fogo que causa dano e incendeia os alvos à frente."),
@@ -338,7 +360,8 @@ public class OriginRegistry {
                 new CarnivoreDietPower("owl:carnivore"),
                 new DayDazedPower("owl:day_dazed"),
                 new LightArmorOnlyPower("owl:light_frame", 5),
-                new AttributeModifierPower("owl:small_body", Attribute.SCALE, -0.1));
+                new AttributeModifierPower("owl:small_body", Attribute.SCALE, -0.1),
+                new OwlProgressionPower("owl:progression"));
         List<PowerInfo> infos = List.of(
                 new PowerInfo("Asas de Coruja", "Elytra permanente que volta sozinha."),
                 new PowerInfo("Voo Silencioso", "Reduz o alcance de detecção dos mobs ao planar."),
@@ -359,7 +382,8 @@ public class OriginRegistry {
                 new CarnivoreDietPower("gryphon:carnivore"),
                 new FreshAirPower("gryphon:fresh_air"),
                 new LightArmorOnlyPower("gryphon:need_mobility", 5),
-                new AttributeModifierPower("gryphon:large_body", Attribute.SCALE, 0.1));
+                new AttributeModifierPower("gryphon:large_body", Attribute.SCALE, 0.1),
+                new GryphonProgressionPower("gryphon:progression"));
         List<PowerInfo> infos = List.of(
                 new PowerInfo("Asas de Grifo", "Elytra permanente que volta sozinha."),
                 new PowerInfo("Decolar", "Agachar + F: impulso forte para o céu e planagem."),
@@ -378,7 +402,8 @@ public class OriginRegistry {
                 new PermanentEffectPower("goat:mountain_leap", PotionEffectType.JUMP_BOOST, 1),
                 new DamageImmunityPower("goat:insulated", DamageCause.FREEZE),
                 new AttributeModifierPower("goat:small", Attribute.MAX_HEALTH, -4.0),
-                new GoatGrazePower("goat:graze"));
+                new GoatGrazePower("goat:graze"),
+                new GoatProgressionPower("goat:progression"));
         List<PowerInfo> infos = List.of(
                 new PowerInfo("Cabeçada", "Agachar + F: arremete em linha reta; explode em área ao atingir um inimigo ou ao parar."),
                 new PowerInfo("Investida", "Golpes correndo causam dano extra e forte empurrão."),
@@ -407,7 +432,8 @@ public class OriginRegistry {
                         "§cVocê não tem gosto por este alimento."),
                 new TimidityPower("fox:timidity"),
                 new NoShieldPower("fox:weak_shield"),
-                new AttributeModifierPower("fox:small_body", Attribute.SCALE, -0.1));
+                new AttributeModifierPower("fox:small_body", Attribute.SCALE, -0.1),
+                new FoxProgressionPower("fox:progression"));
         List<PowerInfo> infos = List.of(
                 new PowerInfo("Bote", "Agachar + F: salto que explode em área ao aterrissar, ou causa dano extra se acertar no ar."),
                 new PowerInfo("Caçada", "Atacar a mesma presa repetidamente te fortalece."),
@@ -442,7 +468,8 @@ public class OriginRegistry {
                         item -> item.getType() == Material.NETHERITE_CHESTPLATE || item.getType() == Material.DIAMOND_CHESTPLATE,
                         "§cSeu corpo volumoso não cabe neste peitoral."),
                 new ExhaustionPower("bear:large_appetite", 0.005f, false),
-                new AttributeModifierPower("bear:large_body", Attribute.SCALE, 0.1));
+                new AttributeModifierPower("bear:large_body", Attribute.SCALE, 0.1),
+                new BearProgressionPower("bear:progression"));
         List<PowerInfo> infos = List.of(
                 new PowerInfo("Patas Poderosas", "Mãos vazias causam +3 de dano e forte empurrão (perto da floresta)."),
                 new PowerInfo("Pelo Grosso", "Armadura natural e imunidade ao frio."),
@@ -470,7 +497,8 @@ public class OriginRegistry {
                         m -> m == Material.CARROT || m == Material.GOLDEN_CARROT, 1.5),
                 new PermanentEffectPower("rabbit:bouncing", PotionEffectType.JUMP_BOOST, 1),
                 new PredatorScentPower("rabbit:predator_scent"),
-                new AttributeModifierPower("rabbit:small_body", Attribute.SCALE, -0.2));
+                new AttributeModifierPower("rabbit:small_body", Attribute.SCALE, -0.2),
+                new RabbitProgressionPower("rabbit:progression"));
         List<PowerInfo> infos = List.of(
                 new PowerInfo("Rico em Caroteno", "Visão noturna permanente."),
                 new PowerInfo("Presa", "Menos vida, porém mais veloz."),
@@ -492,7 +520,8 @@ public class OriginRegistry {
                 new ArmorMaterialRestrictPower("moth:delicate_body",
                         item -> item.getType().name().startsWith("DIAMOND_")
                                 || item.getType().name().startsWith("NETHERITE_"),
-                        "§cSeu corpo delicado não suporta armaduras pesadas."));
+                        "§cSeu corpo delicado não suporta armaduras pesadas."),
+                new MothProgressionPower("moth:progression"));
         List<PowerInfo> infos = List.of(
                 new PowerInfo("Asas Trêmulas", "Suas asas delicadas reduzem sua velocidade de queda permanentemente."),
                 new PowerInfo("Voo Gracioso", "Plana suavemente durante quedas e nunca sofre dano de queda."),

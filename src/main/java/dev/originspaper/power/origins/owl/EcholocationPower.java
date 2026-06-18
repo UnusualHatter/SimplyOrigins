@@ -49,7 +49,11 @@ public class EcholocationPower extends AbstractPower implements ActivePowerType 
     }
 
     @Override
-    public long getCooldownTicks() {
-        return 600L; // 30 seconds
+    public long getCooldownTicks(Player player) {
+        var data = plugin().data().get(player.getUniqueId());
+        if (data != null && data.level() >= 6) { // Nv6 "Sonar Apurado": faster recharge
+            return 360L;
+        }
+        return 600L;
     }
 }

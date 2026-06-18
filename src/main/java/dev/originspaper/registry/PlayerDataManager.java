@@ -41,6 +41,7 @@ public class PlayerDataManager {
     /** Loads the saved origin (if any) and applies its powers. Called on join. */
     public void load(Player player) {
         PlayerOriginData d = getOrCreate(player.getUniqueId());
+        d.getProgressMap().putAll(persistence.loadProgress(player.getUniqueId()));
         String originId = persistence.loadOrigin(player.getUniqueId());
         if (originId != null) {
             Origin origin = plugin.origins().get(originId);
@@ -63,7 +64,8 @@ public class PlayerDataManager {
         plugin.log().info(player.getName() + " selected origin: " + origin.displayName());
         // Deliberate selection (GUI choice / admin set): fill the player up to the new max.
         applyOrigin(player, d, origin, true);
-        persistence.saveOrigin(player.getUniqueId(), origin.id());
+        d.progress(origin.id()); // ensure a level-1 progression entry exists for this origin
+        persistence.save(player.getUniqueId(), origin.id(), d.getProgressMap());
     }
 
     private void applyOrigin(Player player, PlayerOriginData d, Origin origin, boolean healToFull) {

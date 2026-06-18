@@ -29,9 +29,16 @@ public class FlightLaunchPower extends AbstractPower implements ActivePowerType 
         this.glideDelay = glideDelay;
     }
 
+    private int levelOf(Player player) {
+        var data = plugin().data().get(player.getUniqueId());
+        return data == null ? 1 : data.level();
+    }
+
     @Override
     public void onActivate(Player player) {
-        player.setVelocity(player.getVelocity().setY(upwardVelocity));
+        // Nv3 "Decolagem Forte" (gryphon): a stronger launch upward.
+        double velocity = upwardVelocity * (levelOf(player) >= 3 ? 1.25 : 1.0);
+        player.setVelocity(player.getVelocity().setY(velocity));
         Location c = player.getLocation();
         player.getWorld().playSound(c, Sound.ENTITY_ENDER_DRAGON_FLAP, 1.0f, 1.0f);
         ParticleUtil.spawnGroundBurst(Particle.CLOUD, c, 0.8, 12, 0.05);
@@ -62,7 +69,11 @@ public class FlightLaunchPower extends AbstractPower implements ActivePowerType 
     }
 
     @Override
-    public long getCooldownTicks() {
+    public long getCooldownTicks(Player player) {
+        // Nv10 "Senhor dos Céus" (gryphon): shorter cooldown.
+        if (levelOf(player) >= 10) {
+            return (long) (cooldownTicks * 0.6);
+        }
         return cooldownTicks;
     }
 

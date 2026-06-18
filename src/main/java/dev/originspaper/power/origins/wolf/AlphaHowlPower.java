@@ -1,12 +1,17 @@
 package dev.originspaper.power.origins.wolf;
 
 import dev.originspaper.power.shared.ActiveBuffPower;
+import dev.originspaper.util.EffectUtil;
 import dev.originspaper.util.ParticleUtil;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Tameable;
 import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 /** Alpha's Howl: a predatory shockwave on activation, a menacing aura while the buff lasts. */
 public class AlphaHowlPower extends ActiveBuffPower {
@@ -16,9 +21,33 @@ public class AlphaHowlPower extends ActiveBuffPower {
     }
 
     @Override
+    public long getCooldownTicks(Player player) {
+        long base = super.getCooldownTicks(player);
+        int level = plugin().data().get(player.getUniqueId()).level();
+        if (level >= 6) { // Líder: recarga reduzida
+            return (long) (base * 0.7);
+        }
+        return base;
+    }
+
+    @Override
     public void onActivate(Player player) {
         super.onActivate(player); // applies the buffs + plays the howl sound
         Location c = player.getLocation();
+
+        int level = plugin().data().get(player.getUniqueId()).level();
+        if (level >= 10) { // Alcateia: fortalece aliados
+            for (Entity entity : player.getNearbyEntities(8, 8, 8)) {
+                if (entity instanceof Player ally && !ally.equals(player)) {
+                    EffectUtil.apply(ally, PotionEffectType.STRENGTH, 200, 0);
+                    ParticleUtil.spawnGroundBurst(Particle.HEART, ally.getLocation(), 0.5, 3, 0.1);
+                } else if (entity instanceof Tameable pet && pet.isTamed() && player.equals(pet.getOwner())) {
+                    ((LivingEntity) pet).addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, 200, 0, true, false, false));
+                    ParticleUtil.spawnGroundBurst(Particle.HEART, pet.getLocation(), 0.5, 3, 0.1);
+                }
+            }
+        }
+
         // Three concentric cloud rings read as a single expanding shockwave.
         for (double r = 1.5; r <= 3.5; r += 1.0) {
             ParticleUtil.spawnRing(Particle.CLOUD, c.clone().add(0, 0.2, 0), r, 20, 0.0);

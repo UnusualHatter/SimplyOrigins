@@ -165,4 +165,11 @@ public class PowerEventListener implements Listener {
             dispatch(shooter, p -> p.onProjectileHit(e));
         }
     }
+
+    @EventHandler
+    public void onEntityDeath(org.bukkit.event.entity.EntityDeathEvent e) {
+        if (e.getEntity().getKiller() != null) {
+            dispatch(e.getEntity().getKiller(), p -> p.onEntityDeath(e));
+        }
+    }
 }

@@ -68,4 +68,6 @@ public interface PowerType {
     default void onProjectileLaunch(PlayerLaunchProjectileEvent e) {}
 
     default void onProjectileHit(ProjectileHitEvent e) {}
+
+    default void onEntityDeath(org.bukkit.event.entity.EntityDeathEvent e) {}
 }

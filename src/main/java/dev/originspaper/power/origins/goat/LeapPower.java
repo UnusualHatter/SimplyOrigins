@@ -4,6 +4,7 @@ import dev.originspaper.api.ActivePowerType;
 import dev.originspaper.power.shared.AbstractPower;
 import dev.originspaper.util.GroundUtil;
 import dev.originspaper.util.ParticleUtil;
+import dev.originspaper.util.SafeTargetUtil;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -24,6 +25,21 @@ public class LeapPower extends AbstractPower implements ActivePowerType {
     private static final double BLAST_RADIUS = 1.5;
     private static final double BLAST_DAMAGE = 5.0;
     private static final double HIT_RADIUS = 1.2; // how close to the charge path counts as a headbutt
+
+    /** Nv10 "Avalanche": the blast reaches a block farther. */
+    private double blastRadius(Player player) {
+        return BLAST_RADIUS + (levelOf(player) >= 10 ? 1.0 : 0.0);
+    }
+
+    /** Nv3 "Crânio Duro": each headbutt hits harder. */
+    private double blastDamage(Player player) {
+        return BLAST_DAMAGE + (levelOf(player) >= 3 ? 2.0 : 0.0);
+    }
+
+    private int levelOf(Player player) {
+        var data = plugin().data().get(player.getUniqueId());
+        return data == null ? 1 : data.level();
+    }
 
     private final Map<UUID, Long> leaping = new ConcurrentHashMap<>();
 
@@ -79,12 +95,13 @@ public class LeapPower extends AbstractPower implements ActivePowerType {
         Vector a = from.toVector();
         Vector seg = to.toVector().subtract(a);
         double segLen2 = seg.lengthSquared();
-        double search = BLAST_RADIUS + Math.sqrt(segLen2) + 1.0;
+        double search = blastRadius(player) + Math.sqrt(segLen2) + 1.0;
         LivingEntity best = null;
         double bestDist2 = Double.MAX_VALUE;
         for (Entity entity : to.getWorld().getNearbyEntities(to, search, search, search)) {
-            if (!(entity instanceof LivingEntity living) || entity.equals(player)) {
-                continue;
+            if (!(entity instanceof LivingEntity living) || entity.equals(player)
+                    || SafeTargetUtil.isProtected(living)) {
+                continue; // charge passes through pets/named mobs instead of stopping on them
             }
             Vector p = entity.getLocation().toVector();
             double t = segLen2 < 1.0e-6 ? 0.0 : p.clone().subtract(a).dot(seg) / segLen2;
@@ -106,10 +123,18 @@ public class LeapPower extends AbstractPower implements ActivePowerType {
         Object below = center.clone().subtract(0, 0.2, 0).getBlock().getBlockData();
         ParticleUtil.spawnGroundBurst(Particle.BLOCK, center, 0.6, 12, 0.0, below);
         ParticleUtil.spawnGroundBurst(Particle.DUST_PLUME, center, 0.5, 6, 0.05);
-        for (Entity entity : world.getNearbyEntities(center, BLAST_RADIUS, BLAST_RADIUS, BLAST_RADIUS)) {
-            if (entity instanceof LivingEntity target && !entity.equals(owner)) {
-                target.damage(BLAST_DAMAGE, owner); // knockback radiates from the blast centre
+        double radius = blastRadius(owner);
+        double damage = blastDamage(owner);
+        boolean hit = false;
+        for (Entity entity : world.getNearbyEntities(center, radius, radius, radius)) {
+            if (entity instanceof LivingEntity target && !entity.equals(owner)
+                    && !SafeTargetUtil.isProtected(target)) {
+                target.damage(damage, owner); // knockback radiates from the blast centre
+                hit = true;
             }
+        }
+        if (hit) {
+            plugin().progression().awardXp(owner, 8); // "Acertar Cabeçadas"
         }
     }
 
@@ -119,7 +144,7 @@ public class LeapPower extends AbstractPower implements ActivePowerType {
     }
 
     @Override
-    public long getCooldownTicks() {
+    public long getCooldownTicks(Player player) {
         return 60L;
     }
 }

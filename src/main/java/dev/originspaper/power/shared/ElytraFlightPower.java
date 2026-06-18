@@ -99,6 +99,39 @@ public class ElytraFlightPower extends AbstractPower {
         }
     }
 
+    /**
+     * Safety net against external inventory writers (grave/death-storage plugins, /give, etc.) that
+     * bypass {@code PlayerArmorChangeEvent} by writing the inventory directly. The real wings only
+     * ever live in the chest slot, so any protected copy that leaks loose into the bag or offhand is
+     * a duplicate and gets purged — plugin-agnostic, regardless of what path created it.
+     */
+    @Override
+    public void onTick(Player player) {
+        if (player.isDead()) {
+            return; // on the death screen; ElytraGuardListener#onRespawn re-equips after respawn
+        }
+        PlayerInventory inv = player.getInventory();
+        if (!isWings(inv.getChestplate())) {
+            equip(player); // missing from the chest → re-grant (also strips strays)
+            return;
+        }
+        // Chest already holds the wings — strip any stray protected copy elsewhere.
+        ItemStack[] storage = inv.getStorageContents();
+        boolean changed = false;
+        for (int i = 0; i < storage.length; i++) {
+            if (isProtectedWings(storage[i])) {
+                storage[i] = null;
+                changed = true;
+            }
+        }
+        if (changed) {
+            inv.setStorageContents(storage);
+        }
+        if (isProtectedWings(inv.getItemInOffHand())) {
+            inv.setItemInOffHand(null);
+        }
+    }
+
     @Override
     public void onRemove(Player player) {
         PlayerInventory inv = player.getInventory();

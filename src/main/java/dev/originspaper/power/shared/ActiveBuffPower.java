@@ -32,7 +32,7 @@ public class ActiveBuffPower extends AbstractPower implements ActivePowerType {
     }
 
     @Override
-    public long getCooldownTicks() {
+    public long getCooldownTicks(Player player) {
         return cooldownTicks;
     }
 

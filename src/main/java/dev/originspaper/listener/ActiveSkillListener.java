@@ -41,10 +41,10 @@ public class ActiveSkillListener implements Listener {
             return; // passive-only origin: input consumed, nothing to activate
         }
 
-        if (active.getCooldownTicks() > 0
-                && !CooldownUtil.isReady(data.getCooldowns(), active.getId(), active.getCooldownTicks())) {
+        if (active.getCooldownTicks(player) > 0
+                && !CooldownUtil.isReady(data.getCooldowns(), active.getId(), active.getCooldownTicks(player))) {
             long remaining = CooldownUtil.remainingSeconds(
-                    data.getCooldowns(), active.getId(), active.getCooldownTicks());
+                    data.getCooldowns(), active.getId(), active.getCooldownTicks(player));
             player.sendActionBar(TextUtil.msg("§cHabilidade em recarga: §f" + remaining + "s"));
             plugin.log().debug(player.getName() + " tried " + active.getId() + " but it's on cooldown (" + remaining + "s).");
             return;

@@ -11,5 +11,5 @@ public interface ActivePowerType extends PowerType {
     void onActivate(Player player);
 
     /** Cooldown in ticks. Return 0 for no cooldown. */
-    long getCooldownTicks();
+    long getCooldownTicks(Player player);
 }

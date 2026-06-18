@@ -51,16 +51,40 @@ public class PollinatorPower extends AbstractPower {
         if (plugin().tick() % 2 != 0) {
             return;
         }
+        int level = levelOf(player);
+        int radius = RADIUS + (level >= 3 ? 1 : 0); // Nv3 "Pólen Fértil": wider pollination
         Location base = player.getLocation();
-        for (int dx = -RADIUS; dx <= RADIUS; dx++) {
+        boolean grewAny = false;
+        for (int dx = -radius; dx <= radius; dx++) {
             for (int dy = -1; dy <= 1; dy++) {
-                for (int dz = -RADIUS; dz <= RADIUS; dz++) {
+                for (int dz = -radius; dz <= radius; dz++) {
                     if (ThreadLocalRandom.current().nextDouble() >= CHANCE_PER_BLOCK) {
                         continue;
                     }
-                    grow(base.clone().add(dx, dy, dz).getBlock());
+                    if (grow(base.clone().add(dx, dy, dz).getBlock())) {
+                        grewAny = true;
+                    }
                 }
             }
+        }
+        if (grewAny) {
+            plugin().progression().awardXp(player, 2); // "Nutrir a natureza"
+            if (level >= 10) { // Nv10 "Aura de Vida": saturate nearby players
+                grantLifeAura(player);
+            }
+        }
+    }
+
+    private int levelOf(Player player) {
+        var data = plugin().data().get(player.getUniqueId());
+        return data == null ? 1 : data.level();
+    }
+
+    /** Feeds the moth and nearby players a touch of Saturation while it pollinates. */
+    private void grantLifeAura(Player player) {
+        for (Player nearby : player.getWorld().getNearbyPlayers(player.getLocation(), 6.0)) {
+            nearby.addPotionEffect(new PotionEffect(PotionEffectType.SATURATION, 40, 0, true, false, false));
+            ParticleUtil.spawnTrail(Particle.HEART, nearby.getLocation().add(0, 1.0, 0), 1, 0.3);
         }
     }
 
@@ -74,10 +98,11 @@ public class PollinatorPower extends AbstractPower {
         }
     }
 
-    private void grow(Block block) {
+    /** Returns true if the block actually grew this call (used to award pollination XP). */
+    private boolean grow(Block block) {
         Material type = block.getType();
         if (!isSupported(type)) {
-            return;
+            return false;
         }
         boolean sapling = isSapling(type);
 
@@ -88,14 +113,14 @@ public class PollinatorPower extends AbstractPower {
             } else {
                 cropParticles(block);
             }
-            return;
+            return true;
         }
         // Bone meal didn't apply: age-based crops bone meal ignores (e.g. nether wart).
         if (block.getBlockData() instanceof Ageable ageable && ageable.getAge() < ageable.getMaximumAge()) {
             ageable.setAge(ageable.getAge() + 1);
             block.setBlockData(ageable);
             cropParticles(block);
-            return;
+            return true;
         }
         // Sugar cane: grow one segment upward if there is room (capped at the natural height).
         if (type == Material.SUGAR_CANE) {
@@ -103,8 +128,10 @@ public class PollinatorPower extends AbstractPower {
             if (above.getType().isAir() && columnHeight(block, type) < 3) {
                 above.setType(type);
                 cropParticles(above);
+                return true;
             }
         }
+        return false;
     }
 
     private int columnHeight(Block top, Material type) {

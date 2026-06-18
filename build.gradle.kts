@@ -3,7 +3,7 @@ plugins {
 }
 
 group = "dev.originspaper"
-version = "1.1.0"
+version = "1.1.7"
 
 repositories {
     mavenCentral()
@@ -23,8 +23,15 @@ tasks.withType<JavaCompile> {
     options.compilerArgs.add("-parameters")
 }
 
+// Single source of truth for the version: `version` above feeds both the jar name and plugin.yml.
+tasks.processResources {
+    filesMatching("plugin.yml") {
+        expand(mapOf("version" to project.version))
+    }
+}
+
 tasks.jar {
     archiveBaseName.set("originspaper")
-    archiveVersion.set("1.1.0")
+    archiveVersion.set(version.toString())
     archiveClassifier.set("")
 }

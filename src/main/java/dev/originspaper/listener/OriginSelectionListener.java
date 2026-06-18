@@ -4,8 +4,11 @@ import dev.originspaper.OriginsPaper;
 import dev.originspaper.api.Origin;
 import dev.originspaper.gui.DetailHolder;
 import dev.originspaper.gui.OriginDetailGUI;
+import dev.originspaper.gui.OriginProgressGUI;
 import dev.originspaper.gui.OriginSelectionGUI;
+import dev.originspaper.gui.ProgressHolder;
 import dev.originspaper.gui.SelectionHolder;
+import org.bukkit.Sound;
 
 import dev.originspaper.registry.PlayerOriginData;
 import dev.originspaper.util.TextUtil;
@@ -43,11 +46,19 @@ public class OriginSelectionListener implements Listener {
                     OriginSelectionGUI.open(player);
                 }
             }, delay);
+        } else if (data != null && data.hasOrigin()) {
+            // Flash the progression bar shortly after join so the player sees their origin level.
+            plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+                if (player.isOnline()) {
+                    plugin.progression().showBar(player);
+                }
+            }, 25L);
         }
     }
 
     @EventHandler
     public void onQuit(PlayerQuitEvent e) {
+        plugin.progression().handleQuit(e.getPlayer()); // save progress + clear bar before unloading
         plugin.data().unload(e.getPlayer(), true);
     }
 
@@ -60,6 +71,13 @@ public class OriginSelectionListener implements Listener {
         } else if (holder instanceof DetailHolder detail) {
             e.setCancelled(true);
             handleDetailClick((Player) e.getWhoClicked(), detail, e.getRawSlot());
+        } else if (holder instanceof ProgressHolder) {
+            e.setCancelled(true); // read-only screen
+            if (e.getRawSlot() == OriginProgressGUI.SLOT_CLOSE) {
+                Player player = (Player) e.getWhoClicked();
+                player.closeInventory();
+                player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5f, 1.2f);
+            }
         }
     }
 

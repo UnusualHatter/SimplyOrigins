@@ -4,6 +4,7 @@ import dev.originspaper.api.ActivePowerType;
 import dev.originspaper.power.shared.AbstractPower;
 import dev.originspaper.util.GroundUtil;
 import dev.originspaper.util.ParticleUtil;
+import dev.originspaper.util.SafeTargetUtil;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -51,9 +52,23 @@ public class PouncePower extends AbstractPower implements ActivePowerType {
         }
         // Bonus damage on a hit landed while still airborne; consumes the pounce (no landing blast).
         if (pouncing.containsKey(player.getUniqueId())) {
-            e.setDamage(e.getDamage() + 3.0);
+            e.setDamage(e.getDamage() + airHitBonus(player));
             pouncing.remove(player.getUniqueId());
         }
+    }
+
+    private int levelOf(Player player) {
+        var data = plugin().data().get(player.getUniqueId());
+        return data == null ? 1 : data.level();
+    }
+
+    /** Nv10 "Bote Mortal": a deadlier pounce. */
+    private double airHitBonus(Player player) {
+        return 3.0 + (levelOf(player) >= 10 ? 2.0 : 0.0);
+    }
+
+    private double blastDamage(Player player) {
+        return BLAST_DAMAGE + (levelOf(player) >= 10 ? 2.0 : 0.0);
     }
 
     @Override
@@ -81,9 +96,11 @@ public class PouncePower extends AbstractPower implements ActivePowerType {
         Object below = loc.clone().subtract(0, 0.2, 0).getBlock().getBlockData();
         ParticleUtil.spawnGroundBurst(Particle.BLOCK, loc, 0.6, 12, 0.0, below);
         ParticleUtil.spawn(Particle.DAMAGE_INDICATOR, loc.clone().add(0, 0.5, 0), 4, 0.3, 0.2, 0.3, 0.0);
+        double damage = blastDamage(player);
         for (Entity entity : player.getNearbyEntities(BLAST_RADIUS, BLAST_RADIUS, BLAST_RADIUS)) {
-            if (entity instanceof LivingEntity target && !entity.equals(player)) {
-                target.damage(BLAST_DAMAGE, player); // knockback radiates from the player (blast centre)
+            if (entity instanceof LivingEntity target && !entity.equals(player)
+                    && !SafeTargetUtil.isProtected(target)) {
+                target.damage(damage, player); // knockback radiates from the player (blast centre)
             }
         }
     }
@@ -94,7 +111,7 @@ public class PouncePower extends AbstractPower implements ActivePowerType {
     }
 
     @Override
-    public long getCooldownTicks() {
+    public long getCooldownTicks(Player player) {
         return 100L;
     }
 }

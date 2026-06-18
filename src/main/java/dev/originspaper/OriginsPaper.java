@@ -5,7 +5,9 @@ import dev.originspaper.command.OriginCommand;
 import dev.originspaper.listener.ActiveSkillListener;
 import dev.originspaper.listener.ElytraGuardListener;
 import dev.originspaper.listener.OriginSelectionListener;
+import dev.originspaper.listener.PlacedBlockTracker;
 import dev.originspaper.listener.PowerEventListener;
+import dev.originspaper.progression.ProgressionManager;
 import dev.originspaper.registry.OriginRegistry;
 import dev.originspaper.registry.PlayerDataManager;
 import dev.originspaper.registry.PlayerOriginData;
@@ -21,6 +23,7 @@ public final class OriginsPaper extends JavaPlugin {
     private OriginsLogger log;
     private OriginRegistry originRegistry;
     private PlayerDataManager dataManager;
+    private ProgressionManager progression;
     private long tick;
 
     @Override
@@ -34,11 +37,13 @@ public final class OriginsPaper extends JavaPlugin {
 
         this.originRegistry = new OriginRegistry();
         this.dataManager = new PlayerDataManager(this);
+        this.progression = new ProgressionManager(this);
 
         getServer().getPluginManager().registerEvents(new PowerEventListener(this), this);
         getServer().getPluginManager().registerEvents(new ActiveSkillListener(this), this);
         getServer().getPluginManager().registerEvents(new OriginSelectionListener(this), this);
         getServer().getPluginManager().registerEvents(new ElytraGuardListener(this), this);
+        getServer().getPluginManager().registerEvents(new PlacedBlockTracker(), this);
 
         OriginCommand command = new OriginCommand(this);
         if (getCommand("origin") != null) {
@@ -63,6 +68,11 @@ public final class OriginsPaper extends JavaPlugin {
         log.info("Disabling — saving all online player data...");
         if (dataManager != null) {
             for (Player player : getServer().getOnlinePlayers()) {
+                PlayerOriginData d = dataManager.get(player.getUniqueId());
+                if (d != null && d.hasOrigin()) {
+                    // awardXp only writes to disk on level-up, so flush progress before unloading.
+                    dataManager.persistence().save(player.getUniqueId(), d.getOrigin().id(), d.getProgressMap());
+                }
                 dataManager.unload(player, false);
             }
         }
@@ -99,6 +109,10 @@ public final class OriginsPaper extends JavaPlugin {
         // Strip every online player's current powers cleanly, rebuild the registry (fresh power
         // instances), then re-apply each player's origin from disk against the new registry.
         for (Player player : getServer().getOnlinePlayers()) {
+            PlayerOriginData d = dataManager.get(player.getUniqueId());
+            if (d != null && d.hasOrigin()) {
+                dataManager.persistence().save(player.getUniqueId(), d.getOrigin().id(), d.getProgressMap());
+            }
             dataManager.unload(player, true);
         }
         this.originRegistry = new OriginRegistry();
@@ -129,5 +143,9 @@ public final class OriginsPaper extends JavaPlugin {
 
     public PlayerDataManager data() {
         return dataManager;
+    }
+
+    public ProgressionManager progression() {
+        return progression;
     }
 }
