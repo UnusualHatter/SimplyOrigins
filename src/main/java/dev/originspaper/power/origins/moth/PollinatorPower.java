@@ -19,9 +19,12 @@ import java.util.concurrent.ThreadLocalRandom;
 /** While sneaking, nearby crops, saplings and stalks grow as if bone-mealed; pollen blinds foes. */
 public class PollinatorPower extends AbstractPower {
 
-    private static final int RADIUS = 3;
+    // Base pollination is just the block the moth stands on (1x1); the Nv3 milestone widens it to
+    // a 3x3 patch. Kept small and centred on the player so the effect is clear and predictable.
+    private static final int RADIUS = 0;
     private static final double CHANCE_PER_BLOCK = 0.40;
     private static final double BLIND_RADIUS = 4.0;
+    private static final int POLLINATE_XP = 4;
 
     /** Supported non-sapling plants. Saplings/propagules/azaleas are matched by name. */
     private static final Set<Material> PLANTS = Set.of(
@@ -52,7 +55,8 @@ public class PollinatorPower extends AbstractPower {
             return;
         }
         int level = levelOf(player);
-        int radius = RADIUS + (level >= 3 ? 1 : 0); // Nv3 "Pólen Fértil": wider pollination
+        int radius = RADIUS + (level >= 3 ? 1 : 0); // Nv3 "Pólen Fértil": 1x1 → 3x3 pollination
+        // Centred on the block the moth is standing on, so the patch always follows the player.
         Location base = player.getLocation();
         boolean grewAny = false;
         for (int dx = -radius; dx <= radius; dx++) {
@@ -68,7 +72,7 @@ public class PollinatorPower extends AbstractPower {
             }
         }
         if (grewAny) {
-            plugin().progression().awardXp(player, 2); // "Nutrir a natureza"
+            plugin().progression().awardXp(player, POLLINATE_XP); // "Polinizar plantações"
             if (level >= 10) { // Nv10 "Aura de Vida": saturate nearby players
                 grantLifeAura(player);
             }

@@ -30,7 +30,7 @@ public class DragonProgressionPower extends ProgressionPower {
         Player killer = e.getEntity().getKiller();
         if (killer != null && e.getEntity() instanceof Monster
                 && killer.getWorld().getEnvironment() == World.Environment.THE_END) {
-            award(killer, 25); // "Caçar no The End"
+            award(killer, 25); // "Matar monstros no End"
         }
     }
 }

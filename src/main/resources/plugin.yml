@@ -8,7 +8,7 @@ softdepend: [AxGraves]
 commands:
   origin:
     description: Gerencie sua origem
-    usage: /origin [set|reset|info|reload] [jogador] [origem]
+    usage: /origin [set|reset|info|reload|addxp|setlevel] [jogador] [origem|valor]
 permissions:
   originspaper.select:
     description: Permite abrir o menu de seleção de origem e ver informações

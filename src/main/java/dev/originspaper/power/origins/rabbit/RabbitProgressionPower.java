@@ -28,7 +28,7 @@ public class RabbitProgressionPower extends ProgressionPower {
     public void onBlockBreak(BlockBreakEvent e) {
         // Only a fully-grown crop counts as a harvest.
         if (e.getBlock().getBlockData() instanceof Ageable age && age.getAge() == age.getMaximumAge()) {
-            award(e.getPlayer(), 10); // "Colher plantações"
+            award(e.getPlayer(), 6); // "Colher plantações"
         }
     }
 
@@ -36,13 +36,15 @@ public class RabbitProgressionPower extends ProgressionPower {
     public void onItemConsume(PlayerItemConsumeEvent e) {
         Material type = e.getItem().getType();
         if (type == Material.CARROT || type == Material.GOLDEN_CARROT) {
-            award(e.getPlayer(), 8); // "Comer cenouras"
+            award(e.getPlayer(), 5); // "Comer cenouras"
         }
     }
 
     @Override
     public void onMove(PlayerMoveEvent e) {
-        accrueDistance(e.getPlayer(), e, 30.0, 4); // "Saltitar pelo mundo"
+        // Hopping is near-constant with permanent Jump Boost, so it's the main driver of how fast a
+        // rabbit levels — kept slow (2 XP per 40 blocks) so it no longer races ahead of other origins.
+        accrueDistance(e.getPlayer(), e, 40.0, 2); // "Saltitar pelo mundo"
     }
 
     @Override

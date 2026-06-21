@@ -29,7 +29,7 @@ public class BatProgressionPower extends ProgressionPower {
     @Override
     public void onMove(PlayerMoveEvent e) {
         if (!GroundUtil.isOnGround(e.getPlayer())) {
-            accrueDistance(e.getPlayer(), e, 30.0, 5); // "Planar pelas cavernas"
+            accrueDistance(e.getPlayer(), e, 30.0, 5); // "Planar pelo ar"
         }
     }
 
@@ -44,7 +44,7 @@ public class BatProgressionPower extends ProgressionPower {
     public void onEntityDeath(EntityDeathEvent e) {
         Player killer = e.getEntity().getKiller();
         if (killer != null && e.getEntity() instanceof Monster && NightTimeEffectPower.isNight(killer)) {
-            award(killer, 10); // "Caçar à noite"
+            award(killer, 10); // "Matar monstros à noite"
         }
     }
 

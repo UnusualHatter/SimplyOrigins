@@ -11,11 +11,13 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
 /**
- * A goat eats anything. Sneak + right-click the air with a non-food block in the main hand to graze
+ * A goat eats anything. Sneak + right-click the air with any non-food item in the main hand to graze
  * it: one item is consumed for a small bite of hunger ("meio ponto de fome" → +1 food point).
  *
- * <p>Scoped to blocks and to right-click-<i>air</i> on purpose: blocks have no air interaction, so
- * this never competes with placing, tool use, or thrown items — there is no item-use to hijack.
+ * <p>Scoped to right-click-<i>air</i> on purpose, so it never competes with placing a block, using a
+ * tool, or eating actual food (real food is left to eat normally). Tools, weapons and armour (any
+ * item with durability) are refused so they aren't eaten instead of used, and containers that still
+ * hold items (e.g. filled shulker boxes) are refused so their contents aren't silently destroyed.
  */
 public class GoatGrazePower extends AbstractPower {
 
@@ -35,7 +37,14 @@ public class GoatGrazePower extends AbstractPower {
             return;
         }
         ItemStack item = player.getInventory().getItemInMainHand();
-        if (item.getType().isAir() || item.getType().isEdible() || !item.getType().isBlock()) {
+        // Anything except air and actual food (real food is left to be eaten the normal way).
+        if (item.getType().isAir() || item.getType().isEdible()) {
+            return;
+        }
+        // Don't chew up tools, weapons or armour: in Minecraft those are exactly the items with
+        // durability, so this keeps swords/picks/bows/shields/elytra/armour safe to use as normal
+        // while still letting the goat snack on blocks and materials (dirt, ingots, redstone...).
+        if (item.getType().getMaxDurability() > 0) {
             return;
         }
         if (item.hasItemMeta() && item.getItemMeta() instanceof org.bukkit.inventory.meta.BlockStateMeta) {

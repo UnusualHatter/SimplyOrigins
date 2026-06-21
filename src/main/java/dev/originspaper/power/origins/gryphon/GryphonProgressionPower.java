@@ -30,7 +30,7 @@ public class GryphonProgressionPower extends ProgressionPower {
     public void onEntityDeath(EntityDeathEvent e) {
         Player killer = e.getEntity().getKiller();
         if (killer != null && e.getEntity() instanceof Monster) {
-            award(killer, 10); // "Derrotar inimigos"
+            award(killer, 10); // "Matar monstros"
         }
     }
 

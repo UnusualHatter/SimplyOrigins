@@ -24,7 +24,7 @@ public class GoatProgressionPower extends ProgressionPower {
             return;
         }
         if (e.getEntity() instanceof Monster) {
-            award(killer, 10); // "Derrotar inimigos"
+            award(killer, 10); // "Matar monstros"
         } else if (e.getEntity() instanceof Animals) {
             award(killer, 6); // "Caçar animais"
         }

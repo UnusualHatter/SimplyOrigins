@@ -1,0 +1,219 @@
+/* ============================================================
+   Feather Flux — estilos globais, tokens de design e utilitários.
+   ============================================================ */
+
+:root {
+  --bg: #0b0e16;
+  --bg-2: #0d111b;
+  --surface: #121826;
+
+  --text: #e7ebf3;
+  --text-dim: #aab2c5;
+  --text-faint: #7c869c;
+
+  --gold: #e3b94f;
+  --gold-bright: #f5d27a;
+  --green: #6ee787;
+  --coral: #ff6b75;
+
+  --border: rgba(255, 255, 255, 0.08);
+  --glass: rgba(255, 255, 255, 0.035);
+  --glass-strong: rgba(255, 255, 255, 0.07);
+
+  --radius: 16px;
+  --radius-sm: 10px;
+  --t: 0.2s ease;
+
+  --font-display: 'Cinzel', Georgia, serif;
+  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+
+  --maxw: 1120px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--text);
+  background:
+    radial-gradient(80% 50% at 50% -10%, rgba(227, 185, 79, 0.08), transparent 60%),
+    radial-gradient(60% 40% at 100% 0%, rgba(110, 231, 135, 0.05), transparent 60%),
+    var(--bg);
+  background-attachment: fixed;
+  line-height: 1.5;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: 0.01em;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+ul {
+  list-style: none;
+}
+
+/* ---------- Layout ---------- */
+.container {
+  width: 100%;
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 4vw, 2rem);
+}
+
+main {
+  padding-block: clamp(2.5rem, 6vw, 4.5rem);
+}
+
+.section {
+  padding-block: clamp(2.5rem, 6vw, 4rem);
+}
+
+.card {
+  background: var(--glass);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+/* ---------- Chips ---------- */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  border: 1px solid var(--border);
+  background: var(--glass-strong);
+  color: var(--text-dim);
+}
+
+/* ---------- Buttons ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.1rem;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition:
+    transform var(--t),
+    background var(--t),
+    border-color var(--t),
+    box-shadow var(--t);
+}
+.btn:hover {
+  transform: translateY(-2px);
+}
+.btn-lg {
+  padding: 0.85rem 1.5rem;
+  font-size: 1rem;
+}
+.btn-gold {
+  background: linear-gradient(135deg, var(--gold-bright), var(--gold));
+  color: #1a1407;
+  box-shadow: 0 6px 24px rgba(227, 185, 79, 0.25);
+}
+.btn-gold:hover {
+  box-shadow: 0 10px 30px rgba(227, 185, 79, 0.35);
+}
+.btn-outline {
+  background: var(--glass);
+  border-color: var(--border);
+  color: var(--text);
+}
+.btn-outline:hover {
+  border-color: color-mix(in srgb, var(--gold) 55%, transparent);
+  background: var(--glass-strong);
+}
+
+/* ---------- Reveal on scroll ---------- */
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 0.6s ease,
+    transform 0.6s ease;
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* ---------- Skip link (a11y) ---------- */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 100;
+  padding: 0.6rem 1rem;
+  background: var(--gold);
+  color: #1a1407;
+  border-radius: 0 0 var(--radius-sm) 0;
+  font-weight: 700;
+}
+.skip-link:focus {
+  left: 0;
+}
+
+/* ---------- Section headings ---------- */
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.8rem;
+}
+.section-title {
+  font-size: clamp(1.7rem, 4vw, 2.6rem);
+}
+.section-sub {
+  color: var(--text-dim);
+  max-width: 60ch;
+  margin-top: 0.7rem;
+}

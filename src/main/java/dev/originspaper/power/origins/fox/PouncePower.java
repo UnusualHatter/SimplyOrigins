@@ -13,6 +13,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.util.Vector;
 
@@ -25,8 +26,12 @@ public class PouncePower extends AbstractPower implements ActivePowerType {
 
     private static final double BLAST_RADIUS = 2.0;
     private static final double BLAST_DAMAGE = 3.0;
+    /** How long after a pounce the fox is shielded from fall damage. */
+    private static final long FALL_GUARD_MS = 2500L;
 
     private final Map<UUID, Long> pouncing = new ConcurrentHashMap<>();
+    /** Time of the last pounce per player — the fox ignores fall damage only within this window. */
+    private final Map<UUID, Long> fallGuard = new ConcurrentHashMap<>();
 
     public PouncePower(String id) {
         super(id);
@@ -36,13 +41,28 @@ public class PouncePower extends AbstractPower implements ActivePowerType {
     public void onActivate(Player player) {
         Vector dir = player.getLocation().getDirection().multiply(1.5).setY(0.6);
         player.setVelocity(dir);
-        pouncing.put(player.getUniqueId(), System.currentTimeMillis());
+        long now = System.currentTimeMillis();
+        pouncing.put(player.getUniqueId(), now);
+        fallGuard.put(player.getUniqueId(), now);
 
         Location feet = player.getLocation();
         Object below = feet.clone().subtract(0, 0.2, 0).getBlock().getBlockData();
         ParticleUtil.spawnGroundBurst(Particle.BLOCK, feet, 0.5, 10, 0.0, below);
         ParticleUtil.spawnGroundBurst(Particle.CLOUD, feet, 0.5, 8, 0.05);
         ParticleUtil.spawn(Particle.SWEEP_ATTACK, feet.clone().add(0, 0.8, 0), 1, 0, 0, 0, 0.0);
+    }
+
+    /** No fall damage — but only as part of a pounce, never from ordinary falls. */
+    @Override
+    public void onDamage(EntityDamageEvent e) {
+        if (e.getCause() != EntityDamageEvent.DamageCause.FALL || !(e.getEntity() instanceof Player player)) {
+            return;
+        }
+        Long when = fallGuard.get(player.getUniqueId());
+        if (when != null && System.currentTimeMillis() - when <= FALL_GUARD_MS) {
+            e.setCancelled(true);
+            fallGuard.remove(player.getUniqueId());
+        }
     }
 
     @Override
@@ -108,6 +128,7 @@ public class PouncePower extends AbstractPower implements ActivePowerType {
     @Override
     public void onRemove(Player player) {
         pouncing.remove(player.getUniqueId());
+        fallGuard.remove(player.getUniqueId());
     }
 
     @Override

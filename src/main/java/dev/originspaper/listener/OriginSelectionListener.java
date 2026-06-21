@@ -8,6 +8,7 @@ import dev.originspaper.gui.OriginProgressGUI;
 import dev.originspaper.gui.OriginSelectionGUI;
 import dev.originspaper.gui.ProgressHolder;
 import dev.originspaper.gui.SelectionHolder;
+import org.bukkit.Location;
 import org.bukkit.Sound;
 
 import dev.originspaper.registry.PlayerOriginData;
@@ -18,6 +19,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
@@ -60,6 +62,28 @@ public class OriginSelectionListener implements Listener {
     public void onQuit(PlayerQuitEvent e) {
         plugin.progression().handleQuit(e.getPlayer()); // save progress + clear bar before unloading
         plugin.data().unload(e.getPlayer(), true);
+    }
+
+    /**
+     * Freezes a player in place until they pick an origin: they can still look around (so the
+     * selection GUI is usable) but cannot walk away while the choice is pending.
+     */
+    @EventHandler
+    public void onMove(PlayerMoveEvent e) {
+        if (!plugin.getConfig().getBoolean("force-selection-on-join", true) || !e.hasChangedPosition()) {
+            return;
+        }
+        Player player = e.getPlayer();
+        PlayerOriginData data = plugin.data().get(player.getUniqueId());
+        if (data != null && data.hasOrigin()) {
+            return;
+        }
+        Location from = e.getFrom();
+        Location to = e.getTo();
+        // Keep their position, but carry over the new yaw/pitch so they can still look around.
+        e.setTo(new Location(from.getWorld(), from.getX(), from.getY(), from.getZ(),
+                to != null ? to.getYaw() : from.getYaw(),
+                to != null ? to.getPitch() : from.getPitch()));
     }
 
     @EventHandler

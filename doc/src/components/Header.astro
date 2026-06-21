@@ -1,0 +1,98 @@
+---
+import Icon from './Icon.astro';
+import { site } from '../data/site';
+
+const path = Astro.url.pathname;
+const isActive = (href: string) =>
+  href === '/' ? path === '/' : path.startsWith(href.replace('/#', '/'));
+---
+
+<header class="site-header">
+  <div class="container bar">
+    <a href="/" class="brand" aria-label={`${site.name} — início`}>
+      <span class="brand-glyph"><Icon name="feather" size={20} /></span>
+      <span class="brand-name">{site.name}</span>
+    </a>
+
+    <nav class="nav" aria-label="Navegação principal">
+      {
+        site.nav.map((item) => (
+          <a href={item.href} class:list={['nav-link', { active: isActive(item.href) }]}>
+            {item.label}
+          </a>
+        ))
+      }
+    </nav>
+
+    <a href={site.discord} class="btn btn-gold btn-sm" target="_blank" rel="noopener">
+      <Icon name="play" size={15} /> Entrar
+    </a>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    backdrop-filter: blur(12px);
+    background: color-mix(in srgb, var(--bg-2) 80%, transparent);
+    border-bottom: 1px solid var(--border);
+  }
+  .bar {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    height: 64px;
+  }
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.15rem;
+  }
+  .brand-glyph {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    color: var(--gold);
+    background: color-mix(in srgb, var(--gold) 14%, transparent);
+    border: 1px solid color-mix(in srgb, var(--gold) 35%, transparent);
+  }
+  .nav {
+    display: flex;
+    gap: 0.4rem;
+    margin-left: auto;
+  }
+  .nav-link {
+    padding: 0.5rem 0.85rem;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--text-dim);
+    transition:
+      color var(--t),
+      background var(--t);
+  }
+  .nav-link:hover {
+    color: var(--text);
+    background: var(--glass-strong);
+  }
+  .nav-link.active {
+    color: var(--gold-bright);
+  }
+  .btn-sm {
+    padding: 0.5rem 0.95rem;
+    font-size: 0.9rem;
+  }
+  @media (max-width: 560px) {
+    .nav {
+      display: none;
+    }
+  }
+</style>

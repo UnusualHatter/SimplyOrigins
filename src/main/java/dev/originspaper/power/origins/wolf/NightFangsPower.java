@@ -17,10 +17,16 @@ public class NightFangsPower extends AbstractPower {
         super(id);
     }
 
+    /** Current origin level, null-safe (1 if the player's data isn't loaded yet). */
+    private int levelOf(Player player) {
+        var data = plugin().data().get(player.getUniqueId());
+        return data == null ? 1 : data.level();
+    }
+
     @Override
     public void onDamageByEntity(EntityDamageByEntityEvent e) {
         if (e.getDamager() instanceof Player player && NightTimeEffectPower.isNight(player)) {
-            int level = plugin().data().get(player.getUniqueId()).level();
+            int level = levelOf(player);
             double bonus = 1.0;
             if (level >= 2) {
                 bonus += (level - 1) * 0.1;
@@ -53,7 +59,7 @@ public class NightFangsPower extends AbstractPower {
 
     @Override
     public void onTick(Player player) {
-        int level = plugin().data().get(player.getUniqueId()).level();
+        int level = levelOf(player);
         if (level >= 10) {
             if (NightTimeEffectPower.isNight(player)) {
                 EffectUtil.ensure(player, PotionEffectType.STRENGTH, 0);

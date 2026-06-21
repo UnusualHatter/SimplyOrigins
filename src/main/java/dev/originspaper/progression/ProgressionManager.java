@@ -10,7 +10,6 @@ import net.kyori.adventure.title.Title;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitTask;
 
 import java.time.Duration;
 import java.util.Map;
@@ -24,11 +23,8 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class ProgressionManager {
 
-    private static final long BAR_VISIBLE_TICKS = 100L; // ~5s on screen after the last XP gain
-
     private final OriginsPaper plugin;
     private final Map<UUID, BossBar> bars = new ConcurrentHashMap<>();
-    private final Map<UUID, BukkitTask> hideTasks = new ConcurrentHashMap<>();
 
     public ProgressionManager(OriginsPaper plugin) {
         this.plugin = plugin;
@@ -99,14 +95,14 @@ public class ProgressionManager {
         if (data != null && data.hasOrigin()) {
             save(player, data);
         }
-        UUID id = player.getUniqueId();
-        BossBar bar = bars.remove(id);
+        clearBar(player);
+    }
+
+    /** Hides and forgets the player's progression boss bar (quit, or {@code /origin reset}). */
+    public void clearBar(Player player) {
+        BossBar bar = bars.remove(player.getUniqueId());
         if (bar != null) {
             player.hideBossBar(bar);
-        }
-        BukkitTask task = hideTasks.remove(id);
-        if (task != null) {
-            task.cancel();
         }
     }
 
@@ -142,18 +138,9 @@ public class ProgressionManager {
             bar.name(TextUtil.msg(title));
             bar.progress(progress);
         }
+        // Kept on screen permanently so the player can always gauge how close the next level is,
+        // instead of having to reopen /origin to check. Cleared on quit / reset via clearBar.
         player.showBossBar(bar);
-
-        // Auto-hide a few seconds after the last XP gain so the bar isn't permanently on screen.
-        BukkitTask prev = hideTasks.remove(id);
-        if (prev != null) {
-            prev.cancel();
-        }
-        final BossBar shown = bar;
-        hideTasks.put(id, plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
-            player.hideBossBar(shown);
-            hideTasks.remove(id);
-        }, BAR_VISIBLE_TICKS));
     }
 
     private void save(Player player, PlayerOriginData data) {

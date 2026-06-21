@@ -22,14 +22,14 @@ public class RatProgressionPower extends ProgressionPower {
     public void onEntityDeath(EntityDeathEvent e) {
         Player killer = e.getEntity().getKiller();
         if (killer != null && e.getEntity() instanceof Monster) {
-            award(killer, 12); // "Caçar criaturas"
+            award(killer, 12); // "Matar monstros"
         }
     }
 
     @Override
     public void onBlockBreak(BlockBreakEvent e) {
         if (!PlacedBlockTracker.isPlayerPlaced(e.getBlock())) {
-            award(e.getPlayer(), 3); // "Coletar recursos"
+            award(e.getPlayer(), 3); // "Minerar e coletar recursos"
         }
     }
 }

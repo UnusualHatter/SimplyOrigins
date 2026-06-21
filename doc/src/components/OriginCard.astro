@@ -1,0 +1,97 @@
+---
+import Stars from './Stars.astro';
+import type { Origin } from '../data/origins';
+
+interface Props {
+  origin: Origin;
+}
+const { origin } = Astro.props;
+---
+
+<a
+  href={`/origins/${origin.slug}`}
+  class="origin-card card reveal"
+  style={`--c:${origin.accent}`}
+  data-group={origin.group}
+>
+  <div class="card-glow" aria-hidden="true"></div>
+  <header>
+    <span class="glyph" aria-hidden="true">{origin.emoji}</span>
+    <span class="chip group-chip">{origin.group}</span>
+  </header>
+  <h3>{origin.name}</h3>
+  <p class="tagline">{origin.tagline}</p>
+  <footer>
+    <span class="diet">{origin.diet}</span>
+    <span class="diff"><Stars value={origin.difficulty} /></span>
+  </footer>
+</a>
+
+<style>
+  .origin-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    padding: 1.3rem;
+    overflow: hidden;
+    transition:
+      transform var(--t),
+      border-color var(--t),
+      box-shadow var(--t);
+  }
+  .origin-card:hover {
+    transform: translateY(-4px);
+    border-color: color-mix(in srgb, var(--c) 55%, transparent);
+    box-shadow: 0 14px 36px color-mix(in srgb, var(--c) 18%, transparent);
+  }
+  .card-glow {
+    position: absolute;
+    inset: -40% 40% auto -10%;
+    height: 180px;
+    background: radial-gradient(50% 60% at 30% 0%, color-mix(in srgb, var(--c) 30%, transparent), transparent 70%);
+    pointer-events: none;
+  }
+  header {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .glyph {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+    height: 52px;
+    font-size: 1.7rem;
+    border-radius: 14px;
+    background: color-mix(in srgb, var(--c) 16%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c) 38%, transparent);
+  }
+  .group-chip {
+    color: color-mix(in srgb, var(--c) 85%, white 10%);
+    border-color: color-mix(in srgb, var(--c) 38%, transparent);
+    background: color-mix(in srgb, var(--c) 12%, transparent);
+  }
+  h3 {
+    font-size: 1.35rem;
+  }
+  .tagline {
+    color: var(--text-dim);
+    font-size: 0.92rem;
+    flex: 1;
+  }
+  footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 0.6rem;
+    border-top: 1px solid var(--border);
+  }
+  .diet {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text-faint);
+  }
+</style>

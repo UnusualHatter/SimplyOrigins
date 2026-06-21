@@ -31,12 +31,12 @@ public class DemonProgressionPower extends ProgressionPower {
         if (killer == null || !(e.getEntity() instanceof Monster)) {
             return;
         }
-        award(killer, 10); // "Caçar criaturas hostis"
+        award(killer, 10); // "Matar monstros"
         if (killer.getWorld().getEnvironment() == World.Environment.NETHER) {
-            award(killer, 20); // "Caçar no Nether"
+            award(killer, 20); // "Matar no Nether"
         }
         if (NightTimeEffectPower.isNight(killer)) {
-            award(killer, 15); // "Caçar à noite"
+            award(killer, 15); // "Matar à noite"
         }
         if (level(killer) >= 10) { // Nv10 "Fúria Infernal"
             EffectUtil.apply(killer, PotionEffectType.STRENGTH, 100, 0);

@@ -25,7 +25,7 @@ public class DeerProgressionPower extends ProgressionPower {
     @Override
     public void onMove(PlayerMoveEvent e) {
         if (e.getPlayer().isSprinting()) {
-            accrueDistance(e.getPlayer(), e, 30.0, 6); // "Correr em terreno natural"
+            accrueDistance(e.getPlayer(), e, 30.0, 6); // "Correr longas distâncias"
         }
     }
 
@@ -49,7 +49,7 @@ public class DeerProgressionPower extends ProgressionPower {
     public void onEntityDeath(EntityDeathEvent e) {
         Player killer = e.getEntity().getKiller();
         if (killer != null && e.getEntity() instanceof Monster) {
-            award(killer, 8); // "Afastar predadores"
+            award(killer, 8); // "Matar monstros"
         }
     }
 

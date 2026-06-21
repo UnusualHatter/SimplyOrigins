@@ -66,6 +66,7 @@ public class PlayerDataManager {
         applyOrigin(player, d, origin, true);
         d.progress(origin.id()); // ensure a level-1 progression entry exists for this origin
         persistence.save(player.getUniqueId(), origin.id(), d.getProgressMap());
+        plugin.progression().showBar(player); // surface the new origin's level bar right away
     }
 
     private void applyOrigin(Player player, PlayerOriginData d, Origin origin, boolean healToFull) {
@@ -98,8 +99,13 @@ public class PlayerDataManager {
             d.setOrigin(null);
             d.getPowers().clear();
             d.getCooldowns().clear();
+            // Wipe progression too: deleteOrigin clears the file, but the in-memory map would
+            // otherwise be written straight back on the next selection — making the "reset"
+            // silently keep every origin's old level/XP.
+            d.getProgressMap().clear();
         }
         persistence.deleteOrigin(player.getUniqueId());
+        plugin.progression().clearBar(player); // drop the stale level bar of the removed origin
         // Clamp HP to the restored vanilla max after all modifiers are cleared (no free heal).
         clampHealth(player, false);
     }

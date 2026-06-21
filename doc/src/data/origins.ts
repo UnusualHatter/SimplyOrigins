@@ -68,7 +68,7 @@ export const origins: Origin[] = [
     pros: ['Nenhuma vantagem específica', 'Flexibilidade total'],
     cons: ['Nenhum poder especial', 'Nenhuma habilidade de mobilidade'],
     progression: {
-      objectives: ['Matar mobs hostis', 'Caçar animais', 'Minerar e craftar'],
+      objectives: ['Matar monstros', 'Caçar animais', 'Explorar o mundo'],
       unlocks: [
         { level: 5, name: 'Vitalidade', description: '+1 coração.' },
         { level: 10, name: 'Resiliência', description: '+1 coração (total: +2).' },
@@ -100,10 +100,10 @@ export const origins: Origin[] = [
       'Corpo 20% menor',
     ],
     progression: {
-      objectives: ['Nadar em rios ou oceanos', 'Minerar debaixo d\'água', 'Matar peixes e criaturas aquáticas'],
+      objectives: ['Nadar longas distâncias', 'Minerar submerso', 'Caçar monstros na água'],
       unlocks: [
         { level: 3, name: 'Mergulhadora', description: 'Velocidade de mineração subaquática aumentada.' },
-        { level: 6, name: 'Fôlego Aquático', description: 'Ganha Conduit Power enquanto submersa.' },
+        { level: 6, name: 'Fôlego Aquático', description: 'Ganha Poder do Condutor enquanto submersa.' },
         { level: 10, name: 'Corrente', description: 'Velocidade de nado muito maior.' },
       ],
     },
@@ -128,7 +128,7 @@ export const origins: Origin[] = [
     ],
     cons: ['Vida reduzida: 1 coração a menos'],
     progression: {
-      objectives: ['Correr em floresta ou savana', 'Cair de grandes alturas e sobreviver', 'Matar mobs que te perseguem'],
+      objectives: ['Correr longas distâncias', 'Sobreviver a grandes quedas', 'Matar monstros'],
       unlocks: [
         { level: 3, name: 'Passada Longa', description: 'Altura do salto aumentada.' },
         { level: 6, name: 'Cervo Veloz', description: 'Velocidade de corrida maior.' },
@@ -159,7 +159,7 @@ export const origins: Origin[] = [
       'Tamanho corporal 30% menor',
     ],
     progression: {
-      objectives: ['Planar dentro de cavernas', 'Minerar sem fonte de luz', 'Matar mobs à noite'],
+      objectives: ['Planar pelo ar', 'Minerar no escuro', 'Matar monstros à noite'],
       unlocks: [
         { level: 3, name: 'Membrana Resistente', description: '+1 coração.' },
         { level: 6, name: 'Eco da Caverna', description: 'Velocidade e mineração maiores nas profundezas.' },
@@ -178,7 +178,7 @@ export const origins: Origin[] = [
     playstyle: 'Furtivo / Sobrevivência',
     diet: 'Onívoro',
     tagline: 'Pequeno, ignorado e impossível de encurralar.',
-    lore: 'Passa por frestas que ninguém mais alcança e prospera onde outros morreriam de fome. Subestime-o e ele já terá sumido com seu loot.',
+    lore: 'Passa por frestas que ninguém mais alcança e prospera onde outros morreriam de fome. Subestime-o e ele já terá sumido com seus itens.',
     pros: [
       'Evasão natural: 30% de chance de desviar de flechas e projéteis',
       'Disparada: corrida explosiva de alta velocidade (Agachar + F)',
@@ -191,7 +191,7 @@ export const origins: Origin[] = [
       'Braços curtos: alcance de ataque reduzido',
     ],
     progression: {
-      objectives: ['Desviar de flechas e projéteis', 'Minerar e coletar drops', 'Matar mobs'],
+      objectives: ['Matar monstros', 'Minerar e coletar recursos', 'Desviar de projéteis'],
       unlocks: [
         { level: 3, name: 'Reflexos', description: 'Evasão: 30% → 38%.' },
         { level: 6, name: 'Fôlego de Rato', description: 'Recarga da Disparada −30%.' },
@@ -223,11 +223,11 @@ export const origins: Origin[] = [
       'Vulnerabilidade sagrada: recebe o dobro de dano de poções e magias',
     ],
     progression: {
-      objectives: ['Matar mobs hostis', 'Matar no Nether', 'Matar mobs à noite'],
+      objectives: ['Matar monstros', 'Matar no Nether', 'Matar à noite'],
       unlocks: [
         { level: 3, name: 'Brasa', description: '+0,5 coração de dano corpo a corpo.' },
         { level: 6, name: 'Pele de Cinzas', description: 'Regenera lentamente perto de fogo ou lava.' },
-        { level: 10, name: 'Fúria Infernal', description: 'Kills dão Força I por alguns segundos.' },
+        { level: 10, name: 'Fúria Infernal', description: 'Abates concedem Força I por alguns segundos.' },
       ],
     },
   },
@@ -254,7 +254,7 @@ export const origins: Origin[] = [
     ],
     cons: ['Metabolismo acelerado: gasta fome mais rápido à noite'],
     progression: {
-      objectives: ['Matar mobs hostis', 'Matar mobs à noite (XP dobrado)', 'Matar um boss'],
+      objectives: ['Matar monstros', 'Matar à noite (bônus de XP)', 'Derrotar um chefe'],
       unlocks: [
         { level: 3, name: 'Presas Afiadas', description: '+1 de dano à noite.' },
         { level: 6, name: 'Líder', description: 'Recarga do Uivo do Alfa reduzida.' },
@@ -284,20 +284,21 @@ export const origins: Origin[] = [
       'Acrobata: mais veloz, salta mais alto e cai com leveza',
       'Raposice: sorte extra na coleta de itens',
       'Pelagem grossa: imunidade contra dano de frio',
+      'Gosto por frutas-silvestres: amoras saciam o dobro de fome',
     ],
     cons: [
       'Muito vulnerável a chamas e dano de fogo',
       'Corpo pequeno e frágil: 2 corações a menos',
-      'Paladar restrito: alimenta-se apenas de carnes e frutas doces',
+      'Paladar restrito: alimenta-se apenas de carnes e algumas frutas',
       'Timidez natural: seus ataques ficam fracos quando tem pouca vida',
       'Frágil demais para segurar um escudo',
       'Tamanho corporal levemente reduzido',
     ],
     progression: {
-      objectives: ['Matar animais', 'Matar mobs hostis', 'Comer frutas doces'],
+      objectives: ['Caçar animais', 'Matar monstros', 'Comer frutas'],
       unlocks: [
         { level: 3, name: 'Saltitante', description: 'Altura do pulo aumentada.' },
-        { level: 6, name: 'Faro de Sorte', description: 'Mais chance de drops raros.' },
+        { level: 6, name: 'Faro de Sorte', description: 'Mais chance de itens raros.' },
         { level: 10, name: 'Bote Mortal', description: 'Dano do Bote (no ar e ao pousar) aumentado.' },
       ],
     },
@@ -331,7 +332,7 @@ export const origins: Origin[] = [
       'Tamanho colossal e alvo fácil',
     ],
     progression: {
-      objectives: ['Matar mobs hostis', 'Matar animais', 'Comer carne crua'],
+      objectives: ['Matar monstros', 'Caçar animais', 'Comer carne crua'],
       unlocks: [
         { level: 3, name: 'Patas Brutais', description: '+1 de dano com as mãos vazias.' },
         { level: 6, name: 'Couro Espesso', description: 'Tenacidade de armadura aumentada.' },
@@ -352,11 +353,13 @@ export const origins: Origin[] = [
     tagline: 'Salta mais alto, corre mais rápido, foge primeiro.',
     lore: 'Vive da agilidade pura: nunca se machuca ao cair, mas o menor susto o faz disparar sem olhar para trás.',
     pros: [
-      'Visão excelente em ambientes escuros',
-      'Extremamente veloz ao correr',
-      'Nutrição especial: cenouras recuperam o dobro da fome',
-      'Pernas de mola: salta sempre mais alto',
-      'Aura vital: faz plantações próximas crescerem passivamente',
+      'Visão noturna permanente',
+      'Presa veloz: mais rápido ao correr',
+      'Disparada: salto rápido para frente, só mobilidade (Agachar + F, recarga 7s)',
+      'Pernas de mola: Impulso de Salto permanente',
+      'Aterrissagem leve: sem dano em quedas de até 5 blocos',
+      'Nutrição especial: cenouras saciam 50% a mais',
+      'Faro de Predador: sente lobos, raposas e gatos próximos',
     ],
     cons: [
       'Paladar seletivo: só consegue se alimentar de cenouras',
@@ -364,7 +367,7 @@ export const origins: Origin[] = [
       'Corpo 20% menor',
     ],
     progression: {
-      objectives: ['Colher plantações', 'Comer cenouras', 'Pular em distâncias longas'],
+      objectives: ['Colher plantações', 'Comer cenouras', 'Saltitar pelo mundo'],
       unlocks: [
         { level: 3, name: 'Pulo Alto', description: 'Altura do pulo aumentada.' },
         { level: 6, name: 'Lebre Veloz', description: 'Velocidade de corrida maior.' },
@@ -390,14 +393,14 @@ export const origins: Origin[] = [
       'Passo firme: ignora qualquer dano de queda',
       'Salto montanhês: pula 2 blocos de altura sem esforço',
       'Resistência extrema ao frio da neve em pó',
-      'Estômago de aço: pode morder blocos do mundo para matar a fome',
+      'Estômago de aço: morde quase qualquer item — menos comida, ferramentas, armas e armaduras — para matar a fome (Agachar + clique direito)',
     ],
     cons: ['Vitalidade menor: 2 corações a menos'],
     progression: {
-      objectives: ['Matar mobs hostis', 'Matar animais', 'Acertar com a Cabeçada'],
+      objectives: ['Matar monstros', 'Caçar animais', 'Acertar com a Cabeçada'],
       unlocks: [
         { level: 3, name: 'Crânio Duro', description: 'Dano da Cabeçada maior.' },
-        { level: 6, name: 'Impacto', description: 'Dano e knockback da Investida maiores.' },
+        { level: 6, name: 'Impacto', description: 'Dano e repulsão da Investida maiores.' },
         { level: 10, name: 'Avalanche', description: 'Área da explosão da Cabeçada maior.' },
       ],
     },
@@ -428,7 +431,7 @@ export const origins: Origin[] = [
       'Tamanho corporal levemente menor',
     ],
     progression: {
-      objectives: ['Matar mobs hostis', 'Matar animais', 'Matar mobs em perseguição'],
+      objectives: ['Matar monstros', 'Caçar animais', 'Perseguir presas correndo'],
       unlocks: [
         { level: 3, name: 'Caçador Ágil', description: 'Mais velocidade ao perseguir um alvo.' },
         { level: 6, name: 'Reflexos Felinos', description: 'Velocidade de ataque aumentada.' },
@@ -462,7 +465,7 @@ export const origins: Origin[] = [
       'Tamanho corporal levemente menor',
     ],
     progression: {
-      objectives: ['Voar longas distâncias', 'Matar mobs à noite', 'Atacar em mergulho'],
+      objectives: ['Planar longas distâncias', 'Caçar à noite', 'Atacar mergulhando'],
       unlocks: [
         { level: 3, name: 'Olhar Noturno', description: 'Dano extra à noite aumentado.' },
         { level: 6, name: 'Sonar Apurado', description: 'Recarga da Visão de Rapina reduzida.' },
@@ -493,7 +496,7 @@ export const origins: Origin[] = [
       'Tamanho imponente e mais fácil de acertar',
     ],
     progression: {
-      objectives: ['Voar longas distâncias', 'Atacar em mergulho', 'Matar mobs hostis'],
+      objectives: ['Voar longas distâncias', 'Atacar mergulhando', 'Matar monstros'],
       unlocks: [
         { level: 3, name: 'Decolagem Forte', description: 'Impulso da Decolagem maior.' },
         { level: 6, name: 'Caça-Picada', description: 'Dano em mergulho maior.' },
@@ -516,7 +519,7 @@ export const origins: Origin[] = [
     pros: [
       'Asas dracônicas inatas para domínio aéreo',
       'Sopro de Fogo: incendeia e destrói oponentes à frente (Agachar + F)',
-      'Afinidade com o Vazio: regeneração de vida no The End',
+      'Afinidade com o Vazio: regeneração de vida no End',
       'Garras mortais: dano corpo a corpo aumentado (+1 coração)',
     ],
     cons: [
@@ -526,7 +529,7 @@ export const origins: Origin[] = [
       'Corpo colossal e mais fácil de ser atingido',
     ],
     progression: {
-      objectives: ['Queimar mobs com o Sopro de Fogo', 'Voar longas distâncias', 'Matar mobs no The End'],
+      objectives: ['Queimar alvos com o Sopro de Fogo', 'Voar longas distâncias', 'Matar monstros no End'],
       unlocks: [
         { level: 3, name: 'Chama Longa', description: 'Alcance do Sopro maior.' },
         { level: 6, name: 'Brasa Eterna', description: 'Recarga do Sopro reduzida.' },
@@ -549,20 +552,22 @@ export const origins: Origin[] = [
     pros: [
       'Asas trêmulas: cai de forma extremamente lenta',
       'Voo gracioso: ignora todo dano de queda ao planar pelo ar',
-      'Polinizadora mágica: faz plantações e mudas crescerem (Agachar)',
-      'Pó ofuscante: solta pólen que cega os inimigos próximos (Agachar)',
-      'Atração curativa: regenera vida passivamente perto de fontes de luz',
+      'Polinizadora: agachada, faz a planta sob seus pés crescer (área cresce até 3x3 com a progressão)',
+      'Pó ofuscante: solta pólen que cega os monstros próximos (Agachar)',
+      'Atração curativa: regenera vida perto de luz artificial, desde que esteja ferida e alimentada (consome fome)',
+      'Apetite luminoso: frutas-brilhantes saciam o dobro de fome e dão saturação extra',
       'Irmãs de enxame: abelhas são totalmente inofensivas para você',
     ],
     cons: [
       'Pânico no escuro: sofre grande lentidão na escuridão total',
       'Natureza delicada: vida máxima extremamente reduzida',
+      'Corpo 20% menor',
       'Asas sensíveis: incapaz de vestir armaduras pesadas (Diamante ou Netherite)',
     ],
     progression: {
-      objectives: ['Voar perto de flores e plantas', 'Usar Polinizar em plantações', 'Usar Pó Ofuscante em mobs'],
+      objectives: ['Voar perto de flores', 'Polinizar plantações', 'Comer frutas e plantas'],
       unlocks: [
-        { level: 3, name: 'Pólen Fértil', description: 'Raio de polinização maior.' },
+        { level: 3, name: 'Pólen Fértil', description: 'Área de polinização aumenta para 3x3.' },
         { level: 6, name: 'Corpo Resiliente', description: '+1 coração.' },
         {
           level: 10,

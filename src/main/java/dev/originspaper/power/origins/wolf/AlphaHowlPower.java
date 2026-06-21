@@ -20,11 +20,16 @@ public class AlphaHowlPower extends ActiveBuffPower {
         super(id, cooldownTicks, sound, effects);
     }
 
+    /** Current origin level, null-safe (1 if the player's data isn't loaded yet). */
+    private int levelOf(Player player) {
+        var data = plugin().data().get(player.getUniqueId());
+        return data == null ? 1 : data.level();
+    }
+
     @Override
     public long getCooldownTicks(Player player) {
         long base = super.getCooldownTicks(player);
-        int level = plugin().data().get(player.getUniqueId()).level();
-        if (level >= 6) { // Líder: recarga reduzida
+        if (levelOf(player) >= 6) { // Líder: recarga reduzida
             return (long) (base * 0.7);
         }
         return base;
@@ -35,8 +40,7 @@ public class AlphaHowlPower extends ActiveBuffPower {
         super.onActivate(player); // applies the buffs + plays the howl sound
         Location c = player.getLocation();
 
-        int level = plugin().data().get(player.getUniqueId()).level();
-        if (level >= 10) { // Alcateia: fortalece aliados
+        if (levelOf(player) >= 10) { // Alcateia: fortalece aliados
             for (Entity entity : player.getNearbyEntities(8, 8, 8)) {
                 if (entity instanceof Player ally && !ally.equals(player)) {
                     EffectUtil.apply(ally, PotionEffectType.STRENGTH, 200, 0);

@@ -1,0 +1,44 @@
+---
+/** Indicador de dificuldade 1–5 com estrelas preenchidas. <Stars value={3} /> */
+interface Props {
+  value: number;
+  max?: number;
+}
+const { value, max = 5 } = Astro.props;
+const stars = Array.from({ length: max }, (_, i) => i < value);
+const star =
+  '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>';
+---
+
+<span class="stars" role="img" aria-label={`Dificuldade ${value} de ${max}`}>
+  {
+    stars.map((on) => (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill={on ? 'currentColor' : 'none'}
+        stroke="currentColor"
+        stroke-width="1.5"
+        class={on ? 'on' : 'off'}
+        aria-hidden="true"
+        set:html={star}
+      />
+    ))
+  }
+</span>
+
+<style>
+  .stars {
+    display: inline-flex;
+    gap: 2px;
+    color: var(--gold);
+  }
+  .stars svg {
+    width: 14px;
+    height: 14px;
+  }
+  .stars .off {
+    color: var(--text-faint);
+    opacity: 0.5;
+  }
+</style>

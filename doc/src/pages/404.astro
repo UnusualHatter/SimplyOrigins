@@ -1,0 +1,51 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+---
+
+<Base title="Página não encontrada" description="A página que você procura não existe.">
+  <section class="container nf">
+    <span class="code">404</span>
+    <h1>Esta trilha não leva a lugar nenhum</h1>
+    <p>A página que você procura não existe ou foi movida.</p>
+    <div class="actions">
+      <a class="btn btn-gold btn-lg" href="/"><Icon name="arrow-left" size={16} /> Voltar ao início</a>
+      <a class="btn btn-outline btn-lg" href="/origins"><Icon name="layers" size={18} /> Ver Origins</a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .nf {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.8rem;
+    padding-block: clamp(3rem, 10vw, 6rem);
+  }
+  .code {
+    font-family: var(--font-display);
+    font-size: clamp(4rem, 16vw, 8rem);
+    font-weight: 800;
+    line-height: 1;
+    background: linear-gradient(120deg, var(--gold-bright), var(--gold));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .nf h1 {
+    font-size: clamp(1.4rem, 4vw, 2.2rem);
+  }
+  .nf p {
+    color: var(--text-dim);
+    max-width: 46ch;
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    justify-content: center;
+    margin-top: 1rem;
+  }
+</style>

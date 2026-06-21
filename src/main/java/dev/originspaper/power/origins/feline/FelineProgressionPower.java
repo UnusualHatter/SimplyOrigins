@@ -32,7 +32,7 @@ public class FelineProgressionPower extends ProgressionPower {
             return;
         }
         if (e.getEntity() instanceof Monster) {
-            award(killer, 12); // "Caçar criaturas hostis"
+            award(killer, 12); // "Matar monstros"
         } else if (e.getEntity() instanceof Animals) {
             award(killer, 6); // "Caçar animais"
         }
@@ -41,7 +41,7 @@ public class FelineProgressionPower extends ProgressionPower {
     @Override
     public void onMove(PlayerMoveEvent e) {
         if (e.getPlayer().isSprinting()) {
-            accrueDistance(e.getPlayer(), e, 30.0, 4); // "Perseguir presas"
+            accrueDistance(e.getPlayer(), e, 30.0, 4); // "Perseguir presas correndo"
         }
     }
 

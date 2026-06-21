@@ -39,14 +39,14 @@ public class FoxProgressionPower extends ProgressionPower {
         if (e.getEntity() instanceof Animals) {
             award(killer, 10); // "Caçar animais"
         } else if (e.getEntity() instanceof Monster) {
-            award(killer, 8); // "Caçar criaturas hostis"
+            award(killer, 8); // "Matar monstros"
         }
     }
 
     @Override
     public void onItemConsume(PlayerItemConsumeEvent e) {
         if (FRUIT.contains(e.getItem().getType())) {
-            award(e.getPlayer(), 6); // "Saborear frutas"
+            award(e.getPlayer(), 6); // "Comer frutas"
         }
     }
 

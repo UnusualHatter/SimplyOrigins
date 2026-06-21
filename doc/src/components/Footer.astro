@@ -1,0 +1,89 @@
+---
+import Icon from './Icon.astro';
+import { site } from '../data/site';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container foot">
+    <div class="foot-brand">
+      <span class="brand">
+        <Icon name="feather" size={18} />
+        {site.name}
+      </span>
+      <p>{site.tagline}</p>
+    </div>
+
+    <nav class="foot-nav" aria-label="Rodapé">
+      <a href="/">Início</a>
+      <a href="/origins">Origins</a>
+      <a href={site.discord} target="_blank" rel="noopener">Discord</a>
+    </nav>
+  </div>
+
+  <div class="container copy">
+    <span>© {year} {site.name}. Não afiliado à Mojang ou Microsoft.</span>
+    <span class="made">Feito com <Icon name="heart" size={13} /> para a comunidade</span>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    border-top: 1px solid var(--border);
+    background: color-mix(in srgb, var(--bg-2) 60%, transparent);
+    padding-block: 2rem 1.4rem;
+    margin-top: 3rem;
+  }
+  .foot {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.2rem 2rem;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-display);
+    font-weight: 700;
+    color: var(--gold);
+  }
+  .foot-brand p {
+    color: var(--text-faint);
+    font-size: 0.9rem;
+    margin-top: 0.3rem;
+  }
+  .foot-nav {
+    display: flex;
+    gap: 1.2rem;
+  }
+  .foot-nav a {
+    color: var(--text-dim);
+    font-weight: 500;
+    transition: color var(--t);
+  }
+  .foot-nav a:hover {
+    color: var(--gold-bright);
+  }
+  .copy {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+    justify-content: space-between;
+    margin-top: 1.4rem;
+    padding-top: 1.2rem;
+    border-top: 1px solid var(--border);
+    color: var(--text-faint);
+    font-size: 0.82rem;
+  }
+  .made {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+  .made :global(svg) {
+    color: var(--coral);
+  }
+</style>

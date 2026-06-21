@@ -31,7 +31,7 @@ public class BearProgressionPower extends ProgressionPower {
             return;
         }
         if (e.getEntity() instanceof Monster) {
-            award(killer, 12); // "Derrotar inimigos"
+            award(killer, 12); // "Matar monstros"
         } else if (e.getEntity() instanceof Animals) {
             award(killer, 6); // "Caçar animais"
         }

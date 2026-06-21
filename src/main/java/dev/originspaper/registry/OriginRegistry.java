@@ -39,6 +39,7 @@ import dev.originspaper.power.origins.owl.EcholocationPower;
 import dev.originspaper.power.origins.owl.NightHunterPower;
 import dev.originspaper.power.origins.owl.SilentFlightPower;
 import dev.originspaper.power.origins.rabbit.PredatorScentPower;
+import dev.originspaper.power.origins.rabbit.RabbitDashPower;
 import dev.originspaper.power.origins.wolf.AlphaHowlPower;
 import dev.originspaper.power.origins.wolf.CarnivoresBitePower;
 import dev.originspaper.power.origins.wolf.DayNightSpeedPower;
@@ -72,6 +73,7 @@ import dev.originspaper.power.shared.DietPower;
 import dev.originspaper.power.shared.DimensionAttributePower;
 import dev.originspaper.power.shared.ElytraFlightPower;
 import dev.originspaper.power.shared.ExhaustionPower;
+import dev.originspaper.power.shared.FallDamageThresholdPower;
 import dev.originspaper.power.shared.FireImmunityPower;
 import dev.originspaper.power.shared.FlightLaunchPower;
 import dev.originspaper.power.shared.LightArmorOnlyPower;
@@ -415,7 +417,7 @@ public class OriginRegistry {
                 new PowerInfo("Salto Montanhês", "Pulo permanente: salta cerca de 2 blocos de altura."),
                 new PowerInfo("Isolado", "Imune ao congelamento da neve em pó."),
                 new PowerInfo("Pequeno", "Possui 2 corações a menos."),
-                new PowerInfo("Estômago de Cabra", "Come qualquer coisa. Agachar + clique no ar com um bloco na mão para mordiscá-lo e recuperar meio ponto de fome."));
+                new PowerInfo("Estômago de Cabra", "Come quase qualquer coisa (menos comida, ferramentas, armas e armaduras). Agachar + clique com a direita no ar com o item na mão para mordiscá-lo e recuperar meio ponto de fome."));
         register(new Origin("goat", "Cabra", null, Material.GOAT_HORN, powers, infos));
     }
 
@@ -434,6 +436,8 @@ public class OriginRegistry {
                         Set.of(Material.APPLE, Material.GOLDEN_APPLE, Material.ENCHANTED_GOLDEN_APPLE,
                                 Material.SWEET_BERRIES, Material.GLOW_BERRIES, Material.MELON_SLICE),
                         "§cVocê não tem gosto por este alimento."),
+                new NutritionPower("fox:berry_appetite",
+                        m -> m == Material.SWEET_BERRIES, 2.0), // frutinhas vermelhas saciam o dobro
                 new TimidityPower("fox:timidity"),
                 new NoShieldPower("fox:weak_shield"),
                 new AttributeModifierPower("fox:small_body", Attribute.SCALE, -0.1),
@@ -446,6 +450,7 @@ public class OriginRegistry {
                 new PowerInfo("Fofo", "Imune ao frio, mas frágil ao fogo."),
                 new PowerInfo("Pequenininho", "Possui 2 corações a menos."),
                 new PowerInfo("Paladar Único", "Come apenas carnes e algumas frutas."),
+                new PowerInfo("Gosto por Frutas-silvestres", "Frutas-silvestres (amoras) saciam o dobro de fome."),
                 new PowerInfo("Timidez", "Fica fraco com pouca vida."),
                 new PowerInfo("Fraco", "Não consegue usar escudo."),
                 new PowerInfo("Corpo Pequeno", "Seu corpo é 10% menor."));
@@ -500,6 +505,8 @@ public class OriginRegistry {
                 new NutritionPower("rabbit:carrot_boost",
                         m -> m == Material.CARROT || m == Material.GOLDEN_CARROT, 1.5),
                 new PermanentEffectPower("rabbit:bouncing", PotionEffectType.JUMP_BOOST, 1),
+                new FallDamageThresholdPower("rabbit:light_landing", 5.0),
+                new RabbitDashPower("rabbit:dash"),
                 new PredatorScentPower("rabbit:predator_scent"),
                 new AttributeModifierPower("rabbit:small_body", Attribute.SCALE, -0.2),
                 new RabbitProgressionPower("rabbit:progression"));
@@ -508,6 +515,8 @@ public class OriginRegistry {
                 new PowerInfo("Presa", "Menos vida, porém mais veloz."),
                 new PowerInfo("Dieta Especial", "Só come cenouras, que alimentam 50% a mais."),
                 new PowerInfo("Aura Saltitante", "Impulso de pulo permanente."),
+                new PowerInfo("Aterrissagem Leve", "Não sofre dano em quedas de até 5 blocos."),
+                new PowerInfo("Disparada", "Agachar + F: um salto rápido para frente, só para movimentação (recarga de 7s)."),
                 new PowerInfo("Faro de Predador", "Sente lobos, raposas e gatos próximos e os destaca, dando tempo de fugir."),
                 new PowerInfo("Corpo Pequeno", "Seu corpo é 20% menor."));
         register(new Origin("rabbit", "Coelho", null, Material.RABBIT_FOOT, powers, infos));
@@ -520,7 +529,10 @@ public class OriginRegistry {
                 new DrawnToLightPower("moth:drawn_to_light"),
                 new FriendOfBeesPower("moth:friend_of_bees"),
                 new MothVisualsPower("moth:wing_dust_visual"),
+                new NutritionPower("moth:glow_diet",
+                        m -> m == Material.GLOW_BERRIES, 2.0), // glow berries sate twice as much
                 new AttributeModifierPower("moth:fragile", Attribute.MAX_HEALTH, -4.0),
+                new AttributeModifierPower("moth:small_body", Attribute.SCALE, -0.2),
                 new ArmorMaterialRestrictPower("moth:delicate_body",
                         item -> item.getType().name().startsWith("DIAMOND_")
                                 || item.getType().name().startsWith("NETHERITE_"),
@@ -530,9 +542,11 @@ public class OriginRegistry {
                 new PowerInfo("Asas Trêmulas", "Suas asas delicadas reduzem sua velocidade de queda permanentemente."),
                 new PowerInfo("Voo Gracioso", "Plana suavemente durante quedas e nunca sofre dano de queda."),
                 new PowerInfo("Polinizadora", "Agachada, faz plantações e mudas próximas crescerem como se recebessem Farinha de Osso, e o pólen cega inimigos por perto."),
-                new PowerInfo("Atraída pela Luz", "Recebe Regeneração I perto de luz artificial (tochas, lanternas, glowstone...) e fica lenta na escuridão total."),
+                new PowerInfo("Atraída pela Luz", "Recebe Regeneração I perto de luz artificial (tochas, lanternas, glowstone...) enquanto estiver ferida e alimentada, e fica lenta na escuridão total."),
                 new PowerInfo("Amiga das Abelhas", "Abelhas nunca ficam agressivas com você."),
+                new PowerInfo("Apetite Luminoso", "Frutas-brilhantes saciam o dobro de fome e dão saturação extra."),
                 new PowerInfo("Frágil", "Possui 2 corações a menos."),
+                new PowerInfo("Corpo Pequeno", "Seu corpo é 20% menor."),
                 new PowerInfo("Corpo Delicado", "Não pode usar armaduras de Diamante ou Netherite."));
         register(new Origin("moth", "Mariposa", null, Material.PHANTOM_MEMBRANE, powers, infos));
     }
