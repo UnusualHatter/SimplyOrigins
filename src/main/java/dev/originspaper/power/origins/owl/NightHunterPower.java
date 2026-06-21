@@ -10,7 +10,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.potion.PotionEffectType;
 
-/** At night: Speed 1, Night Vision, and small damage bonus. */
+/**
+ * At night: Speed 1 and a small damage bonus. Night vision is no longer handled here — the owl now
+ * has permanent night vision via a dedicated {@link dev.originspaper.power.shared.NightVisionPower},
+ * so this power must not toggle it (the two would fight each other every tick).
+ */
 public class NightHunterPower extends AbstractPower {
 
     public NightHunterPower(String id) {
@@ -21,7 +25,6 @@ public class NightHunterPower extends AbstractPower {
     public void onTick(Player player) {
         if (NightTimeEffectPower.isNight(player)) {
             EffectUtil.ensure(player, PotionEffectType.SPEED, 0);
-            EffectUtil.ensure(player, PotionEffectType.NIGHT_VISION, 0);
             if (plugin().tick() % 3 == 0) { // nocturnal hunter's glow
                 Location loc = player.getLocation().add(0, 1.0, 0);
                 ParticleUtil.spawnTrail(Particle.END_ROD, loc, 2, 0.3);
@@ -29,7 +32,6 @@ public class NightHunterPower extends AbstractPower {
             }
         } else {
             EffectUtil.clear(player, PotionEffectType.SPEED);
-            EffectUtil.clear(player, PotionEffectType.NIGHT_VISION);
         }
     }
 
@@ -43,6 +45,5 @@ public class NightHunterPower extends AbstractPower {
     @Override
     public void onRemove(Player player) {
         EffectUtil.clear(player, PotionEffectType.SPEED);
-        EffectUtil.clear(player, PotionEffectType.NIGHT_VISION);
     }
 }

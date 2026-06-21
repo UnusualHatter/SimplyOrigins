@@ -4,6 +4,7 @@ main: dev.originspaper.OriginsPaper
 api-version: "26.1"
 description: Sistema de Origens (Origins) para Paper 26.1.2
 authors: [OriginsPaper]
+softdepend: [AxGraves]
 commands:
   origin:
     description: Gerencie sua origem

@@ -354,23 +354,27 @@ public class OriginRegistry {
         List<PowerType> powers = List.of(
                 new ElytraFlightPower("owl:wings", "owl_wings", "Asas de Coruja"),
                 new SilentFlightPower("owl:silent_flight"),
+                new NightVisionPower("owl:night_vision"),
                 new NightHunterPower("owl:night_hunter"),
                 new EcholocationPower("owl:echolocation"),
                 new NoFallDamagePower("owl:soft_landing"),
                 new CarnivoreDietPower("owl:carnivore"),
                 new DayDazedPower("owl:day_dazed"),
-                new LightArmorOnlyPower("owl:light_frame", 5),
+                new ArmorMaterialRestrictPower("owl:no_netherite",
+                        item -> item.getType().name().startsWith("NETHERITE_"),
+                        "§cSeu corpo leve não suporta armaduras de netherite."),
                 new AttributeModifierPower("owl:small_body", Attribute.SCALE, -0.1),
                 new OwlProgressionPower("owl:progression"));
         List<PowerInfo> infos = List.of(
                 new PowerInfo("Asas de Coruja", "Elytra permanente que volta sozinha."),
                 new PowerInfo("Voo Silencioso", "Reduz o alcance de detecção dos mobs ao planar."),
-                new PowerInfo("Caçador Noturno", "De noite ganha Velocidade I, Visão Noturna e bônus de dano."),
+                new PowerInfo("Visão Noturna", "Enxerga no escuro a qualquer hora, de dia ou de noite."),
+                new PowerInfo("Caçador Noturno", "De noite ganha Velocidade I e bônus de dano."),
                 new PowerInfo("Ecolocalização", "Agachar + F: Revela entidades próximas através das paredes."),
                 new PowerInfo("Aterrissagem Suave", "Não sofre dano de queda."),
                 new PowerInfo("Carnívoro", "Apenas carne."),
                 new PowerInfo("Cegueira Diurna", "Fica exausto e fraco sob a luz solar direta."),
-                new PowerInfo("Leve", "Sem armaduras pesadas."),
+                new PowerInfo("Leve", "Pode usar armaduras até diamante, mas não netherite."),
                 new PowerInfo("Corpo Pequeno", "Seu corpo é 10% menor."));
         register(new Origin("owl", "Coruja", null, Material.FEATHER, powers, infos));
     }

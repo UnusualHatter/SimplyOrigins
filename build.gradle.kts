@@ -8,10 +8,14 @@ version = "1.1.7"
 repositories {
     mavenCentral()
     maven("https://repo.papermc.io/repository/maven-public/")
+    maven("https://repo.artillex-studios.com/releases/")
 }
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:26.1.2.build.+")
+    // Soft integration: keep the origins' permanent wings out of AxGraves death graves.
+    // compileOnly + softdepend in plugin.yml — the plugin runs fine without AxGraves installed.
+    compileOnly("com.artillexstudios:AxGraves:1.26.0") { isTransitive = false }
 }
 
 java {

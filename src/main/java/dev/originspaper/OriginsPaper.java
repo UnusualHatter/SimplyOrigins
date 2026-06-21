@@ -3,6 +3,7 @@ package dev.originspaper;
 import dev.originspaper.api.PowerType;
 import dev.originspaper.command.OriginCommand;
 import dev.originspaper.listener.ActiveSkillListener;
+import dev.originspaper.listener.AxGravesIntegrationListener;
 import dev.originspaper.listener.ElytraGuardListener;
 import dev.originspaper.listener.OriginSelectionListener;
 import dev.originspaper.listener.PlacedBlockTracker;
@@ -44,6 +45,13 @@ public final class OriginsPaper extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new OriginSelectionListener(this), this);
         getServer().getPluginManager().registerEvents(new ElytraGuardListener(this), this);
         getServer().getPluginManager().registerEvents(new PlacedBlockTracker(), this);
+
+        // Optional AxGraves integration — only touch its classes if the plugin is actually present,
+        // otherwise instantiating the listener would throw NoClassDefFoundError (softdepend).
+        if (getServer().getPluginManager().getPlugin("AxGraves") != null) {
+            getServer().getPluginManager().registerEvents(new AxGravesIntegrationListener(), this);
+            log.info("AxGraves detected — grave integration enabled (origin wings stay out of graves).");
+        }
 
         OriginCommand command = new OriginCommand(this);
         if (getCommand("origin") != null) {
