@@ -1,8 +1,10 @@
 package dev.originspaper.power.origins.moth;
 
 import dev.originspaper.power.shared.ProgressionPower;
+import dev.originspaper.util.FoodUtil;
 import dev.originspaper.util.GroundUtil;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
@@ -26,7 +28,13 @@ public class MothProgressionPower extends ProgressionPower {
 
     @Override
     public void onItemConsume(PlayerItemConsumeEvent e) {
-        award(e.getPlayer(), 6); // "Comer frutas e plantas"
+        // "Comer frutas e plantas": only plant-based foods count. Restricting to edible non-meat
+        // items keeps this in step with the other origins' diet XP and closes an XP farm — drinks
+        // such as milk, potions and water bottles aren't edible, so they no longer grant progression.
+        Material type = e.getItem().getType();
+        if (type.isEdible() && !FoodUtil.isMeat(type)) {
+            award(e.getPlayer(), 6); // "Comer frutas e plantas"
+        }
     }
 
     @Override

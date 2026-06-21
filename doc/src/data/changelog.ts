@@ -13,6 +13,13 @@ export interface ChangelogEntry {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: '1.2.1',
+    date: '2026-06-21',
+    fixed: [
+      'Mariposa: o objetivo "Comer frutas e plantas" só rende XP com alimentos vegetais. Carne e bebidas (leite, poções, garrafas de água) não contam mais — fechando um farm de progressão de XP.',
+    ],
+  },
+  {
     version: '1.2.0',
     date: '2026-06-21',
     added: [
