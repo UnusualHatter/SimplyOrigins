@@ -2,7 +2,7 @@
 import Base from '../../../layouts/Base.astro';
 import Icon from '../../../components/Icon.astro';
 import WikiTabs from '../../../components/WikiTabs.astro';
-import { features, featureCategories, featureCount, featureCode } from '../../../data/features';
+import { features, featureCategories, featureCode } from '../../../data/features';
 
 const byCategory = featureCategories.map((c) => ({
   ...c,
@@ -54,11 +54,6 @@ const byCategory = featureCategories.map((c) => ({
         </section>
       ))
     }
-
-    <p class="src-note">
-      São {featureCount} recursos além das Origens e dos encantamentos. Alguns dependem de
-      permissão ou do seu rank.
-    </p>
   </div>
 </Base>
 
@@ -132,14 +127,5 @@ const byCategory = featureCategories.map((c) => ({
     color: var(--green);
     flex-shrink: 0;
     margin-top: 0.15rem;
-  }
-  .src-note {
-    color: var(--text-faint);
-    font-size: 0.82rem;
-    max-width: 70ch;
-    margin-top: 1.5rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--line);
-    line-height: 1.6;
   }
 </style>

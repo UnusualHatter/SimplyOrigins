@@ -13,7 +13,7 @@ interface Props {
 }
 const { title, description = site.description, image = '/logo.svg' } = Astro.props;
 
-const pageTitle = title ? `${title} · ${site.name}` : `${site.name} · Origins SMP Java e Bedrock`;
+const pageTitle = title ? `${title} · ${site.name}` : `${site.name} · Servidor de Minecraft Java e Bedrock`;
 // Astro.site is only defined when `site` is set in astro.config.mjs.
 // Fall back to the request origin so the layout never crashes during local dev.
 const baseUrl = Astro.site ?? new URL(Astro.url.origin);

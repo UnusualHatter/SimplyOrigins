@@ -48,7 +48,7 @@ export const compatItems: CompatItem[] = [
     category: 'suportado',
     status: 'Suportado',
     tone: 'ok',
-    desc: 'Aumenta MUITO a distância de renderização, com LOD (o mundo ao longe vira blocões). O servidor manda os dados pro mod funcionar de verdade aqui.',
+    desc: 'Aumenta a distância de renderização usando o sistema de LODs (Level Of Detail), O servidor oferece compatibilidade com tal tipo de geração usando o Voxy!',
     note: 'Plugin: Voxy Server-Side.',
   },
   {
@@ -73,7 +73,7 @@ export const compatItems: CompatItem[] = [
   },
   {
     slug: 'versions',
-    name: 'Várias versões do Java',
+    name: 'Várias versões do Minecraft',
     category: 'acesso',
     status: 'Funciona',
     tone: 'ok',

@@ -29,10 +29,9 @@ const toc = [
       <h1>Feather Flux</h1>
       <p class="lead">{site.description}</p>
       <div class="spec">
-        <span class="tag">Origins SMP</span>
         <span class="tag">Java + Bedrock</span>
-        <span class="tag">v{site.meta.version}</span>
-        <span class="tag">Build {site.meta.build}</span>
+        <span class="tag">MC {site.meta.version}</span>
+        <span class="tag">v{site.meta.build}</span>
       </div>
     </header>
 
@@ -40,7 +39,6 @@ const toc = [
     <section class="section-label">
       <span class="sq"></span>
       <h2>Conexão</h2>
-      <span class="count">Entre e escolha sua origem</span>
     </section>
 
     <div class="conn panel">
@@ -58,7 +56,7 @@ const toc = [
       }
     </div>
     <p class="conn-note">
-      Já tem o jogo? Use o endereço da sua edição no Minecraft. É a primeira vez?
+      Já tem o jogo? Só adicionar o IP do servidor na sual lista de servidores!
       <a href={site.discord} target="_blank" rel="noopener">Entre no Discord</a> para tirar dúvidas.
     </p>
 
@@ -66,7 +64,6 @@ const toc = [
     <section class="section-label">
       <span class="sq"></span>
       <h2>Índice da base</h2>
-      <span class="count">{toc.length} seções</span>
     </section>
 
     <nav class="toc" aria-label="Seções da documentação">
@@ -75,7 +72,6 @@ const toc = [
           <a class="toc-row" href={t.href}>
             <span class="toc-n">{t.n}</span>
             <span class="toc-name">{t.name}</span>
-            <span class="toc-count">{t.count}</span>
             <span class="toc-desc">{t.desc}</span>
             <span class="toc-arr">→</span>
           </a>
@@ -190,7 +186,7 @@ const toc = [
   }
   .toc-row {
     display: grid;
-    grid-template-columns: 2rem 11rem 3rem 1fr auto;
+    grid-template-columns: 2rem 11rem 1fr auto;
     align-items: center;
     gap: 1rem;
     padding: 0.95rem 1.1rem;
@@ -218,12 +214,6 @@ const toc = [
   .toc-name {
     font-size: 0.98rem;
     font-weight: 550;
-  }
-  .toc-count {
-    font-family: var(--font-mono);
-    font-size: 0.8rem;
-    color: var(--text-faint);
-    text-align: right;
   }
   .toc-desc {
     font-size: 0.84rem;
@@ -261,10 +251,10 @@ const toc = [
       grid-area: val;
     }
     .toc-row {
-      grid-template-columns: 1.6rem 1fr auto;
+      grid-template-columns: 1.6rem 1fr;
       grid-template-areas:
-        'n name count'
-        'desc desc desc';
+        'n name'
+        'desc desc';
       gap: 0.35rem 0.9rem;
     }
     .toc-n {
@@ -272,10 +262,6 @@ const toc = [
     }
     .toc-name {
       grid-area: name;
-    }
-    .toc-count {
-      grid-area: count;
-      text-align: right;
     }
     .toc-desc {
       grid-area: desc;
