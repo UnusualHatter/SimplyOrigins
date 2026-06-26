@@ -14,10 +14,10 @@ const conn = [
 ];
 
 const toc = [
-  { n: '01', name: 'Origens', count: `${origins.length}`, href: '/wiki/origens', desc: 'As 16 origens jogáveis: poderes, fraquezas e progressão própria do nível 1 ao 10.' },
-  { n: '02', name: 'Encantamentos', count: `${enchantmentCount}`, href: '/wiki/encantamentos', desc: 'Encantos personalizados além dos do Minecraft: o que faz, pra que serve e onde achar.' },
+  { n: '01', name: 'Origens', count: `${origins.length}`, href: '/wiki/origens', desc: 'As 16 origens jogáveis: poderes, fraquezas e progressão do nível 1 ao 10.' },
+  { n: '02', name: 'Encantamentos', count: `${enchantmentCount}`, href: '/wiki/encantamentos', desc: 'Encantos personalizados além dos do Minecraft padrão.' },
   { n: '03', name: 'Recursos', count: `${featureCount}`, href: '/wiki/recursos', desc: 'Comandos e funcionalidades: casa, teleporte, viagem rápida, lápides, mídia.' },
-  { n: '04', name: 'Compatibilidade', count: `${compatCount}`, href: '/wiki/compatibilidade', desc: 'Mods client-side suportados, edições e versões para montar seu modpack.' },
+  { n: '04', name: 'Compatibilidade', count: `${compatCount}`, href: '/wiki/compatibilidade', desc: 'Mods client-side suportados, edições e versões para montar seu próprio modpack.' },
   { n: '05', name: 'Changelog', count: '—', href: '/changelog', desc: 'Registro técnico do que foi adicionado, alterado e corrigido a cada versão.' },
 ];
 ---
@@ -25,7 +25,7 @@ const toc = [
 <Base>
   <div class="container">
     <header class="doc-head">
-      <span class="eyebrow">Knowledge Base / Visão geral</span>
+      <span class="eyebrow">Visão geral</span>
       <h1>Feather Flux</h1>
       <p class="lead">{site.description}</p>
       <div class="spec">
