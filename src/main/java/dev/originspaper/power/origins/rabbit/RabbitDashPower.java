@@ -8,6 +8,7 @@ import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.util.Vector;
 
@@ -62,6 +63,20 @@ public class RabbitDashPower extends AbstractPower implements ActivePowerType {
             dashing.remove(player.getUniqueId());
         } else {
             ParticleUtil.spawnTrail(Particle.CLOUD, player.getLocation().add(0, 0.2, 0), 1, 0.15);
+        }
+    }
+
+    /**
+     * Coelho balance: while mid-dash a spear hit can't exceed 8 (4 hearts), so the
+     * dash + spear charge-attack combo can't burst players down.
+     */
+    @Override
+    public void onDamageByEntity(EntityDamageByEntityEvent e) {
+        if (!(e.getDamager() instanceof Player player)) {
+            return;
+        }
+        if (dashing.containsKey(player.getUniqueId()) && isHoldingSpear(player) && e.getDamage() > 8.0) {
+            e.setDamage(8.0);
         }
     }
 

@@ -99,10 +99,12 @@ Sem vantagens nem desvantagens.
 
 ### 🐰 Coelho
 - **Rico em Caroteno:** visão noturna permanente.
-- **Presa:** menos vida, mais velocidade.
-- **Dieta Especial:** só come cenouras, que alimentam o dobro.
+- **Presa:** menos vida, porém mais veloz.
+- **Dieta Especial:** só come cenouras, que alimentam 50% a mais.
 - **Aura Saltitante:** impulso de pulo permanente.
-- **Reabastecimento:** acelera o crescimento de plantações próximas.
+- **Aterrissagem Leve:** sem dano em quedas de até 5 blocos.
+- **Disparada** (`Agachar + F`): salto rápido para frente, só para movimentação (recarga de 7s).
+- **Faro de Predador:** sente lobos, raposas e gatos próximos e os destaca, dando tempo de fugir.
 - **Corpo Pequeno:** 20% menor.
 
 ### 🐐 Cabra
@@ -186,4 +188,4 @@ Usa o Gradle Wrapper interno (precisa só de Java 25 instalado).
 ./gradlew build --stacktrace    # compila mostrando detalhes de erros
 ```
 
-O `.jar` sai em `build/libs/originspaper-1.1.0.jar`. Copie para a pasta `plugins/` de um servidor Paper 26.1.2 e inicie o servidor.
+O `.jar` sai em `build/libs/originspaper-<versão>.jar` (ex.: `originspaper-1.2.2.jar`). Copie para a pasta `plugins/` de um servidor Paper 26.1.2 e inicie o servidor.

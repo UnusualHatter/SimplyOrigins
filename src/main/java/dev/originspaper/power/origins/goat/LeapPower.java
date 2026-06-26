@@ -12,6 +12,7 @@ import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.util.Vector;
 
@@ -135,6 +136,20 @@ public class LeapPower extends AbstractPower implements ActivePowerType {
         }
         if (hit) {
             plugin().progression().awardXp(owner, 8); // "Acertar Cabeçadas"
+        }
+    }
+
+    /**
+     * Cabra balance: while mid-charge a spear hit can't exceed 8 (4 hearts). The charge already
+     * detonates its own blast, so a spear charge-attack on top shouldn't one-combo players.
+     */
+    @Override
+    public void onDamageByEntity(EntityDamageByEntityEvent e) {
+        if (!(e.getDamager() instanceof Player player)) {
+            return;
+        }
+        if (leaping.containsKey(player.getUniqueId()) && isHoldingSpear(player) && e.getDamage() > 8.0) {
+            e.setDamage(8.0);
         }
     }
 

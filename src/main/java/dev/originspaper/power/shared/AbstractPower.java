@@ -26,4 +26,12 @@ public abstract class AbstractPower implements PowerType {
 
     @Override
     public void onRemove(org.bukkit.entity.Player player) {}
+
+    /**
+     * True when the player's main hand holds any tier of spear — the vanilla 26.x charge weapon.
+     * Used to cap coelho/cabra dash hits (RabbitDashPower / LeapPower / RamPower).
+     */
+    protected static boolean isHoldingSpear(org.bukkit.entity.Player player) {
+        return player.getInventory().getItemInMainHand().getType().name().endsWith("_SPEAR");
+    }
 }
