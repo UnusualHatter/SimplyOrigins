@@ -1,0 +1,143 @@
+---
+import Base from '../../../layouts/Base.astro';
+import WikiTabs from '../../../components/WikiTabs.astro';
+import { compatItems, compatCategories, compatCode, type CompatTone } from '../../../data/compat';
+
+const byCategory = compatCategories.map((c) => ({
+  ...c,
+  list: compatItems.filter((i) => i.category === c.key),
+}));
+
+const toneColor: Record<CompatTone, string> = {
+  ok: 'var(--green)',
+  rec: 'var(--gold)',
+  info: 'var(--blue)',
+};
+---
+
+<Base
+  title="Compatibilidade · Wiki"
+  description="Compatibilidade do Feather Flux com mods client-side: Customizable Player Models, Voxy, Simple Voice Chat, Bedrock e várias versões. Pra montar seu modpack."
+>
+  <div class="container">
+    <header class="doc-head">
+      <span class="eyebrow">Wiki / Compatibilidade</span>
+      <h1>Compatibilidade</h1>
+      <p class="lead">
+        Quer montar um modpack só do seu lado (client-side)? A regra é simples: mod que roda só no
+        seu cliente funciona. E alguns o servidor suporta de propósito, então funcionam de verdade
+        aqui.
+      </p>
+    </header>
+    <WikiTabs active="compatibilidade" />
+
+    {
+      byCategory.map((c) => (
+        <section class="compat-section">
+          <div class="section-label" style={`--sq:${c.color}`}>
+            <span class="sq" />
+            <h2>{c.label}</h2>
+            <span class="count">{c.list.length} itens</span>
+          </div>
+          <div class="compat-grid">
+            {c.list.map((i) => (
+              <article class="compat-card" id={i.slug}>
+                <div class="cc-head">
+                  <span class="refcode">{compatCode(i)}</span>
+                  <span class="cc-status" style={`--tone:${toneColor[i.tone]}`}>
+                    {i.status}
+                  </span>
+                </div>
+                <h3>{i.name}</h3>
+                <p class="cc-desc">{i.desc}</p>
+                {i.note && <span class="cc-note">{i.note}</span>}
+              </article>
+            ))}
+          </div>
+        </section>
+      ))
+    }
+
+    <p class="src-note">
+      Os endereços de Java e Bedrock ficam na <a href="/">página inicial</a>. Em caso de dúvida,
+      entre no Discord.
+    </p>
+  </div>
+</Base>
+
+<style>
+  .compat-section {
+    margin-bottom: 1.5rem;
+  }
+  .compat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+    gap: 0.7rem;
+  }
+  .compat-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+    padding: 1rem 1.05rem;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    scroll-margin-top: calc(var(--topbar-h) + 1.5rem);
+    transition: border-color var(--t);
+  }
+  .compat-card:hover {
+    border-color: var(--line-3);
+  }
+  .compat-card:target {
+    border-color: var(--gold);
+  }
+  .cc-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.6rem;
+  }
+  .cc-status {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--tone);
+    border: 1px solid color-mix(in srgb, var(--tone) 45%, transparent);
+    padding: 0.15rem 0.45rem;
+    white-space: nowrap;
+  }
+  .compat-card h3 {
+    font-size: 1.02rem;
+    font-weight: 600;
+    line-height: 1.25;
+  }
+  .cc-desc {
+    color: var(--text-dim);
+    font-size: 0.875rem;
+    line-height: 1.55;
+  }
+  .cc-note {
+    margin-top: auto;
+    align-self: flex-start;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--text-faint);
+    border: 1px solid var(--line-2);
+    padding: 0.2rem 0.45rem;
+  }
+  .src-note {
+    color: var(--text-faint);
+    font-size: 0.82rem;
+    max-width: 70ch;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+    line-height: 1.6;
+  }
+  .src-note a {
+    color: var(--gold-bright);
+  }
+  .src-note a:hover {
+    text-decoration: underline;
+  }
+</style>

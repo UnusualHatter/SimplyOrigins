@@ -4,48 +4,45 @@ import Icon from '../components/Icon.astro';
 ---
 
 <Base title="Página não encontrada" description="A página que você procura não existe.">
-  <section class="container nf">
+  <div class="container nf">
+    <span class="eyebrow">Erro / HTTP 404</span>
     <span class="code">404</span>
-    <h1>Esta trilha não leva a lugar nenhum</h1>
-    <p>A página que você procura não existe ou foi movida.</p>
+    <h1>Recurso não encontrado</h1>
+    <p>A página que você procura não existe ou foi movida. Use a busca (Ctrl K) ou volte ao índice.</p>
     <div class="actions">
-      <a class="btn btn-gold btn-lg" href="/"><Icon name="arrow-left" size={16} /> Voltar ao início</a>
-      <a class="btn btn-outline btn-lg" href="/origins"><Icon name="layers" size={18} /> Ver Origins</a>
+      <a class="btn btn-primary" href="/"><Icon name="arrow-left" size={14} /> Início</a>
+      <a class="btn" href="/wiki/origens">Ver origens</a>
     </div>
-  </section>
+  </div>
 </Base>
 
 <style>
   .nf {
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.8rem;
-    padding-block: clamp(3rem, 10vw, 6rem);
+    padding-block: clamp(2.5rem, 8vw, 5rem);
+    max-width: 60ch;
   }
   .code {
-    font-family: var(--font-display);
-    font-size: clamp(4rem, 16vw, 8rem);
-    font-weight: 800;
+    display: block;
+    font-family: var(--font-mono);
+    font-size: clamp(4rem, 15vw, 7rem);
+    font-weight: 500;
     line-height: 1;
-    background: linear-gradient(120deg, var(--gold-bright), var(--gold));
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+    letter-spacing: -0.03em;
+    color: var(--text);
+    margin: 1rem 0 0.75rem;
   }
   .nf h1 {
-    font-size: clamp(1.4rem, 4vw, 2.2rem);
+    font-size: clamp(1.4rem, 4vw, 2rem);
   }
   .nf p {
     color: var(--text-dim);
-    max-width: 46ch;
+    margin-top: 0.75rem;
+    line-height: 1.6;
   }
   .actions {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.8rem;
-    justify-content: center;
-    margin-top: 1rem;
+    gap: 0.7rem;
+    margin-top: 1.75rem;
   }
 </style>

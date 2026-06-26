@@ -1,98 +1,212 @@
 ---
+/**
+ * Top bar — no espírito de uma command palette: trilha (breadcrumbs) à esquerda,
+ * busca global (Ctrl/⌘ K) à direita. Sem botões grandes, sem CTA.
+ */
 import Icon from './Icon.astro';
-import { site } from '../data/site';
+import { getOrigin } from '../data/origins';
 
-const path = Astro.url.pathname;
-const isActive = (href: string) =>
-  href === '/' ? path === '/' : path.startsWith(href.replace('/#', '/'));
+const path = Astro.url.pathname.replace(/\/+$/, '') || '/';
+
+type Crumb = { label: string; href?: string };
+
+function crumbsFor(p: string): Crumb[] {
+  if (p === '/') return [{ label: 'Início' }];
+  if (p === '/wiki') return [{ label: 'Wiki' }];
+  if (p === '/changelog') return [{ label: 'Changelog' }];
+
+  const wikiMap: Record<string, string> = {
+    origens: 'Origens',
+    encantamentos: 'Encantamentos',
+    recursos: 'Recursos',
+    compatibilidade: 'Compatibilidade',
+  };
+  if (p.startsWith('/wiki/')) {
+    const seg = p.split('/')[2];
+    return [{ label: 'Wiki', href: '/wiki' }, { label: wikiMap[seg] ?? seg }];
+  }
+  if (p.startsWith('/origins/')) {
+    const slug = p.split('/')[2];
+    const o = getOrigin(slug);
+    return [
+      { label: 'Wiki', href: '/wiki' },
+      { label: 'Origens', href: '/wiki/origens' },
+      { label: o ? o.name : slug },
+    ];
+  }
+  return [{ label: 'Documentação' }];
+}
+
+const crumbs = crumbsFor(path);
 ---
 
-<header class="site-header">
-  <div class="container bar">
-    <a href="/" class="brand" aria-label={`${site.name} — início`}>
-      <span class="brand-glyph"><Icon name="feather" size={20} /></span>
-      <span class="brand-name">{site.name}</span>
-    </a>
+<header class="topbar">
+  <div class="tb-left">
+    <button class="nav-toggle" type="button" id="nav-toggle" aria-label="Abrir índice" aria-controls="sidebar">
+      <Icon name="menu" size={18} />
+    </button>
 
-    <nav class="nav" aria-label="Navegação principal">
+    <nav class="crumbs" aria-label="Trilha">
+      <a href="/" class="crumb-root" aria-label="Início"><Icon name="feather" size={14} /></a>
       {
-        site.nav.map((item) => (
-          <a href={item.href} class:list={['nav-link', { active: isActive(item.href) }]}>
-            {item.label}
-          </a>
+        crumbs.map((c) => (
+          <>
+            <span class="slash">/</span>
+            {c.href ? (
+              <a href={c.href} class="crumb">
+                {c.label}
+              </a>
+            ) : (
+              <span class="crumb current">{c.label}</span>
+            )}
+          </>
         ))
       }
     </nav>
-
-    <a href={site.discord} class="btn btn-gold btn-sm" target="_blank" rel="noopener">
-      <Icon name="play" size={15} /> Entrar
-    </a>
   </div>
+
+  <button class="cmdk" type="button" id="cmdk-open" aria-label="Buscar (Ctrl K)">
+    <Icon name="search" size={15} />
+    <span class="cmdk-text">Buscar</span>
+    <span class="cmdk-keys">
+      <span class="kbd">Ctrl</span><span class="kbd">K</span>
+    </span>
+  </button>
 </header>
 
 <style>
-  .site-header {
+  .topbar {
     position: sticky;
     top: 0;
-    z-index: 50;
-    backdrop-filter: blur(12px);
-    background: color-mix(in srgb, var(--bg-2) 80%, transparent);
-    border-bottom: 1px solid var(--border);
-  }
-  .bar {
+    z-index: 60;
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 1rem;
-    height: 64px;
+    height: var(--topbar-h);
+    padding-inline: clamp(1rem, 3vw, 1.5rem);
+    background: color-mix(in srgb, var(--bg) 86%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
   }
-  .brand {
+  .tb-left {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 0;
+  }
+
+  .nav-toggle {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    color: var(--text-dim);
+    background: transparent;
+    border: 1px solid var(--line-2);
+    cursor: pointer;
+    transition:
+      color var(--t),
+      border-color var(--t);
+  }
+  .nav-toggle:hover {
+    color: var(--text);
+    border-color: var(--line-3);
+  }
+
+  .crumbs {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 0;
+    overflow: hidden;
+    font-family: var(--font-mono);
+    font-size: 0.76rem;
+  }
+  .crumb-root {
+    display: inline-flex;
+    color: var(--text-faint);
+    transition: color var(--t);
+  }
+  .crumb-root:hover {
+    color: var(--gold);
+  }
+  .slash {
+    color: var(--text-mute);
+  }
+  .crumb {
+    color: var(--text-faint);
+    white-space: nowrap;
+    transition: color var(--t);
+  }
+  a.crumb:hover {
+    color: var(--text-dim);
+  }
+  .crumb.current {
+    color: var(--text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* ---- Command-palette trigger ---- */
+  .cmdk {
     display: inline-flex;
     align-items: center;
     gap: 0.6rem;
-    font-family: var(--font-display);
-    font-weight: 700;
-    font-size: 1.15rem;
-  }
-  .brand-glyph {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 34px;
-    height: 34px;
-    border-radius: 10px;
-    color: var(--gold);
-    background: color-mix(in srgb, var(--gold) 14%, transparent);
-    border: 1px solid color-mix(in srgb, var(--gold) 35%, transparent);
-  }
-  .nav {
-    display: flex;
-    gap: 0.4rem;
-    margin-left: auto;
-  }
-  .nav-link {
-    padding: 0.5rem 0.85rem;
-    border-radius: 999px;
-    font-weight: 600;
-    font-size: 0.95rem;
-    color: var(--text-dim);
+    height: 32px;
+    padding: 0 0.55rem 0 0.7rem;
+    color: var(--text-faint);
+    background: var(--panel);
+    border: 1px solid var(--line-2);
+    cursor: pointer;
     transition:
       color var(--t),
-      background var(--t);
+      border-color var(--t);
   }
-  .nav-link:hover {
-    color: var(--text);
-    background: var(--glass-strong);
+  .cmdk:hover {
+    color: var(--text-dim);
+    border-color: var(--line-3);
   }
-  .nav-link.active {
-    color: var(--gold-bright);
+  .cmdk-text {
+    font-size: 0.8rem;
   }
-  .btn-sm {
-    padding: 0.5rem 0.95rem;
-    font-size: 0.9rem;
+  .cmdk-keys {
+    display: inline-flex;
+    gap: 0.2rem;
+  }
+
+  @media (max-width: 900px) {
+    .nav-toggle {
+      display: inline-flex;
+    }
   }
   @media (max-width: 560px) {
-    .nav {
+    .cmdk-text {
+      display: none;
+    }
+    .cmdk {
+      padding-inline: 0.5rem;
+    }
+  }
+  @media (max-width: 420px) {
+    .crumbs .crumb:not(.current),
+    .crumbs .slash:first-of-type {
       display: none;
     }
   }
 </style>
+<script>
+  // Alterna o índice (sidebar) no mobile.
+  const toggle = document.getElementById('nav-toggle');
+  const root = document.documentElement;
+  const closeNav = () => root.removeAttribute('data-nav-open');
+  toggle?.addEventListener('click', () => {
+    if (root.hasAttribute('data-nav-open')) closeNav();
+    else root.setAttribute('data-nav-open', '');
+  });
+  document.querySelector('.nav-scrim')?.addEventListener('click', closeNav);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeNav();
+  });
+</script>

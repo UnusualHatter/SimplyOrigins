@@ -1,0 +1,145 @@
+---
+import Base from '../../../layouts/Base.astro';
+import Icon from '../../../components/Icon.astro';
+import WikiTabs from '../../../components/WikiTabs.astro';
+import { features, featureCategories, featureCount, featureCode } from '../../../data/features';
+
+const byCategory = featureCategories.map((c) => ({
+  ...c,
+  list: features.filter((f) => f.category === c.key),
+}));
+---
+
+<Base
+  title="Recursos · Wiki"
+  description="Recursos do servidor Feather Flux: casa e teleporte (/home, /tpa), pontos de viagem, lápides, discos personalizados, imagens em mapas e mais."
+>
+  <div class="container">
+    <header class="doc-head">
+      <span class="eyebrow">Wiki / Recursos</span>
+      <h1>Recursos do servidor</h1>
+      <p class="lead">
+        As coisas do dia a dia que facilitam a vida: casa, teleporte, viagem rápida, lápides e uns
+        extras. Comandos e como usar.
+      </p>
+    </header>
+    <WikiTabs active="recursos" />
+
+    {
+      byCategory.map((c) => (
+        <section class="feat-section">
+          <div class="section-label" style={`--sq:${c.color}`}>
+            <span class="sq" />
+            <h2>{c.label}</h2>
+            <span class="count">{c.list.length} itens</span>
+          </div>
+          <div class="feat-grid">
+            {c.list.map((f) => (
+              <article class="feat-card" id={f.slug}>
+                <div class="fc-head">
+                  <span class="refcode">{featureCode(f)}</span>
+                  {f.plugin && <span class="fc-plugin">{f.plugin}</span>}
+                </div>
+                <h3>{f.name}</h3>
+                {f.command && <code class="fc-cmd">{f.command}</code>}
+                <p class="fc-desc">{f.desc}</p>
+                {f.note && (
+                  <p class="fc-note">
+                    <Icon name="check" size={13} /> {f.note}
+                  </p>
+                )}
+              </article>
+            ))}
+          </div>
+        </section>
+      ))
+    }
+
+    <p class="src-note">
+      São {featureCount} recursos além das Origens e dos encantamentos. Alguns dependem de
+      permissão ou do seu rank.
+    </p>
+  </div>
+</Base>
+
+<style>
+  .feat-section {
+    margin-bottom: 1.5rem;
+  }
+  .feat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 0.7rem;
+  }
+  .feat-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+    padding: 1rem 1.05rem;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    scroll-margin-top: calc(var(--topbar-h) + 1.5rem);
+    transition: border-color var(--t);
+  }
+  .feat-card:hover {
+    border-color: var(--line-3);
+  }
+  .feat-card:target {
+    border-color: var(--gold);
+  }
+  .fc-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.6rem;
+  }
+  .fc-plugin {
+    font-family: var(--font-mono);
+    font-size: 0.58rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-mute);
+  }
+  .feat-card h3 {
+    font-size: 1.02rem;
+    font-weight: 600;
+    line-height: 1.25;
+  }
+  .fc-cmd {
+    align-self: flex-start;
+    font-family: var(--font-mono);
+    font-size: 0.76rem;
+    color: var(--gold-bright);
+    background: var(--panel-3);
+    border: 1px solid var(--line-2);
+    padding: 0.22rem 0.5rem;
+  }
+  .fc-desc {
+    color: var(--text-dim);
+    font-size: 0.875rem;
+    line-height: 1.55;
+  }
+  .fc-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.4rem;
+    margin-top: auto;
+    padding-top: 0.3rem;
+    font-size: 0.8rem;
+    color: var(--text-faint);
+  }
+  .fc-note :global(svg) {
+    color: var(--green);
+    flex-shrink: 0;
+    margin-top: 0.15rem;
+  }
+  .src-note {
+    color: var(--text-faint);
+    font-size: 0.82rem;
+    max-width: 70ch;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+    line-height: 1.6;
+  }
+</style>

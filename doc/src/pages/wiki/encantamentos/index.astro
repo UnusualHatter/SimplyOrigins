@@ -1,0 +1,271 @@
+---
+import Base from '../../../layouts/Base.astro';
+import Icon from '../../../components/Icon.astro';
+import WikiTabs from '../../../components/WikiTabs.astro';
+import {
+  enchantments,
+  enchantCategories,
+  enchantSources,
+  enchantmentCount,
+  enchantCode,
+  enchantItemTags,
+  enchantItemFilters,
+} from '../../../data/enchantments';
+
+// Encantos agrupados por categoria, na ordem definida em enchantCategories.
+const byCategory = enchantCategories.map((c) => ({
+  ...c,
+  list: enchantments.filter((e) => e.category === c.key),
+}));
+---
+
+<Base
+  title="Encantamentos · Wiki"
+  description={`Os ${enchantmentCount} encantamentos personalizados do Feather Flux: o que cada um faz, pra que serve e onde se consegue. Com busca.`}
+>
+  <div class="container">
+    <header class="doc-head">
+      <span class="eyebrow">Wiki / Encantamentos</span>
+      <h1>Encantamentos</h1>
+      <p class="lead">
+        São {enchantmentCount} encantamentos personalizados (plugin ExcellentEnchants), além dos
+        normais do Minecraft. Busque ou filtre por tipo para achar o que precisa.
+      </p>
+    </header>
+    <WikiTabs active="encantamentos" />
+  </div>
+
+  <div class="tools">
+    <div class="container tools-inner">
+      <label class="search-wrap">
+        <Icon name="search" size={17} />
+        <input
+          id="wiki-search"
+          type="search"
+          placeholder="Buscar encantamento (ex.: veneno, mineração, vampiro)…"
+          autocomplete="off"
+          aria-label="Buscar encantamento"
+        />
+      </label>
+      <div class="chips" role="group" aria-label="Filtrar por item">
+        <button class="wiki-chip active" data-filter="all" type="button">Todos</button>
+        {
+          enchantItemFilters.map((it) => (
+            <button class="wiki-chip" data-filter={it.key} type="button">
+              {it.key} <span class="c-count">{it.count}</span>
+            </button>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+
+  <div class="container results">
+    {
+      byCategory.map((c) => (
+        <section class="wiki-section" data-section={c.key}>
+          <div class="section-label" style={`--sq:${c.color}`}>
+            <span class="sq" />
+            <h2>{c.label}</h2>
+            <span class="count">{c.list.length} encantos</span>
+          </div>
+          <div class="ench-grid">
+            {c.list.map((e) => (
+              <article
+                class="ench-card wiki-card"
+                id={e.slug}
+                data-items={enchantItemTags(e).join('|')}
+                data-search={[e.name, e.original, e.desc, e.serve, e.items, ...enchantItemTags(e)]
+                  .join(' ')
+                  .toLowerCase()}
+              >
+                <div class="ec-head">
+                  <span class="refcode">{enchantCode(e)}</span>
+                  <span class="ec-lvl">Nível máx {e.maxLevel}</span>
+                </div>
+                <h3>{e.name}</h3>
+                <span class="ec-orig">{e.original}</span>
+                <p class="ec-desc">{e.desc}</p>
+                <p class="ec-serve">
+                  <span class="ec-serve-k">Serve para</span>
+                  {e.serve}
+                </p>
+                <div class="ec-meta">
+                  {enchantItemTags(e).map((it) => (
+                    <span class="tag tag-item">{it}</span>
+                  ))}
+                  {e.sources.map((s) => (
+                    <span class="tag tag-src" title={enchantSources[s].hint}>
+                      {enchantSources[s].label}
+                    </span>
+                  ))}
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+      ))
+    }
+
+    <p class="empty" id="empty" hidden>Nada encontrado. Tente outra palavra.</p>
+
+    <p class="src-note">
+      Gerado a partir da configuração ativa do plugin <b>ExcellentEnchants</b>. Aplique pela mesa de
+      encantamento, em livros na bigorna, ou conforme o tipo de item indicado.
+    </p>
+  </div>
+</Base>
+
+<script>
+  const search = document.getElementById('wiki-search') as HTMLInputElement | null;
+  const chips = [...document.querySelectorAll<HTMLButtonElement>('.wiki-chip')];
+  const sections = [...document.querySelectorAll<HTMLElement>('.wiki-section')];
+  const empty = document.getElementById('empty');
+  let activeFilter = 'all';
+
+  const apply = () => {
+    const t = (search?.value ?? '').trim().toLowerCase();
+    let anyVisible = false;
+
+    sections.forEach((sec) => {
+      let sectionHas = false;
+
+      sec.querySelectorAll<HTMLElement>('.wiki-card').forEach((card) => {
+        const items = (card.dataset.items || '').split('|');
+        const okItem = activeFilter === 'all' || items.includes(activeFilter);
+        const text = card.dataset.search || card.textContent?.toLowerCase() || '';
+        const okText = !t || text.includes(t);
+        const show = okItem && okText;
+        card.classList.toggle('is-hidden', !show);
+        if (show) sectionHas = true;
+      });
+
+      sec.classList.toggle('is-hidden', !sectionHas);
+      if (sectionHas) anyVisible = true;
+    });
+
+    if (empty) (empty as HTMLElement).hidden = anyVisible;
+  };
+
+  chips.forEach((chip) =>
+    chip.addEventListener('click', () => {
+      chips.forEach((c) => c.classList.remove('active'));
+      chip.classList.add('active');
+      activeFilter = chip.dataset.filter || 'all';
+      apply();
+    })
+  );
+
+  search?.addEventListener('input', apply);
+</script>
+
+<style>
+  .results {
+    margin-top: 0.5rem;
+  }
+  .wiki-section {
+    margin-bottom: 2.5rem;
+  }
+  .wiki-section .section-label {
+    margin-top: 0;
+  }
+
+  .ench-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(278px, 1fr));
+    gap: 0.7rem;
+  }
+
+  .ench-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.95rem 1rem 0.9rem;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    scroll-margin-top: calc(var(--topbar-h) + 1.5rem);
+    transition: border-color var(--t);
+  }
+  .ench-card:hover {
+    border-color: var(--line-3);
+  }
+  .ench-card:target {
+    border-color: var(--gold);
+  }
+  .ec-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.6rem;
+  }
+  .ec-lvl {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.04em;
+    color: var(--text-faint);
+    border: 1px solid var(--line-2);
+    padding: 0.15rem 0.4rem;
+    white-space: nowrap;
+  }
+  .ench-card h3 {
+    font-size: 1.02rem;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+  .ec-orig {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--text-faint);
+    margin-top: -0.25rem;
+  }
+  .ec-desc {
+    color: var(--text-dim);
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+  .ec-serve {
+    font-size: 0.84rem;
+    color: var(--text);
+    line-height: 1.45;
+    padding: 0.55rem 0.6rem;
+    background: var(--panel-2);
+    border-left: 2px solid var(--gold-dim);
+  }
+  .ec-serve-k {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.58rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.2rem;
+  }
+  .ec-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin-top: auto;
+    padding-top: 0.3rem;
+  }
+  .tag-item {
+    color: var(--text);
+    border-color: var(--line-3);
+  }
+  .tag-src {
+    color: var(--text-faint);
+  }
+
+  .src-note {
+    color: var(--text-faint);
+    font-size: 0.82rem;
+    max-width: 70ch;
+    margin-top: 1rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+    line-height: 1.6;
+  }
+  .src-note b {
+    color: var(--text-dim);
+  }
+</style>

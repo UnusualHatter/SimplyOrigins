@@ -1,0 +1,103 @@
+---
+import Base from '../../../layouts/Base.astro';
+import Icon from '../../../components/Icon.astro';
+import WikiTabs from '../../../components/WikiTabs.astro';
+import OriginCard from '../../../components/OriginCard.astro';
+import { origins, originGroups, type Origin } from '../../../data/origins';
+
+// Texto pesquisável de cada origem: nome, grupo, estilo, dieta, tagline e a
+// lista de poderes/fraquezas, pra busca achar por "voar", "água" etc.
+const originSearch = (o: Origin) =>
+  [o.name, o.group, o.category, o.playstyle, o.diet, o.tagline, ...o.pros, ...o.cons]
+    .join(' ')
+    .toLowerCase();
+---
+
+<Base
+  title="Origens · Wiki"
+  description={`As ${origins.length} Origens jogáveis do Feather Flux: poderes, fraquezas, estilo de jogo e progressão. Com busca.`}
+>
+  <div class="container">
+    <header class="doc-head">
+      <span class="eyebrow">Wiki / Origens</span>
+      <h1>Origens</h1>
+      <p class="lead">
+        São {origins.length} origens jogáveis, cada uma com poderes, fraquezas e uma progressão
+        própria do nível 1 ao 10. Busque ou filtre por estilo e abra a documentação de cada uma.
+      </p>
+    </header>
+    <WikiTabs active="origens" />
+  </div>
+
+  <div class="tools">
+    <div class="container tools-inner">
+      <label class="search-wrap">
+        <Icon name="search" size={17} />
+        <input
+          id="wiki-search"
+          type="search"
+          placeholder="Buscar origem ou poder (ex.: voar, água, furtivo)…"
+          autocomplete="off"
+          aria-label="Buscar origem"
+        />
+      </label>
+      <div class="chips" role="group" aria-label="Filtrar por estilo">
+        <button class="wiki-chip active" data-filter="all" type="button">Todas</button>
+        {
+          originGroups.map((g) => (
+            <button class="wiki-chip" data-filter={g} type="button">
+              {g}
+            </button>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+
+  <section class="container">
+    <div class="wiki-grid" id="origins-grid">
+      {origins.map((o) => <OriginCard origin={o} search={originSearch(o)} />)}
+    </div>
+    <p class="empty" id="empty" hidden>Nenhuma origem encontrada. Tente outra palavra.</p>
+  </section>
+</Base>
+
+<script>
+  const search = document.getElementById('wiki-search') as HTMLInputElement | null;
+  const chips = [...document.querySelectorAll<HTMLButtonElement>('.wiki-chip')];
+  const cards = [...document.querySelectorAll<HTMLElement>('#origins-grid .origin-card')];
+  const empty = document.getElementById('empty');
+  let activeGroup = 'all';
+
+  const apply = () => {
+    const t = (search?.value ?? '').trim().toLowerCase();
+    let shown = 0;
+    cards.forEach((card) => {
+      const okGroup = activeGroup === 'all' || card.dataset.group === activeGroup;
+      const okText = !t || (card.dataset.search || '').includes(t);
+      const show = okGroup && okText;
+      card.classList.toggle('is-hidden', !show);
+      if (show) shown++;
+    });
+    if (empty) (empty as HTMLElement).hidden = shown !== 0;
+  };
+
+  chips.forEach((chip) =>
+    chip.addEventListener('click', () => {
+      chips.forEach((c) => c.classList.remove('active'));
+      chip.classList.add('active');
+      activeGroup = chip.dataset.filter || 'all';
+      apply();
+    })
+  );
+
+  search?.addEventListener('input', apply);
+</script>
+
+<style>
+  .wiki-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(248px, 1fr));
+    gap: 0.7rem;
+  }
+</style>

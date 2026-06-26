@@ -1,89 +1,82 @@
 ---
-import Icon from './Icon.astro';
 import { site } from '../data/site';
-
 const year = new Date().getFullYear();
 ---
 
 <footer class="site-footer">
   <div class="container foot">
-    <div class="foot-brand">
-      <span class="brand">
-        <Icon name="feather" size={18} />
-        {site.name}
-      </span>
-      <p>{site.tagline}</p>
+    <div class="foot-meta">
+      <span class="foot-brand">{site.name}</span>
+      <span class="sep">/</span>
+      <span>Knowledge Base</span>
+      <span class="sep">/</span>
+      <span>v{site.meta.version}</span>
     </div>
-
     <nav class="foot-nav" aria-label="Rodapé">
-      <a href="/">Início</a>
-      <a href="/origins">Origins</a>
+      <a href="/wiki/origens">Origens</a>
+      <a href="/wiki/encantamentos">Encantamentos</a>
+      <a href="/changelog">Changelog</a>
       <a href={site.discord} target="_blank" rel="noopener">Discord</a>
     </nav>
   </div>
-
-  <div class="container copy">
+  <div class="container fine">
     <span>© {year} {site.name}. Não afiliado à Mojang ou Microsoft.</span>
-    <span class="made">Feito com <Icon name="heart" size={13} /> para a comunidade</span>
+    <span>Documentação do servidor</span>
   </div>
 </footer>
 
 <style>
   .site-footer {
-    border-top: 1px solid var(--border);
-    background: color-mix(in srgb, var(--bg-2) 60%, transparent);
-    padding-block: 2rem 1.4rem;
-    margin-top: 3rem;
+    margin-top: 4rem;
+    border-top: 1px solid var(--line);
+    padding-block: 1.5rem 1.75rem;
   }
   .foot {
     display: flex;
     flex-wrap: wrap;
-    gap: 1.2rem 2rem;
     align-items: center;
     justify-content: space-between;
+    gap: 0.9rem 1.5rem;
   }
-  .brand {
-    display: inline-flex;
+  .foot-meta {
+    display: flex;
     align-items: center;
-    gap: 0.5rem;
-    font-family: var(--font-display);
-    font-weight: 700;
-    color: var(--gold);
-  }
-  .foot-brand p {
+    gap: 0.55rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
     color: var(--text-faint);
-    font-size: 0.9rem;
-    margin-top: 0.3rem;
+  }
+  .foot-meta .foot-brand {
+    color: var(--text-dim);
+  }
+  .foot-meta .sep {
+    color: var(--text-mute);
   }
   .foot-nav {
     display: flex;
-    gap: 1.2rem;
+    flex-wrap: wrap;
+    gap: 1.1rem;
   }
   .foot-nav a {
-    color: var(--text-dim);
-    font-weight: 500;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.02em;
+    color: var(--text-faint);
     transition: color var(--t);
   }
   .foot-nav a:hover {
     color: var(--gold-bright);
   }
-  .copy {
+  .fine {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5rem 1.5rem;
     justify-content: space-between;
-    margin-top: 1.4rem;
-    padding-top: 1.2rem;
-    border-top: 1px solid var(--border);
-    color: var(--text-faint);
-    font-size: 0.82rem;
-  }
-  .made {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-  }
-  .made :global(svg) {
-    color: var(--coral);
+    gap: 0.4rem 1.5rem;
+    margin-top: 1.1rem;
+    padding-top: 1.1rem;
+    border-top: 1px solid var(--line);
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    color: var(--text-mute);
   }
 </style>

@@ -63,8 +63,8 @@ export const origins: Origin[] = [
     difficulty: 1,
     playstyle: 'Livre / Iniciante',
     diet: 'Onívoro',
-    tagline: 'Sem dons sobrenaturais, sem amarras. Pura adaptação.',
-    lore: 'O equilíbrio em pessoa: nada de habilidades exóticas, mas também nenhuma fraqueza para o inimigo explorar. A tela em branco perfeita para quem está chegando.',
+    tagline: 'Sem poder nenhum, sem fraqueza nenhuma. Faz de tudo um pouco.',
+    lore: 'Não tem habilidade especial, mas também não tem ponto fraco pra ninguém explorar. É a escolha mais tranquila pra quem tá começando e quer jogar no padrão.',
     pros: ['Nenhuma vantagem específica', 'Flexibilidade total'],
     cons: ['Nenhum poder especial', 'Nenhuma habilidade de mobilidade'],
     progression: {
@@ -85,8 +85,8 @@ export const origins: Origin[] = [
     difficulty: 2,
     playstyle: 'Exploração Aquática',
     diet: 'Onívoro',
-    tagline: 'O oceano é seu quintal — contanto que você não seque.',
-    lore: 'Brincalhona e veloz na água, a lontra domina rios e abismos do mar. Em terra firme, porém, precisa se manter úmida ou começa a definhar.',
+    tagline: 'Na água você manda. Só não pode ficar muito tempo no seco.',
+    lore: 'Nada rápido, respira embaixo d\'água e se vira bem em rios e no fundo do mar. Em terra seca, precisa se molhar de vez em quando ou começa a passar mal.',
     pros: [
       'Respiração anfíbia: respira tanto na água quanto na terra',
       'Escava debaixo d\'água com velocidade total',
@@ -118,8 +118,8 @@ export const origins: Origin[] = [
     difficulty: 2,
     playstyle: 'Mobilidade Terrestre',
     diet: 'Herbívoro',
-    tagline: 'Gracioso, veloz e sempre um salto à frente do perigo.',
-    lore: 'Feito para a fuga: salta riachos e dispara entre as árvores como uma flecha. Mas o instinto de presa fala alto e o pânico vem fácil.',
+    tagline: 'Corre muito e pula alto. Quando complica, foge na frente.',
+    lore: 'Feito pra correr: dispara entre as árvores e salta longe. Mas é bicho de fugir, não de encarar de frente.',
     pros: [
       'Agilidade da selva: mais rápido em florestas, savanas e pântanos',
       'Resistência a quedas: recebe metade do dano',
@@ -146,8 +146,8 @@ export const origins: Origin[] = [
     difficulty: 4,
     playstyle: 'Furtivo Noturno',
     diet: 'Carnívoro',
-    tagline: 'Senhor da noite — e refém do amanhecer.',
-    lore: 'Plana entre cavernas guiado por ecolocalização, invencível na escuridão. Quando o sol nasce, vira presa em vez de predador.',
+    tagline: 'Dono da noite. De dia, melhor se esconder.',
+    lore: 'Plana pelas cavernas e enxerga tudo no escuro. Quando o sol nasce, fica fraco e vira presa fácil.',
     pros: [
       'Visão noturna permanente: enxerga perfeitamente no escuro',
       'Queda suave: plana no ar para evitar danos',
@@ -177,8 +177,8 @@ export const origins: Origin[] = [
     difficulty: 3,
     playstyle: 'Furtivo / Sobrevivência',
     diet: 'Onívoro',
-    tagline: 'Pequeno, ignorado e impossível de encurralar.',
-    lore: 'Passa por frestas que ninguém mais alcança e prospera onde outros morreriam de fome. Subestime-o e ele já terá sumido com seus itens.',
+    tagline: 'Pequeno, rápido e difícil de encurralar.',
+    lore: 'Se vira em qualquer canto e foge fácil. Quando você percebe, ele já sumiu (às vezes com os seus itens).',
     pros: [
       'Evasão natural: 30% de chance de desviar de flechas e projéteis',
       'Disparada: corrida explosiva de alta velocidade (Agachar + F)',
@@ -209,8 +209,8 @@ export const origins: Origin[] = [
     difficulty: 4,
     playstyle: 'PvP / Nether',
     diet: 'Carnívoro',
-    tagline: 'Caminha sobre lava e ri das chamas — até começar a chover.',
-    lore: 'Nascido das profundezas, é uma força da natureza no Nether. Mas a água é seu veneno e a chuva, sua maldição.',
+    tagline: 'Anda na lava numa boa. Só não curte água nem chuva.',
+    lore: 'É em casa no Nether: fogo e lava não fazem nada. O problema dele é água e chuva, que machucam de verdade.',
     pros: [
       'Filho do Inferno: imune a fogo, lava e blocos quentes',
       'Força infernal: dano corpo a corpo aumentado (+1 coração)',
@@ -241,8 +241,8 @@ export const origins: Origin[] = [
     difficulty: 3,
     playstyle: 'Combate em Matilha',
     diet: 'Carnívoro',
-    tagline: 'Sozinho, perigoso. Em matilha, implacável.',
-    lore: 'Rastreia presas pelo faro e fica mais forte cercado dos seus. A solidão, porém, apaga parte da sua fúria.',
+    tagline: 'Sozinho já é perigoso. Em grupo, pior ainda pro inimigo.',
+    lore: 'Caça pelo faro e fica mais forte à noite e perto dos aliados. De dia e sozinho, perde um pouco da força.',
     pros: [
       'Olhos caninos: enxerga perfeitamente no escuro',
       'Caçador Noturno: velocidade extra à noite e agilidade de dia',
@@ -276,8 +276,8 @@ export const origins: Origin[] = [
     difficulty: 3,
     playstyle: 'Furtivo / Ágil',
     diet: 'Onívoro',
-    tagline: 'Esperta demais para ser pega, leve demais para fazer barulho.',
-    lore: 'Mestre da furtividade e do oportunismo, encontra tesouros onde outros só veem mato — e some antes que percebam.',
+    tagline: 'Esperta, leve e silenciosa. Pega o que quer e some.',
+    lore: 'Anda quieta, dá saltos grandes e tem sorte achando item bom. Some antes de você reagir.',
     pros: [
       'Bote: salto longo que causa dano em área ao pousar (Agachar + F)',
       'Caçada implacável: atacar o mesmo alvo aumenta seu dano',
@@ -313,8 +313,8 @@ export const origins: Origin[] = [
     difficulty: 2,
     playstyle: 'Tanque / Linha de Frente',
     diet: 'Onívoro',
-    tagline: 'Lento para se mover, impossível de derrubar.',
-    lore: 'Uma montanha de músculos que segura a linha de frente sem piscar e se recupera hibernando entre as batalhas.',
+    tagline: 'Devagar pra andar, difícil de derrubar.',
+    lore: 'Aguenta porrada na linha de frente e bate forte só com as mãos. Em troca, é lento e nem usa espada ou machado.',
     pros: [
       'Patas pesadas: golpes desarmados causam repulsão e muito dano',
       'Couro espesso: armadura passiva e resistência total ao frio',
@@ -350,8 +350,8 @@ export const origins: Origin[] = [
     difficulty: 3,
     playstyle: 'Mobilidade Extrema',
     diet: 'Herbívoro',
-    tagline: 'Salta mais alto, corre mais rápido, foge primeiro.',
-    lore: 'Vive da agilidade pura: nunca se machuca ao cair, mas o menor susto o faz disparar sem olhar para trás.',
+    tagline: 'Pula alto, corre rápido e cai sem se machucar.',
+    lore: 'Vive de mobilidade: pula alto, corre muito e não toma dano de queda. É movimento o tempo todo.',
     pros: [
       'Visão noturna permanente',
       'Presa veloz: mais rápido ao correr',
@@ -385,15 +385,15 @@ export const origins: Origin[] = [
     difficulty: 3,
     playstyle: 'Montanhês / Investida',
     diet: 'Onívoro',
-    tagline: 'Cabeçada primeiro, perguntas depois.',
-    lore: 'Escala penhascos impossíveis e arremessa inimigos abismo abaixo com uma investida brutal. Recuar não está no vocabulário dela.',
+    tagline: 'Cabeçada primeiro, pergunta depois.',
+    lore: 'Sobe montanha que ninguém sobe e usa a cabeçada pra empurrar o inimigo abismo abaixo. E não toma dano de queda.',
     pros: [
-      'Investida Brutal: avança com tudo e causa impacto em área (Agachar + F)',
-      'Chifrada em disparada: ataques correndo lançam o inimigo longe',
+      'Cabeçada: avança em linha reta e explode em área ao atingir um inimigo ou ao parar (Agachar + F)',
+      'Investida: golpes correndo causam dano extra e forte empurrão',
       'Passo firme: ignora qualquer dano de queda',
       'Salto montanhês: pula 2 blocos de altura sem esforço',
       'Resistência extrema ao frio da neve em pó',
-      'Estômago de aço: morde quase qualquer item — menos comida, ferramentas, armas e armaduras — para matar a fome (Agachar + clique direito)',
+      'Estômago de aço: come quase qualquer item (menos comida, ferramentas, armas e armaduras) pra matar a fome (Agachar + clique direito)',
     ],
     cons: ['Vitalidade menor: 2 corações a menos'],
     progression: {
@@ -415,8 +415,8 @@ export const origins: Origin[] = [
     difficulty: 3,
     playstyle: 'Ágil / Furtivo',
     diet: 'Carnívoro',
-    tagline: 'Cai sempre de pé, ataca sempre por trás.',
-    lore: 'Reflexos sobrenaturais e passos mudos fazem do felino um caçador perfeito nas sombras — quando não se distrai, claro.',
+    tagline: 'Cai sempre de pé e gosta de atacar de surpresa.',
+    lore: 'Anda sem fazer barulho, enxerga no escuro e não toma dano de queda. Ótimo pra pegar o inimigo desprevenido.',
     pros: [
       'Pouso perfeito: totalmente imune a dano de queda',
       'Músculos elásticos: pequenos bônus de altura no pulo',
@@ -449,8 +449,8 @@ export const origins: Origin[] = [
     difficulty: 4,
     playstyle: 'Reconhecimento Noturno',
     diet: 'Carnívoro',
-    tagline: 'Vê tudo no escuro. Cega de tanto sol.',
-    lore: 'Plana em silêncio absoluto e enxerga o que a noite esconde. À luz do dia, no entanto, fica ofuscada e indefesa.',
+    tagline: 'Enxerga tudo no escuro. De dia, fica perdida.',
+    lore: 'Plana em silêncio e enxerga tudo de noite. De dia, a luz forte atrapalha e ela fica vulnerável.',
     pros: [
       'Asas de Coruja: voo livre e natural que retorna automaticamente',
       'Voo fantasma: reduz detecção dos monstros ao planar',
@@ -483,8 +483,8 @@ export const origins: Origin[] = [
     difficulty: 4,
     playstyle: 'Combate Aéreo',
     diet: 'Carnívoro',
-    tagline: 'Metade águia, metade leão, dono dos céus.',
-    lore: 'Rei dos ares: domina o voo livre e despenca sobre as presas com garras afiadas. Grande, orgulhoso e impossível de ignorar.',
+    tagline: 'Metade águia, metade leão. Vive voando.',
+    lore: 'Voa livre e mergulha em cima da presa com as garras. Como é grandão, também é alvo fácil.',
     pros: [
       'Majestade dos céus: possui asas inatas para planagem infinita',
       'Decolagem explosiva: lança-se ao ar a qualquer momento (Agachar + F)',
@@ -514,8 +514,8 @@ export const origins: Origin[] = [
     difficulty: 4,
     playstyle: 'PvP / Exploração',
     diet: 'Carnívoro',
-    tagline: 'O ápice predador — chamas, voo e a fúria do End.',
-    lore: 'Soberano absoluto dos céus: cospe fogo, voa livremente e se regenera nas terras do End. Só o calor do Nether consegue contê-lo.',
+    tagline: 'Voa, cospe fogo e se cura no End.',
+    lore: 'Voa, solta fogo nos inimigos e recupera vida no End. O ponto fraco é o Nether, onde fica mais frágil.',
     pros: [
       'Asas dracônicas inatas para domínio aéreo',
       'Sopro de Fogo: incendeia e destrói oponentes à frente (Agachar + F)',
@@ -547,8 +547,8 @@ export const origins: Origin[] = [
     difficulty: 4,
     playstyle: 'Suporte Místico',
     diet: 'Herbívoro',
-    tagline: 'Frágil como pó, atraída pela luz que a cura e a condena.',
-    lore: 'Etérea e luminosa, recupera-se sob qualquer fonte de luz — e simplesmente não resiste ao chamado dela. Beleza e fragilidade em asas.',
+    tagline: 'Bem frágil, mas se cura na luz e ajuda o time.',
+    lore: 'Cai devagar, planeja sem tomar dano e se cura perto de luz. É de vidro, mas faz planta crescer e dá uma força pra quem está por perto.',
     pros: [
       'Asas trêmulas: cai de forma extremamente lenta',
       'Voo gracioso: ignora todo dano de queda ao planar pelo ar',
@@ -589,6 +589,11 @@ export const originGroups: OriginGroup[] = [
   'Aquático',
   'Tanque',
 ];
+
+/** Código de referência técnico estável: FF-ORG-001 … FF-ORG-016. */
+export function originCode(o: Origin): string {
+  return `FF-ORG-${String(origins.indexOf(o) + 1).padStart(3, '0')}`;
+}
 
 export function getOrigin(slug: string): Origin | undefined {
   return origins.find((o) => o.slug === slug);

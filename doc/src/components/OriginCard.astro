@@ -1,97 +1,125 @@
 ---
 import Stars from './Stars.astro';
-import type { Origin } from '../data/origins';
+import { originCode, type Origin } from '../data/origins';
 
 interface Props {
   origin: Origin;
+  /** Texto extra para a busca da Wiki (poderes, fraquezas etc.). */
+  search?: string;
 }
-const { origin } = Astro.props;
+const { origin, search } = Astro.props;
+const code = originCode(origin);
 ---
 
 <a
   href={`/origins/${origin.slug}`}
-  class="origin-card card reveal"
-  style={`--c:${origin.accent}`}
+  class="origin-card"
   data-group={origin.group}
+  data-search={search}
 >
-  <div class="card-glow" aria-hidden="true"></div>
-  <header>
-    <span class="glyph" aria-hidden="true">{origin.emoji}</span>
-    <span class="chip group-chip">{origin.group}</span>
-  </header>
-  <h3>{origin.name}</h3>
-  <p class="tagline">{origin.tagline}</p>
-  <footer>
-    <span class="diet">{origin.diet}</span>
-    <span class="diff"><Stars value={origin.difficulty} /></span>
-  </footer>
+  <div class="oc-top">
+    <span class="oc-code">{code}</span>
+    <Stars value={origin.difficulty} />
+  </div>
+  <div class="oc-id">
+    <span class="oc-glyph" aria-hidden="true">{origin.emoji}</span>
+    <span class="oc-names">
+      <h3>{origin.name}</h3>
+      <span class="oc-sub">{origin.group} · {origin.diet}</span>
+    </span>
+  </div>
+  <p class="oc-tagline">{origin.tagline}</p>
+  <span class="oc-open">Abrir documentação <span class="arr">→</span></span>
 </a>
 
 <style>
   .origin-card {
-    position: relative;
     display: flex;
     flex-direction: column;
-    gap: 0.6rem;
-    padding: 1.3rem;
-    overflow: hidden;
+    gap: 0.7rem;
+    padding: 1rem 1.05rem 0.9rem;
+    background: var(--panel);
+    border: 1px solid var(--line);
     transition:
-      transform var(--t),
       border-color var(--t),
-      box-shadow var(--t);
+      background var(--t);
   }
   .origin-card:hover {
-    transform: translateY(-4px);
-    border-color: color-mix(in srgb, var(--c) 55%, transparent);
-    box-shadow: 0 14px 36px color-mix(in srgb, var(--c) 18%, transparent);
+    border-color: var(--gold);
+    background: var(--panel-2);
   }
-  .card-glow {
-    position: absolute;
-    inset: -40% 40% auto -10%;
-    height: 180px;
-    background: radial-gradient(50% 60% at 30% 0%, color-mix(in srgb, var(--c) 30%, transparent), transparent 70%);
-    pointer-events: none;
-  }
-  header {
-    position: relative;
+
+  .oc-top {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 0.6rem;
   }
-  .glyph {
+  .oc-code {
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.06em;
+    color: var(--text-faint);
+  }
+
+  .oc-id {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+  }
+  .oc-glyph {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 52px;
-    height: 52px;
-    font-size: 1.7rem;
-    border-radius: 14px;
-    background: color-mix(in srgb, var(--c) 16%, transparent);
-    border: 1px solid color-mix(in srgb, var(--c) 38%, transparent);
+    width: 38px;
+    height: 38px;
+    flex: none;
+    font-size: 1.25rem;
+    border: 1px solid var(--line-2);
+    background: var(--bg);
   }
-  .group-chip {
-    color: color-mix(in srgb, var(--c) 85%, white 10%);
-    border-color: color-mix(in srgb, var(--c) 38%, transparent);
-    background: color-mix(in srgb, var(--c) 12%, transparent);
+  .oc-names {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    min-width: 0;
   }
-  h3 {
-    font-size: 1.35rem;
+  .oc-names h3 {
+    font-size: 1.08rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
   }
-  .tagline {
-    color: var(--text-dim);
-    font-size: 0.92rem;
+  .oc-sub {
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.02em;
+    color: var(--text-faint);
+  }
+
+  .oc-tagline {
     flex: 1;
+    color: var(--text-dim);
+    font-size: 0.875rem;
+    line-height: 1.5;
   }
-  footer {
+
+  .oc-open {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding-top: 0.6rem;
-    border-top: 1px solid var(--border);
-  }
-  .diet {
-    font-size: 0.78rem;
-    font-weight: 600;
+    padding-top: 0.7rem;
+    border-top: 1px solid var(--line);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
     color: var(--text-faint);
+    transition: color var(--t);
+  }
+  .origin-card:hover .oc-open {
+    color: var(--gold-bright);
+  }
+  .oc-open .arr {
+    transition: transform var(--t);
   }
 </style>

@@ -1,0 +1,130 @@
+---
+import Base from '../../layouts/Base.astro';
+import { origins } from '../../data/origins';
+import { enchantmentCount } from '../../data/enchantments';
+import { featureCount } from '../../data/features';
+import { compatCount } from '../../data/compat';
+
+const sections = [
+  { n: '01', name: 'Origens', count: origins.length, href: '/wiki/origens', desc: 'As 16 origens jogáveis, cada uma com poderes, fraquezas e progressão própria do nível 1 ao 10. Busca e filtros por estilo.' },
+  { n: '02', name: 'Encantamentos', count: enchantmentCount, href: '/wiki/encantamentos', desc: 'Os encantamentos personalizados do servidor (ExcellentEnchants): efeito, uso e onde se consegue. Busca e filtros por tipo.' },
+  { n: '03', name: 'Recursos', count: featureCount, href: '/wiki/recursos', desc: 'Comandos e funcionalidades dos plugins: casa, teleporte, viagem rápida, lápides, discos e imagens em mapas.' },
+  { n: '04', name: 'Compatibilidade', count: compatCount, href: '/wiki/compatibilidade', desc: 'Mods client-side que funcionam aqui, edições suportadas e versões — referência para montar um modpack.' },
+];
+---
+
+<Base
+  title="Wiki"
+  description={`Wiki do Feather Flux: as ${origins.length} Origens e os ${enchantmentCount} encantamentos do servidor, cada um com sua busca.`}
+>
+  <div class="container">
+    <header class="doc-head">
+      <span class="eyebrow">Knowledge Base / Wiki</span>
+      <h1>Wiki</h1>
+      <p class="lead">
+        Referência completa do servidor. Escolha uma seção abaixo, ou use a busca global
+        (<span class="kbd">Ctrl</span><span class="kbd">K</span>) para ir direto a uma origem,
+        encantamento ou recurso.
+      </p>
+    </header>
+
+    <nav class="toc" aria-label="Seções da Wiki">
+      {
+        sections.map((s) => (
+          <a class="toc-row" href={s.href}>
+            <span class="toc-n">{s.n}</span>
+            <div class="toc-body">
+              <span class="toc-name">{s.name}</span>
+              <span class="toc-desc">{s.desc}</span>
+            </div>
+            <span class="toc-count">{s.count}</span>
+            <span class="toc-arr">→</span>
+          </a>
+        ))
+      }
+    </nav>
+  </div>
+</Base>
+
+<style>
+  .doc-head .lead .kbd {
+    vertical-align: middle;
+    margin: 0 1px;
+  }
+  .toc {
+    border: 1px solid var(--line);
+  }
+  .toc-row {
+    display: grid;
+    grid-template-columns: 2.2rem 1fr 3rem auto;
+    align-items: start;
+    gap: 1rem;
+    padding: 1.1rem 1.2rem;
+    border-bottom: 1px solid var(--line);
+    border-left: 2px solid transparent;
+    transition:
+      background var(--t),
+      border-color var(--t);
+  }
+  .toc-row:last-child {
+    border-bottom: 0;
+  }
+  .toc-row:hover {
+    background: var(--panel-2);
+    border-left-color: var(--gold);
+  }
+  .toc-n {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--text-mute);
+    padding-top: 0.15rem;
+  }
+  .toc-row:hover .toc-n {
+    color: var(--gold);
+  }
+  .toc-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    min-width: 0;
+  }
+  .toc-name {
+    font-size: 1.12rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .toc-desc {
+    font-size: 0.88rem;
+    color: var(--text-dim);
+    line-height: 1.5;
+    max-width: 62ch;
+  }
+  .toc-count {
+    font-family: var(--font-mono);
+    font-size: 0.95rem;
+    color: var(--text-faint);
+    text-align: right;
+    padding-top: 0.1rem;
+  }
+  .toc-arr {
+    font-family: var(--font-mono);
+    color: var(--text-mute);
+    padding-top: 0.1rem;
+  }
+  .toc-row:hover .toc-arr {
+    color: var(--gold-bright);
+  }
+  @media (max-width: 560px) {
+    .toc-row {
+      grid-template-columns: 1.8rem 1fr auto;
+      gap: 0.5rem 0.9rem;
+    }
+    .toc-count {
+      grid-row: 1;
+      grid-column: 3;
+    }
+    .toc-arr {
+      display: none;
+    }
+  }
+</style>
