@@ -60,6 +60,10 @@ import dev.originspaper.power.origins.shark.FeedingRushPower;
 import dev.originspaper.power.origins.shark.LandClumsyPower;
 import dev.originspaper.power.origins.shark.PredatorBitePower;
 import dev.originspaper.power.origins.shark.SharkProgressionPower;
+import dev.originspaper.power.origins.skunk.NightRoamerPower;
+import dev.originspaper.power.origins.skunk.SkunkProgressionPower;
+import dev.originspaper.power.origins.skunk.StinkSprayPower;
+import dev.originspaper.power.origins.skunk.WarningStripesPower;
 import dev.originspaper.power.origins.wolf.AlphaHowlPower;
 import dev.originspaper.power.origins.wolf.CarnivoresBitePower;
 import dev.originspaper.power.origins.wolf.DayNightSpeedPower;
@@ -216,6 +220,7 @@ public class OriginRegistry {
         registerShark();
         registerRaccoon();
         registerEquine();
+        registerSkunk();
     }
 
     private void registerHuman() {
@@ -704,6 +709,37 @@ public class OriginRegistry {
                 new PowerInfo("Desajeitado em Espaços Apertados", "Fica levemente lento sob tetos muito baixos."),
                 new PowerInfo("Peso da Armadura", "Peitoral de diamante/netherite impede o Galope."));
         register(new Origin("equine", "Equino", null, Material.SADDLE, powers, infos));
+    }
+
+    private void registerSkunk() {
+        List<PowerType> powers = List.of(
+                new WarningStripesPower("skunk:warning_stripes"),
+                new StinkSprayPower("skunk:stink_spray",
+                        cfgSecondsToTicks("origins.skunk.stink-spray-cooldown-seconds", 35),
+                        cfgDouble("origins.skunk.stink-spray-radius", 4.0),
+                        cfgInt("origins.skunk.stink-spray-player-slowness-seconds", 4) * 20,
+                        cfgInt("origins.skunk.stink-spray-player-weakness-seconds", 4) * 20,
+                        cfgInt("origins.skunk.stink-spray-player-nausea-seconds", 2) * 20,
+                        cfgInt("origins.skunk.stink-spray-mob-slowness-seconds", 6) * 20,
+                        cfgInt("origins.skunk.stink-spray-mob-weakness-seconds", 6) * 20,
+                        cfgInt("origins.skunk.stink-spray-mob-nausea-seconds", 5) * 20),
+                new TrashGourmetPower("skunk:scavenger_diet", 1.0f),
+                new NightRoamerPower("skunk:night_roamer"),
+                new AttributeModifierPower("skunk:fragile", Attribute.MAX_HEALTH,
+                        -2.0 * cfgInt("origins.skunk.max-health-penalty-hearts", 1)),
+                new WaterSpeedPenaltyPower("skunk:poor_swimmer", -0.12),
+                new AttributeModifierPower("skunk:small_body", Attribute.SCALE, -0.10),
+                new SkunkProgressionPower("skunk:progression"));
+        List<PowerInfo> infos = List.of(
+                new PowerInfo("Listras de Aviso", "Agachado e sem peitoral pesado, monstros só percebem você de perto."),
+                new PowerInfo("Borrifo Fedorento", "Agachar + F: cone sem dano que causa Lentidão, Fraqueza e breve Náusea (recarga 35s)."),
+                new PowerInfo("Dieta de Catador", "Comidas duvidosas não envenenam e dão saturação extra."),
+                new PowerInfo("Andarilho Noturno", "Move-se 8% mais rápido à noite ou em pouca luz, sem peitoral pesado."),
+                new PowerInfo("Frágil", "Possui 1 coração a menos."),
+                new PowerInfo("Nadador Ruim", "Move-se 12% mais devagar na água."),
+                new PowerInfo("Corpo Pequeno", "Seu corpo é 10% menor."),
+                new PowerInfo("Sem Armadura Pesada", "Peitoral de diamante/netherite desativa suas listras e o bônus noturno."));
+        register(new Origin("skunk", "Gambá", null, Material.BLACK_DYE, powers, infos));
     }
 
     private void registerMoth() {
