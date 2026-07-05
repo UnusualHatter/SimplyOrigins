@@ -21,8 +21,9 @@ integrations:
     enabled: true
   griefprevention:
     # Claim-aware filtering for area/hostile abilities (Pounce, Leap, Dragon's Breath,
-    # Echolocation, Alpha's Howl, Pollinator). Filtering is per target: the ability still fires,
-    # it just skips protected targets. Protection fails closed on lookup errors.
+    # Echolocation, Alpha's Howl, Pollinator, Feeding Rush, Blood Sense, Scavenger's Luck,
+    # Rear Kick and Stink Spray). Filtering is per target: the ability still fires, it just skips
+    # protected targets. Protection fails closed on lookup errors.
     enabled: true
     # Area damage cannot hit claim-protected targets (hostile mobs are always fair game).
     protect-claims-from-origin-aoe: true
@@ -54,5 +55,52 @@ integrations:
 # Reserved for future balance tuning (damage caps, cooldown scaling). Empty for now.
 balance: {}
 
-# Reserved for future per-origin toggles (e.g. disabling an origin server-wide). Empty for now.
-origins: {}
+# Per-origin kill switches and balance values. Changes apply on /origin reload. Missing keys keep
+# the defaults shown here, so older server configs remain compatible after an update.
+origins:
+  red_panda:
+    enabled: true
+    max-health-penalty-hearts: 1
+    fluffy-tail-cooldown-seconds: 25
+    fluffy-tail-speed-seconds: 4
+    fluffy-tail-slow-falling-seconds: 5
+    tree-acrobat-enabled: true
+    climber-enabled: true
+  shark:
+    enabled: true
+    feeding-rush-cooldown-seconds: 30
+    feeding-rush-damage: 4
+    blood-sense-radius: 16
+    blood-sense-health-percent: 60
+    dry-skin-warning-seconds: 180
+    dry-skin-penalty-seconds: 300
+    predator-bite-extra-damage: 2
+  raccoon:
+    enabled: true
+    scurry-cooldown-seconds: 20
+    scurry-speed-seconds: 3
+    scurry-invisibility-seconds: 1
+    scavenger-luck-chance: 0.07
+    scavenger-luck-enabled: true
+    max-health-penalty-hearts: 1
+  equine:
+    enabled: true
+    gallop-stage-1-seconds: 3
+    gallop-stage-2-seconds: 6
+    rear-kick-cooldown-seconds: 25
+    rear-kick-radius: 3
+    rear-kick-damage: 2
+    fall-damage-reduction-percent: 50
+  skunk:
+    enabled: true
+    stink-spray-cooldown-seconds: 35
+    stink-spray-radius: 4
+    stink-spray-player-slowness-seconds: 4
+    stink-spray-player-weakness-seconds: 4
+    stink-spray-player-nausea-seconds: 2
+    stink-spray-mob-slowness-seconds: 6
+    stink-spray-mob-weakness-seconds: 6
+    stink-spray-mob-nausea-seconds: 5
+    # Kept as an explicit balance contract: Stink Spray is control/escape, never damage.
+    stink-spray-damage: 0
+    max-health-penalty-hearts: 1

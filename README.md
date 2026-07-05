@@ -2,7 +2,7 @@
 
 Plugin Paper para **Minecraft 26.1.2** que reimplementa o sistema de *Origins* usando **apenas a API pública do Paper/Bukkit** — sem NMS, sem mixins, sem mods no cliente.
 
-São 16 origens, uma GUI de seleção em duas telas, persistência por jogador e um único tick global que controla todos os poderes.
+São 21 origens, uma GUI de seleção em duas telas, persistência por jogador e um único tick global que controla todos os poderes.
 
 ---
 
@@ -166,6 +166,53 @@ Origem de suporte focada em agricultura, exploração e mobilidade. Sem combate 
 - **Frágil:** 2 corações a menos.
 - **Corpo Delicado:** não usa armadura de Diamante ou Netherite.
 
+### 🐾 Panda-Vermelho
+- **Acrobata das Árvores:** Velocidade I sobre troncos, folhas, bambu e chão natural de floresta.
+- **Escalador:** agachado junto a troncos, folhas ou bambu, sobe devagar e com controle.
+- **Cauda Fofa** (`Agachar + F`): Velocidade II por 4s e Queda Lenta por 5s (recarga de 25s).
+- **Forrageadora:** frutas silvestres alimentam e saturam melhor.
+- **Pelagem Quente:** imune a congelamento.
+- **Frágil e Tímido:** 1 coração a menos e Fraqueza I com pouca vida.
+- **Corpo Leve:** peitoral de diamante/netherite desativa acrobacia e escalada.
+
+### 🦈 Tubarão
+- **Respiração Aquática:** respira embaixo d'água.
+- **Nadador Supremo:** grande bônus de velocidade submerso.
+- **Mordida Predadora:** +1 coração de dano corpo a corpo enquanto estiver na água.
+- **Faro de Sangue:** quando molhado, revela criaturas feridas próximas sem expor jogadores protegidos.
+- **Avanço Voraz** (`Agachar + F`, somente na água): investida que morde e empurra a primeira presa válida (recarga de 30s).
+- **Pele Seca:** após 3 minutos seco recebe Fraqueza; após 5, também Lentidão. Água ou chuva reinicia o tempo.
+- **Desajeitado em Terra:** 8% mais lento fora d'água.
+- **Carnívoro:** só come carne e peixe.
+
+### 🦝 Guaxinim
+- **Catador Noturno:** visão noturna em pouca luz e à noite.
+- **Gourmet do Lixo:** comidas duvidosas não envenenam e dão saturação extra.
+- **Sorte de Catador:** pequena chance de achar itens simples ao caçar ou vasculhar terreno natural; sem itens valiosos, blocos colocados ou áreas protegidas.
+- **Patas Furtivas:** agachado, monstros só percebem você de perto.
+- **Esgueirada** (`Agachar + F`): Velocidade II por 3s e invisibilidade breve; atacar encerra o efeito (recarga de 20s).
+- **Frágil:** 1 coração a menos.
+- **Sem Armadura Pesada:** peitoral de diamante/netherite desativa a furtividade.
+
+### 🐎 Equino
+- **Galope:** correr continuamente concede Velocidade I após 3s e Velocidade II após 6s em terreno aberto.
+- **Pernas Fortes e Passo Seguro:** Salto I e 50% menos dano de queda.
+- **Corredor de Trilha:** pequeno bônus sobre grama, terra, caminhos, plantações e feno.
+- **Coice** (`Agachar + F`): pouco dano e forte empurrão em cone atrás do jogador (recarga de 25s).
+- **Herbívoro:** não come carne ou peixe.
+- **Nadador Ruim:** 15% mais lento na água.
+- **Desajeitado em Espaços Apertados:** leve penalidade sob tetos baixos.
+- **Peso da Armadura:** peitoral de diamante/netherite impede o Galope.
+
+### 🦨 Gambá
+- **Listras de Aviso:** agachado, monstros só percebem você de perto.
+- **Borrifo Fedorento** (`Agachar + F`): cone sem dano que causa Lentidão, Fraqueza e Náusea breve; jogadores recebem durações menores (recarga de 35s).
+- **Dieta de Catador:** comidas duvidosas são seguras e dão saturação extra.
+- **Andarilho Noturno:** 8% mais rápido à noite ou em pouca luz.
+- **Frágil:** 1 coração a menos.
+- **Nadador Ruim:** 12% mais lento na água.
+- **Sem Armadura Pesada:** peitoral de diamante/netherite desativa as listras e o bônus noturno.
+
 ---
 
 ## Comandos e permissões
@@ -193,7 +240,7 @@ um aparece em `/origin debug integrations`.
 | Plugin | O que a integração faz |
 |---|---|
 | **AxGraves** | Remove as asas protegidas das origens (coruja, grifo, dragão) do baú-túmulo no momento em que ele aparece — evita duplicação, já que as asas voltam sozinhas no respawn. |
-| **GriefPrevention** | Habilidades em área e efeitos hostis respeitam claims: Bote (raposa), Cabeçada (cabra), Sopro do Dragão, Ecolocalização (Glowing em jogadores), Uivo do Alfa (buff em jogadores) e Polinizadora (crescimento de plantações) filtram alvo a alvo — a habilidade continua funcionando, apenas ignora alvos protegidos. Mobs hostis nunca são protegidos, e a proteção de pets/mobs nomeados (`SafeTargetUtil`) vale sempre, com ou sem GriefPrevention. Em caso de erro na consulta, a proteção falha fechada (nega a ação). |
+| **GriefPrevention** | Habilidades em área e efeitos hostis respeitam claims: Bote, Cabeçada, Sopro do Dragão, Ecolocalização, Uivo do Alfa, Polinizadora, Avanço Voraz/Faro de Sangue, Sorte de Catador, Coice e Borrifo Fedorento filtram alvo a alvo — a habilidade continua funcionando, apenas ignora alvos protegidos. Mobs hostis nunca são protegidos, e a proteção de pets/mobs nomeados (`SafeTargetUtil`) vale sempre, com ou sem GriefPrevention. Em caso de erro na consulta, a proteção falha fechada (nega a ação). |
 | **Simple Voice Chat** | Apenas detecção + valores de configuração por enquanto (raio do uivo, ping de ecolocalização, abafamento de spray) — nenhum poder usa voz ainda. O nome registrado do plugin é `voicechat`. |
 | **PlaceholderAPI** | Apenas detecção — expansão de placeholders planejada. |
 | **WorldGuard** | Apenas detecção — checagem de flags de região planejada. |
@@ -210,4 +257,4 @@ Usa o Gradle Wrapper interno (precisa só de Java 25 instalado).
 ./gradlew build --stacktrace    # compila mostrando detalhes de erros
 ```
 
-O `.jar` sai em `build/libs/originspaper-<versão>.jar` (ex.: `originspaper-1.3.0.jar`). Copie para a pasta `plugins/` de um servidor Paper 26.1.2 e inicie o servidor.
+O `.jar` sai em `build/libs/originspaper-<versão>.jar` (ex.: `originspaper-1.4.0.jar`). Copie para a pasta `plugins/` de um servidor Paper 26.1.2 e inicie o servidor.

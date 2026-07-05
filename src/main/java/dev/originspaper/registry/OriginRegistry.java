@@ -131,7 +131,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-/** Builds and stores the 16 origins, in display order (Human first). */
+/** Builds and stores the 21 origins, in display order (Human first). */
 public class OriginRegistry {
 
     private static final Set<Biome> FOREST_BIOMES = Set.of(
