@@ -33,6 +33,11 @@ public class TrashGourmetPower extends AbstractPower {
         this.saturationBonus = saturationBonus;
     }
 
+    /** Exposed for progression powers that award XP for eating "trash" foods. */
+    public static boolean isTrashFood(Material m) {
+        return TRASH_FOODS.contains(m);
+    }
+
     @Override
     public void onItemConsume(PlayerItemConsumeEvent e) {
         if (!TRASH_FOODS.contains(e.getItem().getType())) {

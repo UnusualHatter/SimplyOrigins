@@ -1,12 +1,12 @@
 package dev.originspaper.power.origins.redpanda;
 
 import dev.originspaper.power.shared.AbstractPower;
+import dev.originspaper.util.ArmorUtil;
 import dev.originspaper.util.EffectUtil;
 import dev.originspaper.util.ParticleUtil;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.Set;
@@ -34,16 +34,6 @@ public class TreeAcrobatPower extends AbstractPower {
                 || type.name().endsWith("_LEAVES") || FOREST_FLOOR.contains(type);
     }
 
-    /** "Corpo Leve": heavy chestplates suppress the red panda's acrobatics. */
-    static boolean isWearingHeavyChest(Player player) {
-        ItemStack chest = player.getInventory().getChestplate();
-        if (chest == null) {
-            return false;
-        }
-        String name = chest.getType().name();
-        return name.startsWith("DIAMOND_") || name.startsWith("NETHERITE_");
-    }
-
     private int levelOf(Player player) {
         var data = plugin().data().get(player.getUniqueId());
         return data == null ? 1 : data.level();
@@ -51,7 +41,8 @@ public class TreeAcrobatPower extends AbstractPower {
 
     @Override
     public void onTick(Player player) {
-        if (isWearingHeavyChest(player)) {
+        // "Corpo Leve": heavy chestplates suppress the red panda's acrobatics.
+        if (ArmorUtil.isWearingHeavyChest(player)) {
             return;
         }
         Material below = player.getLocation().clone().subtract(0, 0.1, 0).getBlock().getType();

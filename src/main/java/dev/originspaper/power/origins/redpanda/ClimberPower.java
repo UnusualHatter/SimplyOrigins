@@ -1,6 +1,7 @@
 package dev.originspaper.power.origins.redpanda;
 
 import dev.originspaper.power.shared.AbstractPower;
+import dev.originspaper.util.ArmorUtil;
 import dev.originspaper.util.EffectUtil;
 import dev.originspaper.util.ParticleUtil;
 import org.bukkit.Location;
@@ -34,7 +35,7 @@ public class ClimberPower extends AbstractPower {
 
     @Override
     public void onTick(Player player) {
-        if (!player.isSneaking() || TreeAcrobatPower.isWearingHeavyChest(player)) {
+        if (!player.isSneaking() || ArmorUtil.isWearingHeavyChest(player)) {
             return;
         }
         if (!touchingClimbable(player)) {

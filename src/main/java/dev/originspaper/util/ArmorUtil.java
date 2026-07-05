@@ -1,12 +1,27 @@
 package dev.originspaper.util;
 
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 /** Armor classification used by "light armor only" style powers. */
 public final class ArmorUtil {
 
     private ArmorUtil() {}
+
+    /**
+     * True when the player wears a diamond/netherite chestplate — the "heavy armor" condition that
+     * suppresses agility/stealth powers (red panda acrobatics, raccoon stealth, equine gallop,
+     * skunk stripes).
+     */
+    public static boolean isWearingHeavyChest(Player player) {
+        ItemStack chest = player.getInventory().getChestplate();
+        if (chest == null) {
+            return false;
+        }
+        String name = chest.getType().name();
+        return name.startsWith("DIAMOND_") || name.startsWith("NETHERITE_");
+    }
 
     /** Approximate defense points of a single armor piece (matches vanilla per-piece values). */
     public static int defense(ItemStack item) {

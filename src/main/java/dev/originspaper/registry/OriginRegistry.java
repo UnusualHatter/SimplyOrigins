@@ -39,6 +39,11 @@ import dev.originspaper.power.origins.owl.NightHunterPower;
 import dev.originspaper.power.origins.owl.SilentFlightPower;
 import dev.originspaper.power.origins.rabbit.PredatorScentPower;
 import dev.originspaper.power.origins.rabbit.RabbitDashPower;
+import dev.originspaper.power.origins.raccoon.NightScavengerPower;
+import dev.originspaper.power.origins.raccoon.RaccoonProgressionPower;
+import dev.originspaper.power.origins.raccoon.RaccoonScurryPower;
+import dev.originspaper.power.origins.raccoon.ScavengersLuckPower;
+import dev.originspaper.power.origins.raccoon.SneakyPawsPower;
 import dev.originspaper.power.origins.redpanda.ClimberPower;
 import dev.originspaper.power.origins.redpanda.FluffyTailPower;
 import dev.originspaper.power.origins.redpanda.RedPandaProgressionPower;
@@ -96,6 +101,7 @@ import dev.originspaper.power.shared.PermanentEffectPower;
 import dev.originspaper.power.shared.PotionImmunityPower;
 import dev.originspaper.power.shared.SilentStepsPower;
 import dev.originspaper.power.shared.TimidityPower;
+import dev.originspaper.power.shared.TrashGourmetPower;
 import dev.originspaper.util.FoodUtil;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -201,6 +207,7 @@ public class OriginRegistry {
         registerMoth();
         registerRedPanda();
         registerShark();
+        registerRaccoon();
     }
 
     private void registerHuman() {
@@ -628,6 +635,35 @@ public class OriginRegistry {
                 new PowerInfo("Carnívoro", "Só consegue comer carne e peixe."),
                 new PowerInfo("Corpo Grande", "Seu corpo é 10% maior."));
         register(new Origin("shark", "Tubarão", null, Material.PRISMARINE_SHARD, powers, infos));
+    }
+
+    private void registerRaccoon() {
+        List<PowerType> powers = new java.util.ArrayList<>(List.of(
+                new NightScavengerPower("raccoon:night_scavenger"),
+                new TrashGourmetPower("raccoon:trash_gourmet", 2.0f),
+                new SneakyPawsPower("raccoon:sneaky_paws"),
+                new RaccoonScurryPower("raccoon:scurry",
+                        cfgSecondsToTicks("origins.raccoon.scurry-cooldown-seconds", 20),
+                        cfgInt("origins.raccoon.scurry-speed-seconds", 3) * 20,
+                        cfgInt("origins.raccoon.scurry-invisibility-seconds", 1) * 20),
+                new AttributeModifierPower("raccoon:fragile", Attribute.MAX_HEALTH,
+                        -2.0 * cfgInt("origins.raccoon.max-health-penalty-hearts", 1)),
+                new AttributeModifierPower("raccoon:small_body", Attribute.SCALE, -0.15),
+                new RaccoonProgressionPower("raccoon:progression")));
+        if (cfgBool("origins.raccoon.scavenger-luck-enabled", true)) {
+            powers.add(2, new ScavengersLuckPower("raccoon:scavengers_luck",
+                    cfgDouble("origins.raccoon.scavenger-luck-chance", 0.07)));
+        }
+        List<PowerInfo> infos = List.of(
+                new PowerInfo("Catador Noturno", "Enxerga no escuro e durante a noite."),
+                new PowerInfo("Gourmet do Lixo", "Comidas duvidosas não envenenam e dão saturação extra."),
+                new PowerInfo("Sorte de Catador", "Ao caçar ou vasculhar terreno natural, pode achar pequenos itens úteis."),
+                new PowerInfo("Patas Furtivas", "Agachado e sem peitoral pesado, monstros só percebem você de perto."),
+                new PowerInfo("Esgueirada", "Agachar + F: Velocidade II por 3s e invisibilidade breve; atacar encerra o efeito (recarga 20s)."),
+                new PowerInfo("Frágil", "Possui 1 coração a menos."),
+                new PowerInfo("Corpo Pequeno", "Seu corpo é 15% menor."),
+                new PowerInfo("Sem Armadura Pesada", "Peitoral de diamante/netherite desativa sua furtividade."));
+        register(new Origin("raccoon", "Guaxinim", null, Material.BUNDLE, powers, infos));
     }
 
     private void registerMoth() {
