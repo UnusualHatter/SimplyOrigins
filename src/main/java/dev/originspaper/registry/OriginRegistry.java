@@ -43,6 +43,13 @@ import dev.originspaper.power.origins.redpanda.ClimberPower;
 import dev.originspaper.power.origins.redpanda.FluffyTailPower;
 import dev.originspaper.power.origins.redpanda.RedPandaProgressionPower;
 import dev.originspaper.power.origins.redpanda.TreeAcrobatPower;
+import dev.originspaper.power.origins.shark.ApexSwimmerPower;
+import dev.originspaper.power.origins.shark.BloodSensePower;
+import dev.originspaper.power.origins.shark.DrySkinPower;
+import dev.originspaper.power.origins.shark.FeedingRushPower;
+import dev.originspaper.power.origins.shark.LandClumsyPower;
+import dev.originspaper.power.origins.shark.PredatorBitePower;
+import dev.originspaper.power.origins.shark.SharkProgressionPower;
 import dev.originspaper.power.origins.wolf.AlphaHowlPower;
 import dev.originspaper.power.origins.wolf.CarnivoresBitePower;
 import dev.originspaper.power.origins.wolf.DayNightSpeedPower;
@@ -193,6 +200,7 @@ public class OriginRegistry {
         registerDragon();
         registerMoth();
         registerRedPanda();
+        registerShark();
     }
 
     private void registerHuman() {
@@ -588,6 +596,38 @@ public class OriginRegistry {
                 new PowerInfo("Corpo Leve", "Peitoral de diamante/netherite desativa a acrobacia e a escalada."),
                 new PowerInfo("Corpo Pequeno", "Seu corpo é 15% menor."));
         register(new Origin("red_panda", "Panda-Vermelho", null, Material.BAMBOO, powers, infos));
+    }
+
+    private void registerShark() {
+        List<PowerType> powers = List.of(
+                new AmphibiousPower("shark:water_breathing"),
+                new ApexSwimmerPower("shark:apex_swimmer"),
+                new PredatorBitePower("shark:predator_bite",
+                        cfgDouble("origins.shark.predator-bite-extra-damage", 2.0)),
+                new BloodSensePower("shark:blood_sense",
+                        cfgDouble("origins.shark.blood-sense-radius", 16.0),
+                        cfgInt("origins.shark.blood-sense-health-percent", 60) / 100.0),
+                new FeedingRushPower("shark:feeding_rush",
+                        cfgSecondsToTicks("origins.shark.feeding-rush-cooldown-seconds", 30),
+                        cfgDouble("origins.shark.feeding-rush-damage", 4.0)),
+                new DrySkinPower("shark:dry_skin",
+                        cfgInt("origins.shark.dry-skin-warning-seconds", 180),
+                        cfgInt("origins.shark.dry-skin-penalty-seconds", 300)),
+                new LandClumsyPower("shark:land_clumsy", -0.08),
+                new CarnivoreDietPower("shark:carnivore"),
+                new AttributeModifierPower("shark:large_body", Attribute.SCALE, 0.1),
+                new SharkProgressionPower("shark:progression"));
+        List<PowerInfo> infos = List.of(
+                new PowerInfo("Respiração Aquática", "Respira perfeitamente debaixo d'água."),
+                new PowerInfo("Nadador Supremo", "Nada muito mais rápido que qualquer criatura na água."),
+                new PowerInfo("Mordida Predadora", "Causa +1 coração de dano corpo a corpo enquanto estiver na água."),
+                new PowerInfo("Faro de Sangue", "Molhado, sente criaturas feridas num raio de 16 blocos — elas brilham para você."),
+                new PowerInfo("Avanço Voraz", "Agachar + F (na água): investida submarina que morde a primeira presa no caminho (recarga 30s)."),
+                new PowerInfo("Pele Seca", "Longe da água ou chuva por 3 min fica fraco; por 5 min, também lento. Molhar-se zera o tempo."),
+                new PowerInfo("Desajeitado em Terra", "Levemente mais lento fora da água."),
+                new PowerInfo("Carnívoro", "Só consegue comer carne e peixe."),
+                new PowerInfo("Corpo Grande", "Seu corpo é 10% maior."));
+        register(new Origin("shark", "Tubarão", null, Material.PRISMARINE_SHARD, powers, infos));
     }
 
     private void registerMoth() {
