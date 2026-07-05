@@ -22,6 +22,6 @@ public class TimidityPower extends AbstractPower {
 
     @Override
     public void onRemove(Player player) {
-        EffectUtil.clear(player, PotionEffectType.WEAKNESS);
+        player.removePotionEffect(PotionEffectType.WEAKNESS);
     }
 }

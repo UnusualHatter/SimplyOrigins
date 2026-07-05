@@ -55,7 +55,7 @@ public class FluffyTailPower extends AbstractPower implements ActivePowerType {
 
     @Override
     public void onRemove(Player player) {
-        EffectUtil.clear(player, PotionEffectType.SPEED);
-        EffectUtil.clear(player, PotionEffectType.SLOW_FALLING);
+        player.removePotionEffect(PotionEffectType.SPEED);
+        player.removePotionEffect(PotionEffectType.SLOW_FALLING);
     }
 }

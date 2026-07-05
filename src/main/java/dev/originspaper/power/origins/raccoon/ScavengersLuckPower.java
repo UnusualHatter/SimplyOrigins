@@ -70,14 +70,16 @@ public class ScavengersLuckPower extends AbstractPower {
     public void onBlockBreak(BlockBreakEvent e) {
         Material type = e.getBlock().getType();
         boolean diggable = DIGGABLES.contains(type) || type.name().endsWith("_LEAVES");
-        if (!diggable || PlacedBlockTracker.isPlayerPlaced(e.getBlock())
-                || !claims().canModifyBlock(e.getPlayer(), e.getBlock())) {
+        if (!diggable || PlacedBlockTracker.isPlayerPlaced(e.getBlock())) {
             return;
         }
         tryFind(e.getPlayer(), e.getBlock().getLocation().add(0.5, 0.5, 0.5));
     }
 
     private void tryFind(Player player, Location where) {
+        if (!claims().canModifyBlock(player, where.getBlock())) {
+            return;
+        }
         long now = plugin().tick();
         Long last = lastFind.get(player.getUniqueId());
         if (last != null && now - last < FIND_INTERVAL_SECONDS) {

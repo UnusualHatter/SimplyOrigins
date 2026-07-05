@@ -45,6 +45,8 @@ public class DrySkinPower extends AbstractPower {
         long now = plugin().tick();
         if (BloodSensePower.isWet(player)) {
             lastWet.put(player.getUniqueId(), now);
+            player.removePotionEffect(PotionEffectType.WEAKNESS);
+            player.removePotionEffect(PotionEffectType.SLOWNESS);
             return;
         }
         long dry = now - lastWet.computeIfAbsent(player.getUniqueId(), k -> now);
@@ -65,7 +67,7 @@ public class DrySkinPower extends AbstractPower {
     @Override
     public void onRemove(Player player) {
         lastWet.remove(player.getUniqueId());
-        EffectUtil.clear(player, PotionEffectType.WEAKNESS);
-        EffectUtil.clear(player, PotionEffectType.SLOWNESS);
+        player.removePotionEffect(PotionEffectType.WEAKNESS);
+        player.removePotionEffect(PotionEffectType.SLOWNESS);
     }
 }

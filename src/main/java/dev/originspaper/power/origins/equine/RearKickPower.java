@@ -57,7 +57,7 @@ public class RearKickPower extends AbstractPower implements ActivePowerType {
                 continue;
             }
             target.damage(damage, player);
-            knockBackLater(target.getUniqueId(), backward);
+            knockBackLater(player.getUniqueId(), target.getUniqueId(), backward);
             hit = true;
         }
 
@@ -70,9 +70,15 @@ public class RearKickPower extends AbstractPower implements ActivePowerType {
         }
     }
 
-    private void knockBackLater(UUID targetId, Vector direction) {
+    private void knockBackLater(UUID sourceId, UUID targetId, Vector direction) {
         Vector knockback = direction.clone().multiply(1.45).setY(0.45);
         plugin().getServer().getScheduler().runTaskLater(plugin(), () -> {
+            Player source = plugin().getServer().getPlayer(sourceId);
+            var data = plugin().data().get(sourceId);
+            if (source == null || data == null || data.getPowers().stream()
+                    .noneMatch(power -> power.getId().equals(id))) {
+                return;
+            }
             Entity resolved = plugin().getServer().getEntity(targetId);
             if (resolved instanceof LivingEntity living && living.isValid()) {
                 living.setVelocity(knockback);

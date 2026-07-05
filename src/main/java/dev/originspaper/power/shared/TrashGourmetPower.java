@@ -46,7 +46,9 @@ public class TrashGourmetPower extends AbstractPower {
         UUID playerId = e.getPlayer().getUniqueId();
         plugin().getServer().getScheduler().runTask(plugin(), () -> {
             Player p = plugin().getServer().getPlayer(playerId);
-            if (p == null) {
+            var data = plugin().data().get(playerId);
+            if (p == null || data == null || data.getPowers().stream()
+                    .noneMatch(power -> power.getId().equals(id))) {
                 return;
             }
             for (PotionEffectType type : CLEANSED) {

@@ -61,6 +61,6 @@ public class TreeAcrobatPower extends AbstractPower {
 
     @Override
     public void onRemove(Player player) {
-        EffectUtil.clear(player, PotionEffectType.SPEED);
+        player.removePotionEffect(PotionEffectType.SPEED);
     }
 }

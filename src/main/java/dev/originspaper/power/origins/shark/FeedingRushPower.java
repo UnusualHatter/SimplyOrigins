@@ -123,8 +123,15 @@ public class FeedingRushPower extends AbstractPower implements ActivePowerType {
             away = player.getLocation().getDirection();
         }
         Vector knockback = away.normalize().multiply(1.1).setY(0.3);
+        UUID sourceId = player.getUniqueId();
         UUID preyId = prey.getUniqueId();
         plugin().getServer().getScheduler().runTaskLater(plugin(), () -> {
+            Player source = plugin().getServer().getPlayer(sourceId);
+            var data = plugin().data().get(sourceId);
+            if (source == null || data == null || data.getPowers().stream()
+                    .noneMatch(power -> power.getId().equals(id))) {
+                return;
+            }
             Entity target = plugin().getServer().getEntity(preyId);
             if (target != null && target.isValid()) {
                 target.setVelocity(knockback);

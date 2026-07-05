@@ -9,10 +9,11 @@ import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.Set;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -27,7 +28,7 @@ public class RaccoonScurryPower extends AbstractPower implements ActivePowerType
     private final long cooldownTicks;
     private final int speedTicks;
     private final int invisibilityTicks;
-    private final Set<UUID> scurrying = ConcurrentHashMap.newKeySet();
+    private final Map<UUID, Long> scurrying = new ConcurrentHashMap<>();
 
     public RaccoonScurryPower(String id, long cooldownTicks, int speedTicks, int invisibilityTicks) {
         super(id);
@@ -45,7 +46,8 @@ public class RaccoonScurryPower extends AbstractPower implements ActivePowerType
     public void onActivate(Player player) {
         EffectUtil.apply(player, PotionEffectType.SPEED, speedTicks, 1); // Speed II
         UUID playerId = player.getUniqueId();
-        scurrying.add(playerId);
+        long activation = System.nanoTime();
+        scurrying.put(playerId, activation);
         if (!ArmorUtil.isWearingHeavyChest(player)) {
             // Nv10 "Mestre da Malandragem": the vanishing act lasts three times longer.
             int invis = invisibilityTicks * (levelOf(player) >= 10 ? 3 : 1);
@@ -54,7 +56,7 @@ public class RaccoonScurryPower extends AbstractPower implements ActivePowerType
         long stateTicks = Math.max(speedTicks,
                 ArmorUtil.isWearingHeavyChest(player) ? 0 : invisibilityTicks * (levelOf(player) >= 10 ? 3 : 1));
         plugin().getServer().getScheduler().runTaskLater(plugin(),
-                () -> scurrying.remove(playerId), Math.max(1L, stateTicks));
+                () -> scurrying.remove(playerId, activation), Math.max(1L, stateTicks));
         Location c = player.getLocation();
         player.getWorld().playSound(c, Sound.ENTITY_CAT_HISS, 0.6f, 1.5f);
         ParticleUtil.spawnGroundBurst(Particle.SMOKE, c, 0.6, 12, 0.03);
@@ -64,8 +66,10 @@ public class RaccoonScurryPower extends AbstractPower implements ActivePowerType
     /** Attacking blows the cover: the scurry's stealth (and dash) end immediately. */
     @Override
     public void onDamageByEntity(EntityDamageByEntityEvent e) {
-        if (e.getDamager() instanceof Player player
-                && scurrying.remove(player.getUniqueId())) {
+        Player player = e.getDamager() instanceof Player direct ? direct
+                : e.getDamager() instanceof Projectile projectile
+                        && projectile.getShooter() instanceof Player shooter ? shooter : null;
+        if (player != null && scurrying.remove(player.getUniqueId()) != null) {
             player.removePotionEffect(PotionEffectType.INVISIBILITY);
             player.removePotionEffect(PotionEffectType.SPEED);
         }
@@ -83,7 +87,7 @@ public class RaccoonScurryPower extends AbstractPower implements ActivePowerType
     @Override
     public void onRemove(Player player) {
         scurrying.remove(player.getUniqueId());
-        EffectUtil.clear(player, PotionEffectType.SPEED);
-        EffectUtil.clear(player, PotionEffectType.INVISIBILITY);
+        player.removePotionEffect(PotionEffectType.SPEED);
+        player.removePotionEffect(PotionEffectType.INVISIBILITY);
     }
 }
