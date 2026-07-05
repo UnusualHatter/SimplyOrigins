@@ -21,7 +21,7 @@ public class ActiveSkillListener implements Listener {
         this.plugin = plugin;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onSwap(PlayerSwapHandItemsEvent e) {
         Player player = e.getPlayer();
         if (!player.isSneaking()) {
@@ -32,14 +32,12 @@ public class ActiveSkillListener implements Listener {
             return; // plugin isn't managing this player yet → leave the vanilla swap alone
         }
 
-        // Crouch + F is the origin skill input: always consume it so items never swap while
-        // sneaking, regardless of whether the origin actually has an active skill.
-        e.setCancelled(true);
-
         ActivePowerType active = findActive(data);
         if (active == null) {
-            return; // passive-only origin: input consumed, nothing to activate
+            return; // passive-only origin: preserve the normal hand swap
         }
+        // Crouch + F belongs to the active skill only when this origin actually has one.
+        e.setCancelled(true);
 
         if (active.getCooldownTicks(player) > 0
                 && !CooldownUtil.isReady(data.getCooldowns(), active.getId(), active.getCooldownTicks(player))) {
@@ -53,10 +51,10 @@ public class ActiveSkillListener implements Listener {
         plugin.log().debug(player.getName() + " activating skill: " + active.getId());
         try {
             active.onActivate(player);
+            CooldownUtil.trigger(data.getCooldowns(), active.getId());
         } catch (Exception ex) {
             plugin.log().warn("onActivate error in " + active.getId() + " for " + player.getName(), ex);
         }
-        CooldownUtil.trigger(data.getCooldowns(), active.getId());
     }
 
     /**

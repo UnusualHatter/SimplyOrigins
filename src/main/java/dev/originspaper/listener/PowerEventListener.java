@@ -56,7 +56,7 @@ public class PowerEventListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGH)
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onDamage(EntityDamageEvent e) {
         // Victim-side: fire for the player being hurt.
         if (e.getEntity() instanceof Player victim) {
@@ -86,7 +86,7 @@ public class PowerEventListener implements Listener {
         return null;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onMove(PlayerMoveEvent e) {
         if (!e.hasChangedPosition()) {
             return;
@@ -94,39 +94,39 @@ public class PowerEventListener implements Listener {
         dispatch(e.getPlayer(), p -> p.onMove(e));
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onFood(FoodLevelChangeEvent e) {
         if (e.getEntity() instanceof Player player) {
             dispatch(player, p -> p.onFoodChange(e));
         }
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onConsume(PlayerItemConsumeEvent e) {
         dispatch(e.getPlayer(), p -> p.onItemConsume(e));
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent e) {
         dispatch(e.getPlayer(), p -> p.onBlockBreak(e));
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onBlockDrop(BlockDropItemEvent e) {
         dispatch(e.getPlayer(), p -> p.onBlockDropItem(e));
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onArmorChange(PlayerArmorChangeEvent e) {
         dispatch(e.getPlayer(), p -> p.onArmorChange(e));
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onInteract(PlayerInteractEvent e) {
         dispatch(e.getPlayer(), p -> p.onInteract(e));
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onEntityTarget(EntityTargetEvent e) {
         if (e.getTarget() instanceof Player target) {
             dispatch(target, p -> p.onEntityTarget(e));
@@ -142,24 +142,24 @@ public class PowerEventListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPotionEffect(EntityPotionEffectEvent e) {
         if (e.getEntity() instanceof Player player) {
             dispatch(player, p -> p.onPotionEffect(e));
         }
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onBedEnter(PlayerBedEnterEvent e) {
         dispatch(e.getPlayer(), p -> p.onBedEnter(e));
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onProjectileLaunch(PlayerLaunchProjectileEvent e) {
         dispatch(e.getPlayer(), p -> p.onProjectileLaunch(e));
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onProjectileHit(ProjectileHitEvent e) {
         if (e.getEntity().getShooter() instanceof Player shooter) {
             dispatch(shooter, p -> p.onProjectileHit(e));

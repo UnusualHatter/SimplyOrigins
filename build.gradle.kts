@@ -28,14 +28,17 @@ tasks.withType<JavaCompile> {
 }
 
 // Single source of truth for the version: `version` above feeds both the jar name and plugin.yml.
+val pluginVersion = version.toString()
+
 tasks.processResources {
+    inputs.property("pluginVersion", pluginVersion)
     filesMatching("plugin.yml") {
-        expand(mapOf("version" to project.version))
+        expand(mapOf("version" to pluginVersion))
     }
 }
 
 tasks.jar {
     archiveBaseName.set("originspaper")
-    archiveVersion.set(version.toString())
+    archiveVersion.set(pluginVersion)
     archiveClassifier.set("")
 }

@@ -13,6 +13,7 @@ type Crumb = { label: string; href?: string };
 function crumbsFor(p: string): Crumb[] {
   if (p === '/') return [{ label: 'Início' }];
   if (p === '/wiki') return [{ label: 'Wiki' }];
+  if (p === '/tutoriais') return [{ label: 'Tutoriais' }];
   if (p === '/changelog') return [{ label: 'Changelog' }];
 
   const wikiMap: Record<string, string> = {

@@ -18,7 +18,7 @@ export const site = {
   /** Metadados técnicos exibidos no índice (sidebar) — estilo manual. */
   meta: {
     version: '26.1.2',
-    build: '1.2.3',
+    build: '1.2.6',
     status: 'Estável',
   },
   /** Links externos (placeholders — troque pelos reais). */
@@ -27,6 +27,7 @@ export const site = {
   nav: [
     { label: 'Início', href: '/' },
     { label: 'Wiki', href: '/wiki' },
+    { label: 'Tutoriais', href: '/tutoriais' },
     { label: 'Changelog', href: '/changelog' },
     { label: 'Jogar', href: '/#status' },
   ],

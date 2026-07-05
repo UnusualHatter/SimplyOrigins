@@ -74,6 +74,10 @@ public class OriginCommand implements CommandExecutor, TabCompleter {
             sender.sendMessage(TextUtil.msg("§cQuantidade inválida: §f" + args[2]));
             return;
         }
+        if (amount <= 0) {
+            sender.sendMessage(TextUtil.msg("§cA quantidade de XP deve ser maior que zero."));
+            return;
+        }
         plugin.progression().awardXp(target, amount);
         sender.sendMessage(TextUtil.msg("§aConcedido §f" + amount + " XP§a a §f" + target.getName() + "§a."));
     }

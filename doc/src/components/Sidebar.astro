@@ -72,6 +72,13 @@ const wikiOpen = path === '/wiki' || path.startsWith('/wiki/') || path.startsWit
         </li>
 
         <li>
+          <a href="/tutoriais" class:list={['nav-item', { active: isActive('/tutoriais') }]} aria-current={isActive('/tutoriais') ? 'page' : undefined}>
+            <span class="ico"><Icon name="play" size={15} /></span>
+            <span class="lbl">Tutoriais</span>
+          </a>
+        </li>
+
+        <li>
           <a href="/changelog" class:list={['nav-item', { active: isActive('/changelog') }]} aria-current={isActive('/changelog') ? 'page' : undefined}>
             <span class="ico"><Icon name="gauge" size={15} /></span>
             <span class="lbl">Changelog</span>

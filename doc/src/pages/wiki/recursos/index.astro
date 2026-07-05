@@ -12,15 +12,15 @@ const byCategory = featureCategories.map((c) => ({
 
 <Base
   title="Recursos · Wiki"
-  description="Recursos do servidor Feather Flux: casa e teleporte (/home, /tpa), pontos de viagem, lápides, discos personalizados, imagens em mapas e mais."
+  description="Recursos do servidor Feather Flux: homes, TPA, Blocker, claims, waystones, graves, mídia e mais."
 >
   <div class="container">
     <header class="doc-head">
       <span class="eyebrow">Wiki / Recursos</span>
       <h1>Recursos do servidor</h1>
       <p class="lead">
-        As coisas do dia a dia que facilitam a vida: casa, teleporte, viagem rápida, lápides e uns
-        extras. Comandos e como usar.
+        Aqui você encontra os plugins, comandos e sistemas do servidor. Para aprender a usar cada
+        um, abra a aba Tutoriais.
       </p>
     </header>
     <WikiTabs active="recursos" />
@@ -47,6 +47,11 @@ const byCategory = featureCategories.map((c) => ({
                   <p class="fc-note">
                     <Icon name="check" size={13} /> {f.note}
                   </p>
+                )}
+                {f.tutorial && (
+                  <a class="fc-tutorial" href={`/tutoriais#${f.tutorial}`}>
+                    Ver tutorial <Icon name="arrow-right" size={13} />
+                  </a>
                 )}
               </article>
             ))}
@@ -127,5 +132,17 @@ const byCategory = featureCategories.map((c) => ({
     color: var(--green);
     flex-shrink: 0;
     margin-top: 0.15rem;
+  }
+  .fc-tutorial {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    align-self: flex-start;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--gold);
+  }
+  .fc-tutorial:hover {
+    color: var(--gold-bright);
   }
 </style>

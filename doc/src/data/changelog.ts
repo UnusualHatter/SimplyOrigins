@@ -18,6 +18,73 @@ export interface ChangelogEntry {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: '1.2.6',
+    date: '2026-07-02',
+    summary: [
+      'v1.2.6 (02/07):',
+      '• Ações bloqueadas por claims não concedem mais XP de origem',
+      '• Origens sem poder ativo voltaram a trocar itens entre as mãos normalmente',
+      '• Habilidades e comandos administrativos ficaram mais seguros',
+    ].join('\n'),
+    changed: [
+      'O OriginsPaper foi recompilado com a versão mais recente do código e validado no Paper 26.1.2 com Java 25.',
+    ],
+    fixed: [
+      'Ações canceladas por claims ou outros plugins não ativam mais poderes nem contam para a progressão. Isso impede, por exemplo, ganhar XP tentando quebrar blocos protegidos.',
+      'Agachar e pressionar F agora só é reservado pelo OriginsPaper quando a origem possui um poder ativo. Origens passivas voltaram a trocar itens entre as mãos normalmente.',
+      'Uma falha interna ao ativar um poder não coloca mais a habilidade em cooldown sem ter funcionado.',
+      'O comando administrativo /origin addxp agora rejeita valores iguais ou menores que zero e lida com quantidades muito altas sem perder o XP acumulado.',
+    ],
+  },
+  {
+    version: '1.2.5',
+    date: '2026-07-01',
+    summary: [
+      'v1.2.5 (01/07) — Novo Sistema de Bloqueio:',
+      '• Controle granular de chat, voz, visibilidade e interações',
+      '• Interface própria pelo comando /block',
+      '• Bloqueios recíprocos, imediatos e persistentes',
+      '• Integração com os principais recursos do servidor',
+    ].join('\n'),
+    added: [
+      'Novo sistema completo de bloqueio e privacidade. Use /block para abrir uma interface e escolher um jogador online ou offline; /unblock <jogador> remove todos os bloqueios aplicados a ele.',
+      'Cada aspecto pode ser configurado separadamente: visibilidade, chat público, mensagens privadas, entrada e saída, mensagens de morte, TPA, trocas, convites de grupo, voz, TAB, sons, partículas, poses, graves e interações.',
+      'O bloqueio é individual: o jogador deixa de aparecer ou interagir apenas para quem o bloqueou, sem alterar a experiência das outras pessoas no servidor.',
+    ],
+    changed: [
+      'Canais sociais como chat, mensagens privadas, voz, TPA, trocas e convites são bloqueados nos dois sentidos quando qualquer um dos jogadores ativa a opção correspondente.',
+      'A privacidade visual também cobre modelo, armadura, nome, TAB, scoreboard, sons, partículas, graves, poses e outros efeitos atribuídos ao jogador bloqueado.',
+      'Integrações adicionadas para EssentialsX, Simple Voice Chat, TAB, GSit, InteractionVisualizer, AxGraves, ProtocolLib, claims e containers.',
+      'Todas as alterações são aplicadas imediatamente, sem precisar fechar a interface ou reconectar. As preferências ficam salvas e continuam valendo após sair ou reiniciar o servidor.',
+    ],
+    fixed: [
+      'Corrigido o bloqueio do Simple Voice Chat em proximidade e grupos: apenas o par bloqueado deixa de se ouvir; os demais jogadores continuam recebendo o áudio normalmente.',
+      'Reforçada a recuperação automática da privacidade ao entrar, renascer ou trocar de mundo, evitando que outros plugins revelem novamente um jogador bloqueado.',
+      'Diversas correções de desempenho, segurança, persistência e estabilidade no processamento dos bloqueios.',
+    ],
+  },
+  {
+    version: '1.2.4',
+    date: '2026-06-26',
+    summary: [
+      'v1.2.4 (26/06):',
+      '• Site e Wiki redesenhados, com busca rápida (Ctrl+K)',
+      '• Encantos aparecem no mundo conforme a raridade de cada um',
+      '• Baús, barris e cofres voltam a reabastecer — até em áreas já exploradas',
+    ].join('\n'),
+    added: [
+      'Site e Wiki redesenhados do zero: nova identidade visual, barra lateral com o índice da Wiki, busca global por atalho (Ctrl/⌘K) e todas as páginas refeitas (início, Wiki, origens, encantamentos, recursos, compatibilidade e changelog).',
+      'Os encantos personalizados aparecem no mundo conforme a raridade de cada um: na mesa de encantamento, com bibliotecários, em baús gerados pelo mundo e como tesouro (estes só por loot, troca ou pesca).',
+      'Baús, barris e cofres voltam a reabastecer depois de um tempo (de 1 a 4 dias), inclusive em áreas que já foram exploradas — dá pra reencontrar os encantos novos no loot sem ter que ir cada vez mais longe.',
+    ],
+    changed: [
+      'Na Wiki, os encantamentos passam a ser filtrados pelo item do Minecraft (espada, arco, picareta...) em vez de por categoria, e cada encanto mostra em que itens ele cabe.',
+    ],
+    fixed: [
+      'Corrigida a formatação dos resultados da busca rápida (Ctrl/⌘K), que apareciam como texto grudado, sem espaçamento.',
+    ],
+  },
+  {
     version: '1.2.3',
     date: '2026-06-24',
     summary: [

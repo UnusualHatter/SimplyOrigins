@@ -8,6 +8,7 @@ import { origins, originCode } from '../data/origins';
 import { enchantments, enchantCode } from '../data/enchantments';
 import { features, featureCode } from '../data/features';
 import { compatItems, compatCode } from '../data/compat';
+import { tutorials, tutorialCode } from '../data/tutorials';
 
 type Entry = { code: string; title: string; sub: string; type: string; url: string; kw: string };
 
@@ -44,8 +45,17 @@ const index: Entry[] = [
     url: `/wiki/compatibilidade#${i.slug}`,
     kw: `${i.name} ${i.desc} ${i.status}`.toLowerCase(),
   })),
+  ...tutorials.map((tutorial) => ({
+    code: tutorialCode(tutorial),
+    title: tutorial.title,
+    sub: 'Tutorial',
+    type: 'Tutorial',
+    url: `/tutoriais#${tutorial.slug}`,
+    kw: `${tutorial.title} ${tutorial.summary} ${tutorial.steps.join(' ')} ${tutorial.commands?.join(' ') ?? ''}`.toLowerCase(),
+  })),
   { code: 'FF-PG-00', title: 'Início', sub: 'Visão geral e conexão', type: 'Página', url: '/', kw: 'inicio home conectar ip java bedrock servidor' },
   { code: 'FF-PG-01', title: 'Wiki', sub: 'Índice da base', type: 'Página', url: '/wiki', kw: 'wiki indice guia' },
+  { code: 'FF-PG-04', title: 'Tutoriais', sub: 'Guias do servidor', type: 'Página', url: '/tutoriais', kw: 'tutoriais guias ajuda comandos como usar' },
   { code: 'FF-PG-05', title: 'Changelog', sub: 'Histórico de versões', type: 'Página', url: '/changelog', kw: 'changelog versoes historico mudancas' },
 ];
 

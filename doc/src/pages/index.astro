@@ -4,6 +4,7 @@ import { origins } from '../data/origins';
 import { enchantmentCount } from '../data/enchantments';
 import { featureCount } from '../data/features';
 import { compatCount } from '../data/compat';
+import { tutorialCount } from '../data/tutorials';
 import { site } from '../data/site';
 
 const conn = [
@@ -16,9 +17,10 @@ const conn = [
 const toc = [
   { n: '01', name: 'Origens', count: `${origins.length}`, href: '/wiki/origens', desc: 'As 16 origens jogáveis: poderes, fraquezas e progressão do nível 1 ao 10.' },
   { n: '02', name: 'Encantamentos', count: `${enchantmentCount}`, href: '/wiki/encantamentos', desc: 'Encantos personalizados além dos do Minecraft padrão.' },
-  { n: '03', name: 'Recursos', count: `${featureCount}`, href: '/wiki/recursos', desc: 'Comandos e funcionalidades: casa, teleporte, viagem rápida, lápides, mídia.' },
-  { n: '04', name: 'Compatibilidade', count: `${compatCount}`, href: '/wiki/compatibilidade', desc: 'Mods client-side suportados, edições e versões para montar seu próprio modpack.' },
-  { n: '05', name: 'Changelog', count: '—', href: '/changelog', desc: 'Registro técnico do que foi adicionado, alterado e corrigido a cada versão.' },
+  { n: '03', name: 'Recursos', count: `${featureCount}`, href: '/wiki/recursos', desc: 'Comandos e funcionalidades: homes, TPA, Blocker, waystones, graves e mídia.' },
+  { n: '04', name: 'Compatibilidade', count: `${compatCount}`, href: '/wiki/compatibilidade', desc: 'Mods client side, edições e versões compatíveis para montar seu próprio modpack.' },
+  { n: '05', name: 'Tutoriais', count: `${tutorialCount}`, href: '/tutoriais', desc: 'Guias para entrar no servidor e aprender a usar plugins, comandos e outros recursos.' },
+  { n: '06', name: 'Changelog', count: '—', href: '/changelog', desc: 'Registro técnico do que foi adicionado, alterado e corrigido a cada versão.' },
 ];
 ---
 
@@ -56,8 +58,9 @@ const toc = [
       }
     </div>
     <p class="conn-note">
-      Já tem o jogo? Só adicionar o IP do servidor na sual lista de servidores!
-      <a href={site.discord} target="_blank" rel="noopener">Entre no Discord</a> para tirar dúvidas.
+      Estes são os endereços oficiais do servidor.
+      <a href="/tutoriais#entrar">Veja como entrar</a> ou entre no
+      <a href={site.discord} target="_blank" rel="noopener">Discord</a> para tirar dúvidas.
     </p>
 
     <!-- Índice -->

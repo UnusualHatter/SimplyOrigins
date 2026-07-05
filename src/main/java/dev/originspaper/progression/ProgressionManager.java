@@ -51,7 +51,8 @@ public class ProgressionManager {
         if (prog.isMax()) {
             return;
         }
-        prog.setXp(prog.xp() + amount);
+        long updatedXp = (long) prog.xp() + amount;
+        prog.setXp((int) Math.min(Integer.MAX_VALUE, updatedXp));
         boolean leveled = false;
         while (!prog.isMax() && prog.xp() >= xpToNext(prog.level())) {
             prog.setXp(prog.xp() - xpToNext(prog.level()));

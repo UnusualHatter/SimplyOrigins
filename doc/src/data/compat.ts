@@ -11,9 +11,9 @@ export interface CompatCategory {
 }
 
 export const compatCategories: CompatCategory[] = [
-  { key: 'suportado', label: 'Mods que o servidor suporta de propósito', color: '#6ee787' },
-  { key: 'acesso', label: 'De onde dá pra entrar', color: '#7bb0ff' },
-  { key: 'geral', label: 'Mods e pack em geral', color: '#c9a0ff' },
+  { key: 'suportado', label: 'Mods com suporte do servidor', color: '#6ee787' },
+  { key: 'acesso', label: 'Edições e versões', color: '#7bb0ff' },
+  { key: 'geral', label: 'Outros mods e resource pack', color: '#c9a0ff' },
 ];
 
 /** Tom do selo de status. */
@@ -29,6 +29,8 @@ export interface CompatItem {
   desc: string;
   /** Observação curta (plugin, detalhe). */
   note?: string;
+  /** Tutorial relacionado, quando houver. */
+  tutorial?: string;
 }
 
 export const compatItems: CompatItem[] = [
@@ -39,7 +41,7 @@ export const compatItems: CompatItem[] = [
     category: 'suportado',
     status: 'Suportado',
     tone: 'ok',
-    desc: 'Crie e use modelos de personagem personalizados. O servidor reconhece o mod, então os outros jogadores também veem o seu modelo.',
+    desc: 'Modelos de personagem personalizados reconhecidos pelo servidor e visíveis para outros jogadores.',
     note: 'Plugin: CustomPlayerModels (Paper).',
   },
   {
@@ -48,8 +50,8 @@ export const compatItems: CompatItem[] = [
     category: 'suportado',
     status: 'Suportado',
     tone: 'ok',
-    desc: 'Aumenta a distância de renderização usando o sistema de LODs (Level Of Detail), O servidor oferece compatibilidade com tal tipo de geração usando o Voxy!',
-    note: 'Plugin: Voxy Server-Side.',
+    desc: 'Aumenta a distância de renderização usando LODs. O servidor envia os dados necessários para o Voxy.',
+    note: 'Plugin: Voxy Server Side.',
   },
   {
     slug: 'voicechat',
@@ -57,8 +59,9 @@ export const compatItems: CompatItem[] = [
     category: 'suportado',
     status: 'Recomendado',
     tone: 'rec',
-    desc: 'É o chat de voz do servidor (voz por proximidade e grupos). Pra usar, instale o mod no seu cliente, ou inclua ele no seu modpack.',
+    desc: 'Integra o chat de voz por proximidade e os grupos privados ao servidor.',
     note: 'No Bedrock o suporte de voz é separado.',
+    tutorial: 'voz',
   },
 
   // De onde dá pra entrar
@@ -68,8 +71,9 @@ export const compatItems: CompatItem[] = [
     category: 'acesso',
     status: 'Sem mod',
     tone: 'info',
-    desc: 'Dá pra entrar pela edição Bedrock sem nenhum mod, pelo Geyser. É só usar o IP e a porta do Bedrock que estão na página inicial.',
+    desc: 'A edição Bedrock acessa o mesmo mundo por meio do Geyser, sem exigir mod.',
     note: 'Geyser + Floodgate.',
+    tutorial: 'entrar',
   },
   {
     slug: 'versions',
@@ -77,7 +81,7 @@ export const compatItems: CompatItem[] = [
     category: 'acesso',
     status: 'Funciona',
     tone: 'ok',
-    desc: 'Você não precisa estar exatamente na versão do servidor: dá pra entrar de várias versões do Minecraft Java, das mais novas a algumas mais antigas.',
+    desc: 'O servidor aceita várias versões do Minecraft Java, então nem todo mundo precisa jogar exatamente na mesma versão.',
     note: 'ViaVersion + ViaBackwards.',
   },
 
@@ -88,7 +92,7 @@ export const compatItems: CompatItem[] = [
     category: 'geral',
     status: 'Funciona',
     tone: 'ok',
-    desc: 'Sodium, Iris, Lithium, minimapa, shaders e afins funcionam normal, são só do seu lado. A regra é simples: mod que roda só no cliente, pode.',
+    desc: 'Sodium, Iris, Lithium, minimapas, shaders e outros mods client side funcionam normalmente.',
     note: 'Mods que mudam a lógica do servidor não entram.',
   },
   {
@@ -97,7 +101,8 @@ export const compatItems: CompatItem[] = [
     category: 'geral',
     status: 'Obrigatório',
     tone: 'info',
-    desc: 'Ao entrar, o servidor manda um resource pack (pros discos, texturas e modelos personalizados). É só aceitar. Se você usa um pack próprio, o do servidor fica por cima.',
+    desc: 'Resource pack do servidor com as texturas, os modelos e os arquivos usados pelos discos personalizados.',
+    tutorial: 'entrar',
   },
 ];
 

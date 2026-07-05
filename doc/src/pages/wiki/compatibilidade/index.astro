@@ -17,16 +17,15 @@ const toneColor: Record<CompatTone, string> = {
 
 <Base
   title="Compatibilidade · Wiki"
-  description="Compatibilidade do Feather Flux com mods client-side: Customizable Player Models, Voxy, Simple Voice Chat, Bedrock e várias versões. Pra montar seu modpack."
+  description="Compatibilidade do Feather Flux com Customizable Player Models, Voxy, Simple Voice Chat, Bedrock, mods client side e várias versões."
 >
   <div class="container">
     <header class="doc-head">
       <span class="eyebrow">Wiki / Compatibilidade</span>
       <h1>Compatibilidade</h1>
       <p class="lead">
-        Quer montar um modpack só do seu lado (client-side)? A regra é simples: mod que roda só no
-        seu cliente funciona. E alguns o servidor suporta de propósito, então funcionam de verdade
-        aqui.
+        Quer montar seu próprio modpack? Veja quais mods têm integração com o servidor, quais versões
+        podem entrar e o que funciona apenas no seu jogo.
       </p>
     </header>
     <WikiTabs active="compatibilidade" />
@@ -51,6 +50,11 @@ const toneColor: Record<CompatTone, string> = {
                 <h3>{i.name}</h3>
                 <p class="cc-desc">{i.desc}</p>
                 {i.note && <span class="cc-note">{i.note}</span>}
+                {i.tutorial && (
+                  <a class="cc-tutorial" href={`/tutoriais#${i.tutorial}`}>
+                    Ver tutorial
+                  </a>
+                )}
               </article>
             ))}
           </div>
@@ -59,8 +63,8 @@ const toneColor: Record<CompatTone, string> = {
     }
 
     <p class="src-note">
-      Os endereços de Java e Bedrock ficam na <a href="/">página inicial</a>. Em caso de dúvida,
-      entre no Discord.
+      Os endereços de Java e Bedrock ficam na <a href="/">página inicial</a>. Os passos de conexão
+      ficam na aba <a href="/tutoriais#entrar">Tutoriais</a>.
     </p>
   </div>
 </Base>
@@ -124,6 +128,15 @@ const toneColor: Record<CompatTone, string> = {
     color: var(--text-faint);
     border: 1px solid var(--line-2);
     padding: 0.2rem 0.45rem;
+  }
+  .cc-tutorial {
+    align-self: flex-start;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--gold);
+  }
+  .cc-tutorial:hover {
+    color: var(--gold-bright);
   }
   .src-note {
     color: var(--text-faint);

@@ -1,0 +1,356 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import {
+  tutorials,
+  tutorialCategories,
+  tutorialCode,
+} from '../data/tutorials';
+
+const byCategory = tutorialCategories.map((category) => ({
+  ...category,
+  list: tutorials.filter((tutorial) => tutorial.category === category.key),
+}));
+---
+
+<Base
+  title="Tutoriais"
+  description="Tutoriais do Feather Flux para entrar, escolher sua origem e aprender os principais recursos do servidor."
+>
+  <div class="container">
+    <header class="doc-head">
+      <span class="eyebrow">Guias do servidor</span>
+      <h1>Tutoriais</h1>
+      <p class="lead">
+        Quer aprender algum recurso do servidor? Escolha um assunto abaixo e acompanhe o guia no seu
+        ritmo.
+      </p>
+    </header>
+
+    <nav class="tutorial-index" aria-label="Categorias dos tutoriais">
+      {
+        byCategory.map((category) => (
+          <a href={`#${category.key}`} style={`--tone:${category.color}`}>
+            <span>{category.label}</span>
+            <b>{category.list.length}</b>
+          </a>
+        ))
+      }
+    </nav>
+
+    {
+      byCategory.map((category) => (
+        <section class="tutorial-section" id={category.key}>
+          <div class="section-label" style={`--sq:${category.color}`}>
+            <span class="sq"></span>
+            <h2>{category.label}</h2>
+            <span class="count">{category.list.length} tutoriais</span>
+          </div>
+
+          <div class="tutorial-list">
+            {category.list.map((tutorial) => (
+              <article class="tutorial-card" id={tutorial.slug}>
+                <header class="tutorial-head">
+                  <span class="refcode">{tutorialCode(tutorial)}</span>
+                  <h3>{tutorial.title}</h3>
+                  <p>{tutorial.summary}</p>
+                </header>
+
+                {tutorial.commands && (
+                  <div class="commands" aria-label="Comandos usados">
+                    {tutorial.commands.map((command) => <code>{command}</code>)}
+                  </div>
+                )}
+
+                <ol class="steps">
+                  {tutorial.steps.map((step, index) => (
+                    <li>
+                      <span>{String(index + 1).padStart(2, '0')}</span>
+                      <p>{step}</p>
+                    </li>
+                  ))}
+                </ol>
+
+                {tutorial.note && (
+                  <p class="tutorial-note">
+                    <Icon name="check" size={14} />
+                    <span>{tutorial.note}</span>
+                  </p>
+                )}
+
+                {tutorial.links && (
+                  <div class="tutorial-links">
+                    {tutorial.links.map((link) => (
+                      <a href={link.url} target="_blank" rel="noopener">
+                        <Icon name="download" size={14} />
+                        <span>{link.label}</span>
+                        <Icon name="external" size={12} />
+                      </a>
+                    ))}
+                  </div>
+                )}
+
+                {tutorial.video && (
+                  <section class="video-block" aria-label={`Vídeo: ${tutorial.video.title}`}>
+                    <header>
+                      <div>
+                        <span class="video-label">Tutorial em vídeo</span>
+                        <h4>{tutorial.video.title}</h4>
+                      </div>
+                      <span class="video-time">Começa em {tutorial.video.time}</span>
+                    </header>
+                    <div class="video-frame">
+                      <iframe
+                        src={`https://www.youtube-nocookie.com/embed/${tutorial.video.id}?start=${tutorial.video.start}&rel=0`}
+                        title={tutorial.video.title}
+                        loading="lazy"
+                        referrerpolicy="strict-origin-when-cross-origin"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowfullscreen
+                      ></iframe>
+                    </div>
+                    <a class="video-source" href={tutorial.video.url} target="_blank" rel="noopener">
+                      Abrir no YouTube em {tutorial.video.time}
+                      <Icon name="external" size={12} />
+                    </a>
+                  </section>
+                )}
+              </article>
+            ))}
+          </div>
+        </section>
+      ))
+    }
+  </div>
+</Base>
+
+<style>
+  .tutorial-index {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    border: 1px solid var(--line);
+    margin-bottom: 2.5rem;
+  }
+  .tutorial-index a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.8rem;
+    min-height: 3.2rem;
+    padding: 0.7rem 0.85rem;
+    color: var(--text-dim);
+    border-left: 2px solid var(--tone);
+    border-right: 1px solid var(--line);
+    transition:
+      color var(--t),
+      background var(--t);
+  }
+  .tutorial-index a:last-child {
+    border-right: 0;
+  }
+  .tutorial-index a:hover {
+    color: var(--text);
+    background: var(--panel-2);
+  }
+  .tutorial-index span {
+    font-size: 0.84rem;
+  }
+  .tutorial-index b {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--tone);
+  }
+  .tutorial-section {
+    scroll-margin-top: calc(var(--topbar-h) + 1rem);
+    margin-bottom: 2.5rem;
+  }
+  .tutorial-list {
+    display: grid;
+    gap: 0.85rem;
+  }
+  .tutorial-card {
+    scroll-margin-top: calc(var(--topbar-h) + 1rem);
+    background: var(--panel);
+    border: 1px solid var(--line);
+    padding: clamp(1rem, 3vw, 1.4rem);
+  }
+  .tutorial-card:target {
+    border-color: var(--gold);
+  }
+  .tutorial-head {
+    display: grid;
+    grid-template-columns: 6.5rem 1fr;
+    gap: 0.35rem 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .tutorial-head .refcode {
+    grid-row: 1 / span 2;
+    padding-top: 0.22rem;
+  }
+  .tutorial-head h3 {
+    font-size: 1.15rem;
+  }
+  .tutorial-head p {
+    color: var(--text-dim);
+    font-size: 0.88rem;
+    line-height: 1.55;
+  }
+  .commands {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    padding-top: 1rem;
+  }
+  .commands code {
+    color: var(--gold-bright);
+    background: var(--panel-3);
+    border: 1px solid var(--line-2);
+    padding: 0.24rem 0.5rem;
+    font-size: 0.72rem;
+  }
+  .steps {
+    display: grid;
+    margin-top: 1rem;
+    border-top: 1px solid var(--line);
+  }
+  .steps li {
+    display: grid;
+    grid-template-columns: 2.2rem 1fr;
+    gap: 0.8rem;
+    align-items: start;
+    padding: 0.72rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .steps li > span {
+    font-family: var(--font-mono);
+    color: var(--text-mute);
+    font-size: 0.72rem;
+    padding-top: 0.1rem;
+  }
+  .steps p {
+    color: var(--text-dim);
+    font-size: 0.88rem;
+    line-height: 1.55;
+  }
+  .tutorial-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.55rem;
+    margin-top: 1rem;
+    color: var(--text-faint);
+    font-size: 0.8rem;
+    line-height: 1.55;
+  }
+  .tutorial-note :global(svg) {
+    flex: none;
+    color: var(--green);
+    margin-top: 0.15rem;
+  }
+  .tutorial-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+  .tutorial-links a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    color: var(--gold-bright);
+    background: var(--panel-3);
+    border: 1px solid var(--gold-dim);
+    padding: 0.55rem 0.7rem;
+    font-size: 0.8rem;
+    transition:
+      color var(--t),
+      border-color var(--t);
+  }
+  .tutorial-links a:hover {
+    color: var(--text);
+    border-color: var(--gold);
+  }
+  .tutorial-links a :global(svg:last-child) {
+    color: var(--text-faint);
+  }
+  .video-block {
+    margin-top: 1.2rem;
+    border: 1px solid var(--line-2);
+    background: var(--bg);
+  }
+  .video-block > header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.85rem 0.95rem;
+    border-bottom: 1px solid var(--line-2);
+  }
+  .video-label {
+    display: block;
+    margin-bottom: 0.2rem;
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+  .video-block h4 {
+    font-size: 0.95rem;
+  }
+  .video-time {
+    flex: none;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--text-faint);
+    border: 1px solid var(--line-2);
+    padding: 0.22rem 0.45rem;
+  }
+  .video-frame {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    background: var(--panel);
+  }
+  .video-frame iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+  .video-source {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.35rem;
+    padding: 0.6rem 0.8rem;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--text-faint);
+    border-top: 1px solid var(--line-2);
+  }
+  .video-source:hover {
+    color: var(--gold-bright);
+  }
+  @media (max-width: 640px) {
+    .tutorial-index {
+      grid-template-columns: 1fr;
+    }
+    .tutorial-index a {
+      border-right: 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .tutorial-index a:last-child {
+      border-bottom: 0;
+    }
+    .tutorial-head {
+      grid-template-columns: 1fr;
+    }
+    .tutorial-head .refcode {
+      grid-row: auto;
+    }
+    .video-block > header {
+      flex-direction: column;
+    }
+  }
+</style>
