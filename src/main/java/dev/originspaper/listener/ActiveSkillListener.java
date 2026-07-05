@@ -39,6 +39,13 @@ public class ActiveSkillListener implements Listener {
         // Crouch + F belongs to the active skill only when this origin actually has one.
         e.setCancelled(true);
 
+        // Precondition gate (e.g. "must be in water"): consumes the input, never starts the
+        // cooldown. The power itself gives the player feedback about why it didn't fire.
+        if (!active.canActivate(player)) {
+            plugin.log().debug(player.getName() + " tried " + active.getId() + " but canActivate() denied it.");
+            return;
+        }
+
         if (active.getCooldownTicks(player) > 0
                 && !CooldownUtil.isReady(data.getCooldowns(), active.getId(), active.getCooldownTicks(player))) {
             long remaining = CooldownUtil.remainingSeconds(

@@ -1,6 +1,5 @@
-package dev.originspaper.power.origins.fox;
+package dev.originspaper.power.shared;
 
-import dev.originspaper.power.shared.AbstractPower;
 import dev.originspaper.util.EffectUtil;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;

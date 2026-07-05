@@ -18,7 +18,6 @@ import dev.originspaper.power.origins.dragon.DragonBreathPower;
 import dev.originspaper.power.origins.dragon.RebornMagicPower;
 import dev.originspaper.power.origins.fox.HuntPower;
 import dev.originspaper.power.origins.fox.PouncePower;
-import dev.originspaper.power.origins.fox.TimidityPower;
 import dev.originspaper.power.origins.goat.GoatGrazePower;
 import dev.originspaper.power.origins.goat.LeapPower;
 import dev.originspaper.power.origins.goat.RamPower;
@@ -28,7 +27,6 @@ import dev.originspaper.power.origins.moth.FlutterGlidePower;
 import dev.originspaper.power.origins.moth.FriendOfBeesPower;
 import dev.originspaper.power.origins.moth.MothVisualsPower;
 import dev.originspaper.power.origins.moth.PollinatorPower;
-import dev.originspaper.power.origins.otter.AmphibiousPower;
 import dev.originspaper.power.origins.otter.FinsPower;
 import dev.originspaper.power.origins.otter.LandStridePower;
 import dev.originspaper.power.origins.otter.LikeWaterPower;
@@ -62,6 +60,7 @@ import dev.originspaper.power.origins.owl.OwlProgressionPower;
 import dev.originspaper.power.origins.gryphon.GryphonProgressionPower;
 import dev.originspaper.power.origins.dragon.DragonProgressionPower;
 import dev.originspaper.power.origins.moth.MothProgressionPower;
+import dev.originspaper.power.shared.AmphibiousPower;
 import dev.originspaper.power.shared.ArmorMaterialRestrictPower;
 import dev.originspaper.power.shared.ArmorSlotRestrictPower;
 import dev.originspaper.power.shared.AttributeModifierPower;
@@ -85,6 +84,7 @@ import dev.originspaper.power.shared.NutritionPower;
 import dev.originspaper.power.shared.PermanentEffectPower;
 import dev.originspaper.power.shared.PotionImmunityPower;
 import dev.originspaper.power.shared.SilentStepsPower;
+import dev.originspaper.power.shared.TimidityPower;
 import dev.originspaper.util.FoodUtil;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -137,11 +137,38 @@ public class OriginRegistry {
     }
 
     private void register(Origin origin) {
+        // Per-origin kill switch: origins.<id>.enabled: false hides the origin entirely (GUI,
+        // /origin set, selection). Players with a disabled saved origin are asked to reselect.
+        if (!dev.originspaper.OriginsPaper.instance().getConfig()
+                .getBoolean("origins." + origin.id() + ".enabled", true)) {
+            dev.originspaper.OriginsPaper.instance().log()
+                    .info("Origin '" + origin.id() + "' disabled in config.yml — not registered.");
+            return;
+        }
         origins.put(origin.id(), origin);
     }
 
     private static PotionEffect effect(PotionEffectType type, int duration, int amplifier) {
         return new PotionEffect(type, duration, amplifier, true, false, false);
+    }
+
+    // Config accessors for balance values under origins.<id>.* — read at registry construction,
+    // so /origin reload (which rebuilds the registry after reloadConfig) picks up changes.
+    private static int cfgInt(String path, int def) {
+        return dev.originspaper.OriginsPaper.instance().getConfig().getInt(path, def);
+    }
+
+    private static double cfgDouble(String path, double def) {
+        return dev.originspaper.OriginsPaper.instance().getConfig().getDouble(path, def);
+    }
+
+    private static boolean cfgBool(String path, boolean def) {
+        return dev.originspaper.OriginsPaper.instance().getConfig().getBoolean(path, def);
+    }
+
+    /** Converts a whole number of seconds from config into game ticks. */
+    private static long cfgSecondsToTicks(String path, int defSeconds) {
+        return cfgInt(path, defSeconds) * 20L;
     }
 
     private void registerAll() {

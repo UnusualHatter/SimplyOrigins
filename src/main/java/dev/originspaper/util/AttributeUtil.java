@@ -43,4 +43,33 @@ public final class AttributeUtil {
             inst.removeModifier(key);
         }
     }
+
+    /**
+     * Idempotent variant safe to call every tick: sets the modifier to {@code amount} only when it
+     * differs from what's applied, and clears it when {@code amount == 0}. Never churns the
+     * modifier when nothing changed (re-adding a MAX_HEALTH modifier each tick would clamp and
+     * slowly drain health — see {@code ProgressionPower#attr}).
+     */
+    public static void sync(Player player, Attribute attribute, String powerId,
+                            double amount, AttributeModifier.Operation operation) {
+        AttributeInstance inst = player.getAttribute(attribute);
+        if (inst == null) {
+            return;
+        }
+        NamespacedKey key = key(powerId);
+        AttributeModifier existing = inst.getModifier(key);
+        if (amount == 0.0) {
+            if (existing != null) {
+                inst.removeModifier(key);
+            }
+            return;
+        }
+        if (existing != null && existing.getAmount() == amount && existing.getOperation() == operation) {
+            return;
+        }
+        if (existing != null) {
+            inst.removeModifier(key);
+        }
+        inst.addModifier(new AttributeModifier(key, amount, operation));
+    }
 }

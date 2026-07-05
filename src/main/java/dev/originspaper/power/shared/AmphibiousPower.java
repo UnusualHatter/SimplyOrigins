@@ -1,6 +1,5 @@
-package dev.originspaper.power.origins.otter;
+package dev.originspaper.power.shared;
 
-import dev.originspaper.power.shared.AbstractPower;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 
