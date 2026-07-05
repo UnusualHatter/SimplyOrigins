@@ -25,6 +25,8 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 
+import java.util.UUID;
+
 /** Drives the selection flow: join/quit, GUI clicks and forced reselection until an origin is chosen. */
 public class OriginSelectionListener implements Listener {
 
@@ -41,18 +43,29 @@ public class OriginSelectionListener implements Listener {
         PlayerOriginData data = plugin.data().get(player.getUniqueId());
         if ((data == null || !data.hasOrigin())
                 && plugin.getConfig().getBoolean("force-selection-on-join", true)) {
-            long delay = plugin.getConfig().getLong("join-gui-delay-ticks", 20L);
+            long configuredDelay = plugin.getConfig().getLong("join-gui-delay-ticks", 20L);
+            long delay = Math.max(0L, Math.min(1200L, configuredDelay));
+            if (delay != configuredDelay) {
+                plugin.log().warn("join-gui-delay-ticks out of range (0..1200): "
+                        + configuredDelay + "; using " + delay + ".");
+            }
             plugin.log().info(player.getName() + " joined without an origin — opening selection in " + delay + " ticks.");
+            UUID playerId = player.getUniqueId();
             plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
-                if (player.isOnline()) {
-                    OriginSelectionGUI.open(player);
+                Player resolved = plugin.getServer().getPlayer(playerId);
+                PlayerOriginData current = plugin.data().get(playerId);
+                if (resolved != null && (current == null || !current.hasOrigin())) {
+                    OriginSelectionGUI.open(resolved);
                 }
             }, delay);
         } else if (data != null && data.hasOrigin()) {
             // Flash the progression bar shortly after join so the player sees their origin level.
+            UUID playerId = player.getUniqueId();
             plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
-                if (player.isOnline()) {
-                    plugin.progression().showBar(player);
+                Player resolved = plugin.getServer().getPlayer(playerId);
+                PlayerOriginData current = plugin.data().get(playerId);
+                if (resolved != null && current != null && current.hasOrigin()) {
+                    plugin.progression().showBar(resolved);
                 }
             }, 25L);
         }
@@ -128,6 +141,12 @@ public class OriginSelectionListener implements Listener {
             return;
         }
         if (rawSlot == OriginDetailGUI.SLOT_CHOOSE) {
+            PlayerOriginData data = plugin.data().get(player.getUniqueId());
+            if (data != null && data.hasOrigin()) {
+                player.sendActionBar(TextUtil.msg("§cEsta seleção expirou; sua origem já foi definida."));
+                player.closeInventory();
+                return;
+            }
             Origin origin = plugin.origins().get(detail.getOriginId());
             if (origin == null) {
                 return;
@@ -155,9 +174,12 @@ public class OriginSelectionListener implements Listener {
         Player player = (Player) e.getPlayer();
         PlayerOriginData data = plugin.data().get(player.getUniqueId());
         if (data == null || !data.hasOrigin()) {
+            UUID playerId = player.getUniqueId();
             plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
-                if (player.isOnline()) {
-                    OriginSelectionGUI.open(player);
+                Player resolved = plugin.getServer().getPlayer(playerId);
+                PlayerOriginData current = plugin.data().get(playerId);
+                if (resolved != null && (current == null || !current.hasOrigin())) {
+                    OriginSelectionGUI.open(resolved);
                 }
             }, 1L);
         }

@@ -2,12 +2,13 @@ package dev.originspaper.power.origins.shark;
 
 import dev.originspaper.api.TickCadence;
 import dev.originspaper.power.shared.AbstractPower;
-import dev.originspaper.util.EffectUtil;
+import dev.originspaper.util.AttributeUtil;
 import dev.originspaper.util.ParticleUtil;
 import org.bukkit.Location;
 import org.bukkit.Particle;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffectType;
 
 import java.util.Map;
 import java.util.UUID;
@@ -19,9 +20,6 @@ import java.util.concurrent.ConcurrentHashMap;
  * contact resets the clock. Checked every 5s ({@code OriginsPaper#tick} advances 1/s).
  */
 public class DrySkinPower extends AbstractPower {
-
-    /** Effect duration comfortably covering the 5s cadence gap (100 ticks) plus margin. */
-    private static final int EFFECT_TICKS = 140;
 
     private final long warnSeconds;
     private final long penaltySeconds;
@@ -45,29 +43,42 @@ public class DrySkinPower extends AbstractPower {
         long now = plugin().tick();
         if (BloodSensePower.isWet(player)) {
             lastWet.put(player.getUniqueId(), now);
-            player.removePotionEffect(PotionEffectType.WEAKNESS);
-            player.removePotionEffect(PotionEffectType.SLOWNESS);
+            clearPenalties(player);
             return;
         }
         long dry = now - lastWet.computeIfAbsent(player.getUniqueId(), k -> now);
         Location loc = player.getLocation().add(0, 1.0, 0);
         if (dry > penaltySeconds) {
-            EffectUtil.apply(player, PotionEffectType.WEAKNESS, EFFECT_TICKS, 0);
-            EffectUtil.apply(player, PotionEffectType.SLOWNESS, EFFECT_TICKS, 0);
+            applyWeakness(player, true);
+            AttributeUtil.sync(player, Attribute.MOVEMENT_SPEED, id + ".slowness", -0.15,
+                    AttributeModifier.Operation.ADD_SCALAR);
             ParticleUtil.spawnTrail(Particle.ASH, loc, 5, 0.4); // parched
         } else if (dry > warnSeconds) {
-            EffectUtil.apply(player, PotionEffectType.WEAKNESS, EFFECT_TICKS, 0);
+            applyWeakness(player, true);
+            AttributeUtil.clear(player, Attribute.MOVEMENT_SPEED, id + ".slowness");
             ParticleUtil.spawnTrail(Particle.FALLING_DUST, loc, 3, 0.3,
                     org.bukkit.Material.SAND.createBlockData());
         } else if (dry > warnSeconds / 2) {
+            clearPenalties(player);
             ParticleUtil.spawnTrail(Particle.DRIPPING_WATER, loc, 3, 0.3); // starting to dry out
+        } else {
+            clearPenalties(player);
         }
+    }
+
+    private void applyWeakness(Player player, boolean active) {
+        AttributeUtil.sync(player, Attribute.ATTACK_DAMAGE, id + ".weakness",
+                active ? -4.0 : 0.0, AttributeModifier.Operation.ADD_NUMBER);
+    }
+
+    private void clearPenalties(Player player) {
+        AttributeUtil.clear(player, Attribute.ATTACK_DAMAGE, id + ".weakness");
+        AttributeUtil.clear(player, Attribute.MOVEMENT_SPEED, id + ".slowness");
     }
 
     @Override
     public void onRemove(Player player) {
         lastWet.remove(player.getUniqueId());
-        player.removePotionEffect(PotionEffectType.WEAKNESS);
-        player.removePotionEffect(PotionEffectType.SLOWNESS);
+        clearPenalties(player);
     }
 }

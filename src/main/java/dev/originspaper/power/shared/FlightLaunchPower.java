@@ -50,7 +50,7 @@ public class FlightLaunchPower extends AbstractPower implements ActivePowerType 
         // and skip if the power was removed (origin switch/reset) during the delay.
         UUID playerId = player.getUniqueId();
         plugin().getServer().getScheduler().runTaskLater(plugin(), () -> {
-            Player p = plugin().getServer().getPlayer(playerId);
+            Player p = resolveActivePlayer(playerId);
             if (p == null || !launchedAt.containsKey(playerId)) {
                 return;
             }

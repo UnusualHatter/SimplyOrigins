@@ -8,6 +8,7 @@ import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.util.Map;
 import java.util.UUID;
@@ -24,6 +25,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * {@code MAX_HEALTH} modifier each tick would clamp and slowly drain a player's health.
  */
 public abstract class ProgressionPower extends AbstractPower {
+
+    private static final double MAX_CREDITED_MOVE_DISTANCE = 32.0;
 
     /** Horizontal distance banked per player toward the next distance-XP chunk. */
     private final Map<UUID, Double> distanceAcc = new ConcurrentHashMap<>();
@@ -51,7 +54,7 @@ public abstract class ProgressionPower extends AbstractPower {
      * progress bar doesn't flicker constantly while travelling.
      */
     protected void accrueDistance(Player player, PlayerMoveEvent e, double blocks, int xp) {
-        if (e.getTo() == null || blocks <= 0) {
+        if (e.getTo() == null || blocks <= 0 || xp <= 0 || e instanceof PlayerTeleportEvent) {
             return;
         }
         if (player.isInsideVehicle()) {
@@ -60,7 +63,7 @@ public abstract class ProgressionPower extends AbstractPower {
         double dx = e.getTo().getX() - e.getFrom().getX();
         double dz = e.getTo().getZ() - e.getFrom().getZ();
         double moved = Math.sqrt(dx * dx + dz * dz);
-        if (moved <= 0) {
+        if (moved <= 0 || moved > MAX_CREDITED_MOVE_DISTANCE) {
             return;
         }
         UUID id = player.getUniqueId();
@@ -68,7 +71,7 @@ public abstract class ProgressionPower extends AbstractPower {
         if (acc >= blocks) {
             int chunks = (int) (acc / blocks);
             distanceAcc.put(id, acc - chunks * blocks);
-            award(player, xp * chunks);
+            award(player, (int) Math.min(Integer.MAX_VALUE, (long) xp * chunks));
         } else {
             distanceAcc.put(id, acc);
         }

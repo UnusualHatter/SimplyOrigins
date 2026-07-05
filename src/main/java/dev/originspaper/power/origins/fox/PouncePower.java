@@ -121,7 +121,7 @@ public class PouncePower extends AbstractPower implements ActivePowerType {
         PerfStats.entityScan();
         for (Entity entity : player.getNearbyEntities(BLAST_RADIUS, BLAST_RADIUS, BLAST_RADIUS)) {
             if (entity instanceof LivingEntity target && !entity.equals(player)
-                    && !SafeTargetUtil.isProtected(target)
+                    && !SafeTargetUtil.isProtectedFromHostile(player, target)
                     && claims().canDamage(player, target)) {
                 target.damage(damage, player); // knockback radiates from the player (blast centre)
             }

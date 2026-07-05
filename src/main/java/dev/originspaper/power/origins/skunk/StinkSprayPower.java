@@ -59,13 +59,17 @@ public class StinkSprayPower extends AbstractPower implements ActivePowerType {
         PerfStats.entityScan();
         for (Entity entity : player.getWorld().getNearbyEntities(origin, radius, radius, radius)) {
             if (!(entity instanceof LivingEntity target) || entity.equals(player)
-                    || SafeTargetUtil.isProtected(target) || !mayAffect(player, target)) {
+                    || SafeTargetUtil.isProtectedFromHostile(player, target)
+                    || !mayAffect(player, target)) {
                 continue;
             }
             Vector offset = target.getEyeLocation().toVector().subtract(origin.toVector());
             double distance = offset.length();
             if (distance > radius || distance < 1.0e-6
                     || offset.multiply(1.0 / distance).dot(direction) < CONE_DOT) {
+                continue;
+            }
+            if (!player.hasLineOfSight(target)) {
                 continue;
             }
             applyDebuffs(target);

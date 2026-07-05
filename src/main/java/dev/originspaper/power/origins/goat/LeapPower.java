@@ -103,7 +103,7 @@ public class LeapPower extends AbstractPower implements ActivePowerType {
         PerfStats.entityScan();
         for (Entity entity : to.getWorld().getNearbyEntities(to, search, search, search)) {
             if (!(entity instanceof LivingEntity living) || entity.equals(player)
-                    || SafeTargetUtil.isProtected(living)
+                    || SafeTargetUtil.isProtectedFromHostile(player, living)
                     || !claims().canDamage(player, living)) {
                 continue; // charge passes through pets/named/claim-protected targets
             }
@@ -133,7 +133,7 @@ public class LeapPower extends AbstractPower implements ActivePowerType {
         PerfStats.entityScan();
         for (Entity entity : world.getNearbyEntities(center, radius, radius, radius)) {
             if (entity instanceof LivingEntity target && !entity.equals(owner)
-                    && !SafeTargetUtil.isProtected(target)
+                    && !SafeTargetUtil.isProtectedFromHostile(owner, target)
                     && claims().canDamage(owner, target)) {
                 target.damage(damage, owner); // knockback radiates from the blast centre
                 hit = true;

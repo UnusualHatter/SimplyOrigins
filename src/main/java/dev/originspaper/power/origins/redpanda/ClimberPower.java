@@ -28,6 +28,8 @@ public class ClimberPower extends AbstractPower {
 
     /** Last tick (1/s) climb XP was granted, per player — stops AFK hold-sneak farms at treetops. */
     private final Map<UUID, Long> lastClimbXp = new ConcurrentHashMap<>();
+    /** Last global tick at which this power refreshed its temporary climb effects. */
+    private final Map<UUID, Long> lastClimbEffect = new ConcurrentHashMap<>();
 
     public ClimberPower(String id) {
         super(id);
@@ -44,6 +46,7 @@ public class ClimberPower extends AbstractPower {
         // Short pulses renewed every cycle: rises ~0.9 blocks/s while held, stops soon after release.
         EffectUtil.apply(player, PotionEffectType.LEVITATION, 25, 0);
         EffectUtil.apply(player, PotionEffectType.SLOW_FALLING, 60, 0);
+        lastClimbEffect.put(player.getUniqueId(), plugin().tick());
         ParticleUtil.spawnTrail(Particle.COMPOSTER, player.getLocation().add(0, 0.8, 0), 2, 0.25);
 
         // "Escalar troncos e bambus": XP only while actually rising, at most once every 3s —
@@ -80,8 +83,10 @@ public class ClimberPower extends AbstractPower {
     @Override
     public void onRemove(Player player) {
         lastClimbXp.remove(player.getUniqueId());
-        // Short effects, but strip any climb residue immediately on origin switch.
-        player.removePotionEffect(PotionEffectType.LEVITATION);
-        player.removePotionEffect(PotionEffectType.SLOW_FALLING);
+        Long last = lastClimbEffect.remove(player.getUniqueId());
+        if (last != null && plugin().tick() - last <= 3) {
+            EffectUtil.clearTemporary(player, PotionEffectType.LEVITATION, 25, 0);
+            EffectUtil.clearTemporary(player, PotionEffectType.SLOW_FALLING, 60, 0);
+        }
     }
 }

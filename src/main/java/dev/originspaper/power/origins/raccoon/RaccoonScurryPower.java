@@ -3,11 +3,14 @@ package dev.originspaper.power.origins.raccoon;
 import dev.originspaper.api.ActivePowerType;
 import dev.originspaper.power.shared.AbstractPower;
 import dev.originspaper.util.ArmorUtil;
+import dev.originspaper.util.AttributeUtil;
 import dev.originspaper.util.EffectUtil;
 import dev.originspaper.util.ParticleUtil;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -44,10 +47,11 @@ public class RaccoonScurryPower extends AbstractPower implements ActivePowerType
 
     @Override
     public void onActivate(Player player) {
-        EffectUtil.apply(player, PotionEffectType.SPEED, speedTicks, 1); // Speed II
         UUID playerId = player.getUniqueId();
         long activation = System.nanoTime();
         scurrying.put(playerId, activation);
+        AttributeUtil.set(player, Attribute.MOVEMENT_SPEED, id + ".speed", 0.40,
+                AttributeModifier.Operation.ADD_SCALAR); // Speed II equivalent
         if (!ArmorUtil.isWearingHeavyChest(player)) {
             // Nv10 "Mestre da Malandragem": the vanishing act lasts three times longer.
             int invis = invisibilityTicks * (levelOf(player) >= 10 ? 3 : 1);
@@ -55,8 +59,16 @@ public class RaccoonScurryPower extends AbstractPower implements ActivePowerType
         }
         long stateTicks = Math.max(speedTicks,
                 ArmorUtil.isWearingHeavyChest(player) ? 0 : invisibilityTicks * (levelOf(player) >= 10 ? 3 : 1));
-        plugin().getServer().getScheduler().runTaskLater(plugin(),
-                () -> scurrying.remove(playerId, activation), Math.max(1L, stateTicks));
+        plugin().getServer().getScheduler().runTaskLater(plugin(), () -> {
+            if (scurrying.remove(playerId, activation)) {
+                Player resolved = resolveActivePlayer(playerId);
+                if (resolved != null) {
+                    AttributeUtil.clear(resolved, Attribute.MOVEMENT_SPEED, id + ".speed");
+                    EffectUtil.clearTemporary(resolved, PotionEffectType.INVISIBILITY,
+                            Math.max(invisibilityTicks, (int) stateTicks), 0);
+                }
+            }
+        }, Math.max(1L, stateTicks));
         Location c = player.getLocation();
         player.getWorld().playSound(c, Sound.ENTITY_CAT_HISS, 0.6f, 1.5f);
         ParticleUtil.spawnGroundBurst(Particle.SMOKE, c, 0.6, 12, 0.03);
@@ -70,8 +82,9 @@ public class RaccoonScurryPower extends AbstractPower implements ActivePowerType
                 : e.getDamager() instanceof Projectile projectile
                         && projectile.getShooter() instanceof Player shooter ? shooter : null;
         if (player != null && scurrying.remove(player.getUniqueId()) != null) {
-            player.removePotionEffect(PotionEffectType.INVISIBILITY);
-            player.removePotionEffect(PotionEffectType.SPEED);
+            AttributeUtil.clear(player, Attribute.MOVEMENT_SPEED, id + ".speed");
+            EffectUtil.clearTemporary(player, PotionEffectType.INVISIBILITY,
+                    Math.max(invisibilityTicks, speedTicks), 0);
         }
     }
 
@@ -86,8 +99,10 @@ public class RaccoonScurryPower extends AbstractPower implements ActivePowerType
 
     @Override
     public void onRemove(Player player) {
-        scurrying.remove(player.getUniqueId());
-        player.removePotionEffect(PotionEffectType.SPEED);
-        player.removePotionEffect(PotionEffectType.INVISIBILITY);
+        if (scurrying.remove(player.getUniqueId()) != null) {
+            AttributeUtil.clear(player, Attribute.MOVEMENT_SPEED, id + ".speed");
+            EffectUtil.clearTemporary(player, PotionEffectType.INVISIBILITY,
+                    Math.max(invisibilityTicks * 3, speedTicks), 0);
+        }
     }
 }

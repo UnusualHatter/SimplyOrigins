@@ -5,8 +5,10 @@ import dev.originspaper.api.PowerType;
 import dev.originspaper.api.TickCadence;
 import dev.originspaper.integration.ClaimProtectionService;
 import dev.originspaper.integration.IntegrationManager;
+import org.bukkit.entity.Player;
 
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 /** Convenience base storing the power id and exposing the plugin singleton. */
@@ -56,6 +58,20 @@ public abstract class AbstractPower implements PowerType {
     protected ClaimProtectionService claims() {
         IntegrationManager integrations = plugin().integrations();
         return integrations == null ? ClaimProtectionService.ALLOW_ALL : integrations.claims();
+    }
+
+    /**
+     * Resolves an online player and verifies that this exact power instance is still applied.
+     * Delayed callbacks must use this instead of retaining a strong {@link Player} reference or
+     * accepting a newly-created power with the same id after {@code /origin reload}.
+     */
+    protected Player resolveActivePlayer(UUID playerId) {
+        Player player = plugin().getServer().getPlayer(playerId);
+        if (player == null) {
+            return null;
+        }
+        var data = plugin().data().get(playerId);
+        return data != null && data.getPowers().contains(this) ? player : null;
     }
 
     @Override

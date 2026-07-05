@@ -4,9 +4,12 @@ import dev.originspaper.power.shared.AbstractPower;
 import dev.originspaper.util.ParticleUtil;
 import org.bukkit.Location;
 import org.bukkit.Particle;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.util.Vector;
+
+import java.util.UUID;
 
 /** Heavy knockback on melee hits. */
 public class RamPower extends AbstractPower {
@@ -46,9 +49,15 @@ public class RamPower extends AbstractPower {
             dir = player.getLocation().getDirection();
         }
         final Vector knockback = dir.normalize().multiply(impact ? 3.5 : 2.5).setY(0.8);
+        UUID sourceId = player.getUniqueId();
+        UUID targetId = e.getEntity().getUniqueId();
         plugin().getServer().getScheduler().runTaskLater(plugin(), () -> {
-            if (e.getEntity().isValid()) {
-                e.getEntity().setVelocity(knockback);
+            if (resolveActivePlayer(sourceId) == null) {
+                return;
+            }
+            Entity target = plugin().getServer().getEntity(targetId);
+            if (target != null && target.isValid()) {
+                target.setVelocity(knockback);
             }
         }, 1L);
     }

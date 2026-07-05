@@ -54,7 +54,7 @@ public class DragonBreathPower extends AbstractPower implements ActivePowerType 
                 continue;
             }
             // The cone is untargeted area damage: never roast pets or name-tagged mobs.
-            if (SafeTargetUtil.isProtected(target)) {
+            if (SafeTargetUtil.isProtectedFromHostile(player, target)) {
                 continue;
             }
             // Respect land claims (per-target, so the breath still works outside the claim).

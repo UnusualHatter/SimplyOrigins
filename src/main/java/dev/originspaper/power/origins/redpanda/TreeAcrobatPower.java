@@ -2,12 +2,13 @@ package dev.originspaper.power.origins.redpanda;
 
 import dev.originspaper.power.shared.AbstractPower;
 import dev.originspaper.util.ArmorUtil;
-import dev.originspaper.util.EffectUtil;
+import dev.originspaper.util.AttributeUtil;
 import dev.originspaper.util.ParticleUtil;
 import org.bukkit.Material;
 import org.bukkit.Particle;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffectType;
 
 import java.util.Set;
 
@@ -43,16 +44,19 @@ public class TreeAcrobatPower extends AbstractPower {
     public void onTick(Player player) {
         // "Corpo Leve": heavy chestplates suppress the red panda's acrobatics.
         if (ArmorUtil.isWearingHeavyChest(player)) {
+            AttributeUtil.clear(player, Attribute.MOVEMENT_SPEED, id);
             return;
         }
         Material below = player.getLocation().clone().subtract(0, 0.1, 0).getBlock().getType();
         Material feet = player.getLocation().getBlock().getType();
         if (!isForestBlock(below) && !isForestBlock(feet)) {
+            AttributeUtil.clear(player, Attribute.MOVEMENT_SPEED, id);
             return;
         }
         // Nv10 "Acrobata Mestre": Speed II on forest blocks.
-        int amplifier = levelOf(player) >= 10 ? 1 : 0;
-        EffectUtil.apply(player, PotionEffectType.SPEED, 40, amplifier);
+        double scalar = levelOf(player) >= 10 ? 0.40 : 0.20;
+        AttributeUtil.sync(player, Attribute.MOVEMENT_SPEED, id, scalar,
+                AttributeModifier.Operation.ADD_SCALAR);
         if (plugin().tick() % 2 == 0 && player.getVelocity().lengthSquared() > 0.01) {
             ParticleUtil.spawnTrail(Particle.COMPOSTER, player.getLocation().add(0, 0.3, 0), 2, 0.2);
             ParticleUtil.spawnTrail(Particle.CHERRY_LEAVES, player.getLocation().add(0, 1.0, 0), 1, 0.3);
@@ -61,6 +65,6 @@ public class TreeAcrobatPower extends AbstractPower {
 
     @Override
     public void onRemove(Player player) {
-        player.removePotionEffect(PotionEffectType.SPEED);
+        AttributeUtil.clear(player, Attribute.MOVEMENT_SPEED, id);
     }
 }

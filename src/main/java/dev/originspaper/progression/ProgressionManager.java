@@ -156,6 +156,7 @@ public class ProgressionManager {
     }
 
     private void save(Player player, PlayerOriginData data) {
-        plugin.data().persistence().save(player.getUniqueId(), data.getOrigin().id(), data.getProgressMap());
+        plugin.data().persistence().save(player.getUniqueId(), data.getOrigin().id(),
+                data.getProgressMap(), data.getCooldowns());
     }
 }

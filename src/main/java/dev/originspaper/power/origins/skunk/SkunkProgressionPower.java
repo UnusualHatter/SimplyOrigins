@@ -27,7 +27,8 @@ public class SkunkProgressionPower extends ProgressionPower {
 
     @Override
     public void onItemConsume(PlayerItemConsumeEvent e) {
-        if (TrashGourmetPower.isTrashFood(e.getItem().getType())) {
+        if (TrashGourmetPower.isTrashFood(e.getItem().getType())
+                && readyForXp(e.getPlayer(), 5)) {
             award(e.getPlayer(), 6);
         }
     }

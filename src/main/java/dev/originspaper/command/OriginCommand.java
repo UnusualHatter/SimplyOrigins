@@ -20,6 +20,7 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /** {@code /origin} command: open selection, view info, or (admin) set/reset another player. */
 public class OriginCommand implements CommandExecutor, TabCompleter {
@@ -168,6 +169,11 @@ public class OriginCommand implements CommandExecutor, TabCompleter {
             sender.sendMessage(TextUtil.msg("§cJogador não encontrado."));
             return;
         }
+        PlayerOriginData targetData = plugin.data().get(target.getUniqueId());
+        if (targetData == null || !targetData.hasOrigin()) {
+            sender.sendMessage(TextUtil.msg("§cEsse jogador ainda não possui uma origem."));
+            return;
+        }
         int amount;
         try {
             amount = Integer.parseInt(args[2]);
@@ -195,6 +201,11 @@ public class OriginCommand implements CommandExecutor, TabCompleter {
         Player target = Bukkit.getPlayerExact(args[1]);
         if (target == null) {
             sender.sendMessage(TextUtil.msg("§cJogador não encontrado."));
+            return;
+        }
+        PlayerOriginData targetData = plugin.data().get(target.getUniqueId());
+        if (targetData == null || !targetData.hasOrigin()) {
+            sender.sendMessage(TextUtil.msg("§cEsse jogador ainda não possui uma origem."));
             return;
         }
         int level;
@@ -263,9 +274,12 @@ public class OriginCommand implements CommandExecutor, TabCompleter {
         }
         plugin.data().reset(target);
         sender.sendMessage(TextUtil.msg("§aOrigin de §f" + target.getName() + "§a removida."));
+        UUID targetId = target.getUniqueId();
         plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
-            if (target.isOnline()) {
-                OriginSelectionGUI.open(target);
+            Player resolved = plugin.getServer().getPlayer(targetId);
+            PlayerOriginData data = plugin.data().get(targetId);
+            if (resolved != null && (data == null || !data.hasOrigin())) {
+                OriginSelectionGUI.open(resolved);
             }
         }, 5L);
     }

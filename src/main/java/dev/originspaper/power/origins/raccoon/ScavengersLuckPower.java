@@ -6,6 +6,7 @@ import dev.originspaper.util.ParticleUtil;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
+import org.bukkit.World;
 import org.bukkit.entity.Animals;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
@@ -73,7 +74,21 @@ public class ScavengersLuckPower extends AbstractPower {
         if (!diggable || PlacedBlockTracker.isPlayerPlaced(e.getBlock())) {
             return;
         }
-        tryFind(e.getPlayer(), e.getBlock().getLocation().add(0.5, 0.5, 0.5));
+        // A later, higher-priority protection listener may still cancel BlockBreakEvent. Defer the
+        // reward one tick and require the block to have actually changed before dropping anything.
+        UUID playerId = e.getPlayer().getUniqueId();
+        UUID worldId = e.getBlock().getWorld().getUID();
+        int x = e.getBlock().getX();
+        int y = e.getBlock().getY();
+        int z = e.getBlock().getZ();
+        plugin().getServer().getScheduler().runTask(plugin(), () -> {
+            Player player = resolveActivePlayer(playerId);
+            World world = plugin().getServer().getWorld(worldId);
+            if (player == null || world == null || world.getBlockAt(x, y, z).getType() == type) {
+                return;
+            }
+            tryFind(player, new Location(world, x + 0.5, y + 0.5, z + 0.5));
+        });
     }
 
     private void tryFind(Player player, Location where) {

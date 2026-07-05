@@ -49,11 +49,15 @@ public class RearKickPower extends AbstractPower implements ActivePowerType {
         PerfStats.entityScan();
         for (Entity entity : player.getWorld().getNearbyEntities(center, radius, radius, radius)) {
             if (!(entity instanceof LivingEntity target) || entity.equals(player)
-                    || SafeTargetUtil.isProtected(target) || !claims().canDamage(player, target)) {
+                    || SafeTargetUtil.isProtectedFromHostile(player, target)
+                    || !claims().canDamage(player, target)) {
                 continue;
             }
             Vector offset = target.getLocation().toVector().subtract(center.toVector()).setY(0);
             if (offset.lengthSquared() < 1.0e-6 || offset.normalize().dot(backward) < CONE_DOT) {
+                continue;
+            }
+            if (!player.hasLineOfSight(target)) {
                 continue;
             }
             target.damage(damage, player);
@@ -73,10 +77,7 @@ public class RearKickPower extends AbstractPower implements ActivePowerType {
     private void knockBackLater(UUID sourceId, UUID targetId, Vector direction) {
         Vector knockback = direction.clone().multiply(1.45).setY(0.45);
         plugin().getServer().getScheduler().runTaskLater(plugin(), () -> {
-            Player source = plugin().getServer().getPlayer(sourceId);
-            var data = plugin().data().get(sourceId);
-            if (source == null || data == null || data.getPowers().stream()
-                    .noneMatch(power -> power.getId().equals(id))) {
+            if (resolveActivePlayer(sourceId) == null) {
                 return;
             }
             Entity resolved = plugin().getServer().getEntity(targetId);

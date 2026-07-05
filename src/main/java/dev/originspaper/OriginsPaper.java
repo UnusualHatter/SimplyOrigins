@@ -82,7 +82,8 @@ public final class OriginsPaper extends JavaPlugin {
                 PlayerOriginData d = dataManager.get(player.getUniqueId());
                 if (d != null && d.hasOrigin()) {
                     // awardXp only writes to disk on level-up, so flush progress before unloading.
-                    dataManager.persistence().save(player.getUniqueId(), d.getOrigin().id(), d.getProgressMap());
+                    dataManager.persistence().save(player.getUniqueId(), d.getOrigin().id(),
+                            d.getProgressMap(), d.getCooldowns());
                 }
                 dataManager.unload(player, false);
             }
@@ -149,7 +150,8 @@ public final class OriginsPaper extends JavaPlugin {
         for (Player player : getServer().getOnlinePlayers()) {
             PlayerOriginData d = dataManager.get(player.getUniqueId());
             if (d != null && d.hasOrigin()) {
-                dataManager.persistence().save(player.getUniqueId(), d.getOrigin().id(), d.getProgressMap());
+                dataManager.persistence().save(player.getUniqueId(), d.getOrigin().id(),
+                        d.getProgressMap(), d.getCooldowns());
             }
             dataManager.unload(player, true);
         }

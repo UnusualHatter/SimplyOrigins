@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -41,6 +42,7 @@ public class PlayerDataManager {
     /** Loads the saved origin (if any) and applies its powers. Called on join. */
     public void load(Player player) {
         PlayerOriginData d = getOrCreate(player.getUniqueId());
+        d.getProgressMap().clear();
         d.getProgressMap().putAll(persistence.loadProgress(player.getUniqueId()));
         String originId = persistence.loadOrigin(player.getUniqueId());
         if (originId != null) {
@@ -50,6 +52,10 @@ public class PlayerDataManager {
                 // Join is not a deliberate (re)selection: never top players up to full, or
                 // relogging at low health would become a free heal.
                 applyOrigin(player, d, origin, false);
+                Set<String> powerIds = origin.powers().stream()
+                        .map(PowerType::getId)
+                        .collect(java.util.stream.Collectors.toUnmodifiableSet());
+                d.getCooldowns().putAll(persistence.loadCooldowns(player.getUniqueId(), powerIds));
             } else {
                 plugin.log().warn(player.getName() + " had unknown saved origin '" + originId + "' — ignored.");
             }
@@ -65,7 +71,7 @@ public class PlayerDataManager {
         // Deliberate selection (GUI choice / admin set): fill the player up to the new max.
         applyOrigin(player, d, origin, true);
         d.progress(origin.id()); // ensure a level-1 progression entry exists for this origin
-        persistence.save(player.getUniqueId(), origin.id(), d.getProgressMap());
+        persistence.save(player.getUniqueId(), origin.id(), d.getProgressMap(), d.getCooldowns());
         plugin.progression().showBar(player); // surface the new origin's level bar right away
     }
 

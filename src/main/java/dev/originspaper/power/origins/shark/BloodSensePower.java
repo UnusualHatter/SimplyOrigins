@@ -4,6 +4,7 @@ import dev.originspaper.api.TickCadence;
 import dev.originspaper.power.shared.AbstractPower;
 import dev.originspaper.util.ParticleUtil;
 import dev.originspaper.util.PerfStats;
+import dev.originspaper.util.SafeTargetUtil;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -53,7 +54,8 @@ public class BloodSensePower extends AbstractPower {
         PerfStats.entityScan();
         for (LivingEntity entity : player.getWorld()
                 .getNearbyEntitiesByType(LivingEntity.class, player.getLocation(), range)) {
-            if (entity.equals(player) || !isInjured(entity)) {
+            if (entity.equals(player) || SafeTargetUtil.isProtectedFromHostile(player, entity)
+                    || !isInjured(entity)) {
                 continue;
             }
             if (entity instanceof Player target && !claims().canAffectPlayer(player, target)) {
@@ -74,7 +76,9 @@ public class BloodSensePower extends AbstractPower {
     }
 
     static boolean isWet(Player player) {
+        var block = player.getLocation().getBlock();
         return player.isInWater()
-                || (player.getWorld().hasStorm() && player.getLocation().getBlock().getLightFromSky() == 15);
+                || (player.getWorld().hasStorm() && block.getLightFromSky() == 15
+                && block.getHumidity() > 0.0);
     }
 }

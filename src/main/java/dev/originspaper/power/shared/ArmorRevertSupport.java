@@ -6,6 +6,7 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * Shared helper for armor-restriction powers. {@code PlayerArmorChangeEvent} is not cancellable,
@@ -18,24 +19,30 @@ abstract class ArmorRevertSupport extends AbstractPower {
     }
 
     protected void revert(Player player, EquipmentSlot slot, ItemStack piece, String message) {
+        UUID playerId = player.getUniqueId();
+        ItemStack expected = piece.clone();
         plugin().getServer().getScheduler().runTaskLater(plugin(), () -> {
-            ItemStack current = player.getInventory().getItem(slot);
+            Player resolved = resolveActivePlayer(playerId);
+            if (resolved == null) {
+                return;
+            }
+            ItemStack current = resolved.getInventory().getItem(slot);
             if (current == null || current.getType().isAir()) {
                 return;
             }
             // Only revert if the offending piece is still equipped. Another power (e.g. an
             // ElytraFlightPower forcing wings back into the chest) may have already replaced it
             // this same tick — in that case leave the new item alone instead of stripping it.
-            if (!current.isSimilar(piece)) {
+            if (!current.isSimilar(expected)) {
                 return;
             }
-            player.getInventory().setItem(slot, null);
-            Map<Integer, ItemStack> leftover = player.getInventory().addItem(current);
+            resolved.getInventory().setItem(slot, null);
+            Map<Integer, ItemStack> leftover = resolved.getInventory().addItem(current);
             for (ItemStack drop : leftover.values()) {
-                player.getWorld().dropItemNaturally(player.getLocation(), drop);
+                resolved.getWorld().dropItemNaturally(resolved.getLocation(), drop);
             }
             if (message != null) {
-                player.sendActionBar(TextUtil.msg(message));
+                resolved.sendActionBar(TextUtil.msg(message));
             }
         }, 1L);
     }

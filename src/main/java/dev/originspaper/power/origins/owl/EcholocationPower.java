@@ -4,6 +4,7 @@ import dev.originspaper.api.ActivePowerType;
 import dev.originspaper.power.shared.AbstractPower;
 import dev.originspaper.util.ParticleUtil;
 import dev.originspaper.util.PerfStats;
+import dev.originspaper.util.SafeTargetUtil;
 import dev.originspaper.util.TextUtil;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -37,6 +38,9 @@ public class EcholocationPower extends AbstractPower implements ActivePowerType 
         for (LivingEntity entity : player.getWorld()
                 .getNearbyEntitiesByType(LivingEntity.class, player.getLocation(), RANGE)) {
             if (entity.equals(player)) {
+                continue;
+            }
+            if (SafeTargetUtil.isProtectedFromHostile(player, entity)) {
                 continue;
             }
             // The nearby lookup is a box; keep the original spherical range.

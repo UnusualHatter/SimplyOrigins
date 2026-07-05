@@ -14,6 +14,8 @@ import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
+import java.util.UUID;
+
 /**
  * Anti-duplication guard for the origins' permanent wings. The wings live only in the chest slot
  * and re-equip themselves; this listener makes sure a player can never pull a second copy out of
@@ -87,12 +89,13 @@ public class ElytraGuardListener implements Listener {
     /** Re-equip the wings after respawn (the only path that bypasses onArmorChange). */
     @EventHandler
     public void onRespawn(PlayerRespawnEvent e) {
-        Player player = e.getPlayer();
+        UUID playerId = e.getPlayer().getUniqueId();
         plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
-            if (!player.isOnline()) {
+            Player player = plugin.getServer().getPlayer(playerId);
+            if (player == null) {
                 return;
             }
-            PlayerOriginData data = plugin.data().get(player.getUniqueId());
+            PlayerOriginData data = plugin.data().get(playerId);
             if (data == null) {
                 return;
             }

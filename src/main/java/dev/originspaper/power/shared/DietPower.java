@@ -4,6 +4,8 @@ import dev.originspaper.util.FoodUtil;
 import dev.originspaper.util.TextUtil;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 
 import java.util.Set;
@@ -38,6 +40,25 @@ public class DietPower extends AbstractPower {
         Player p = e.getPlayer();
         if (denyMessage != null) {
             p.sendActionBar(TextUtil.msg(denyMessage));
+        }
+    }
+
+    /** Cake is eaten as a block interaction, not through PlayerItemConsumeEvent. */
+    @Override
+    public void onInteract(PlayerInteractEvent e) {
+        if (e.getAction() != Action.RIGHT_CLICK_BLOCK || e.getClickedBlock() == null) {
+            return;
+        }
+        Material type = e.getClickedBlock().getType();
+        if (type != Material.CAKE && !type.name().endsWith("_CANDLE_CAKE")) {
+            return;
+        }
+        if (extra.contains(Material.CAKE)) {
+            return;
+        }
+        e.setCancelled(true);
+        if (denyMessage != null) {
+            e.getPlayer().sendActionBar(TextUtil.msg(denyMessage));
         }
     }
 }

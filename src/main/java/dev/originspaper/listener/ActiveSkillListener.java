@@ -39,28 +39,34 @@ public class ActiveSkillListener implements Listener {
         // Crouch + F belongs to the active skill only when this origin actually has one.
         e.setCancelled(true);
 
-        // Precondition gate (e.g. "must be in water"): consumes the input, never starts the
-        // cooldown. The power itself gives the player feedback about why it didn't fire.
-        if (!active.canActivate(player)) {
-            plugin.log().debug(player.getName() + " tried " + active.getId() + " but canActivate() denied it.");
-            return;
-        }
-
-        if (active.getCooldownTicks(player) > 0
-                && !CooldownUtil.isReady(data.getCooldowns(), active.getId(), active.getCooldownTicks(player))) {
-            long remaining = CooldownUtil.remainingSeconds(
-                    data.getCooldowns(), active.getId(), active.getCooldownTicks(player));
-            player.sendActionBar(TextUtil.msg("§cHabilidade em recarga: §f" + remaining + "s"));
-            plugin.log().debug(player.getName() + " tried " + active.getId() + " but it's on cooldown (" + remaining + "s).");
-            return;
-        }
-
-        plugin.log().debug(player.getName() + " activating skill: " + active.getId());
         try {
+            // Precondition gate (e.g. "must be in water"): consumes the input, never starts the
+            // cooldown. The power itself gives the player feedback about why it didn't fire.
+            if (!active.canActivate(player)) {
+                plugin.log().debug(player.getName() + " tried " + active.getId()
+                        + " but canActivate() denied it.");
+                return;
+            }
+
+            long cooldownTicks = Math.max(0L, active.getCooldownTicks(player));
+            if (cooldownTicks > 0
+                    && !CooldownUtil.isReady(data.getCooldowns(), active.getId(), cooldownTicks)) {
+                long remaining = CooldownUtil.remainingSeconds(
+                        data.getCooldowns(), active.getId(), cooldownTicks);
+                player.sendActionBar(TextUtil.msg("§cHabilidade em recarga: §f" + remaining + "s"));
+                plugin.log().debug(player.getName() + " tried " + active.getId()
+                        + " but it's on cooldown (" + remaining + "s).");
+                return;
+            }
+
+            plugin.log().debug(player.getName() + " activating skill: " + active.getId());
             active.onActivate(player);
             CooldownUtil.trigger(data.getCooldowns(), active.getId());
+            plugin.data().persistence().save(player.getUniqueId(), data.getOrigin().id(),
+                    data.getProgressMap(), data.getCooldowns());
         } catch (Exception ex) {
-            plugin.log().warn("onActivate error in " + active.getId() + " for " + player.getName(), ex);
+            plugin.log().warn("Active skill error in " + active.getId()
+                    + " for " + player.getName(), ex);
         }
     }
 

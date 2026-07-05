@@ -97,9 +97,12 @@ public class FeedingRushPower extends AbstractPower implements ActivePowerType {
         PerfStats.entityScan();
         for (Entity entity : to.getWorld().getNearbyEntities(to, search, search, search)) {
             if (!(entity instanceof LivingEntity living) || entity.equals(player)
-                    || SafeTargetUtil.isProtected(living)
+                    || SafeTargetUtil.isProtectedFromHostile(player, living)
                     || !claims().canDamage(player, living)) {
                 continue; // the rush glides past pets/named/claim-protected targets
+            }
+            if (!player.hasLineOfSight(living)) {
+                continue;
             }
             Vector p = entity.getLocation().toVector();
             double t = segLen2 < 1.0e-6 ? 0.0 : p.clone().subtract(a).dot(seg) / segLen2;
@@ -126,10 +129,7 @@ public class FeedingRushPower extends AbstractPower implements ActivePowerType {
         UUID sourceId = player.getUniqueId();
         UUID preyId = prey.getUniqueId();
         plugin().getServer().getScheduler().runTaskLater(plugin(), () -> {
-            Player source = plugin().getServer().getPlayer(sourceId);
-            var data = plugin().data().get(sourceId);
-            if (source == null || data == null || data.getPowers().stream()
-                    .noneMatch(power -> power.getId().equals(id))) {
+            if (resolveActivePlayer(sourceId) == null) {
                 return;
             }
             Entity target = plugin().getServer().getEntity(preyId);
@@ -144,7 +144,6 @@ public class FeedingRushPower extends AbstractPower implements ActivePowerType {
         ParticleUtil.spawnTrail(Particle.BUBBLE_POP, loc, 12, 0.4);
         ParticleUtil.spawnTrail(Particle.DUST, loc, 8, 0.4,
                 ParticleUtil.dust(org.bukkit.Color.fromRGB(160, 10, 10), 1.3f));
-        plugin().progression().awardXp(player, 6); // "Atacar presas na água"
     }
 
     @Override

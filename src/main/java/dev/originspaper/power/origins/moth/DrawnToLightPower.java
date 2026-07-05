@@ -13,6 +13,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.potion.PotionEffectType;
 
+import java.util.UUID;
+
 /** Regeneration while bathed in artificial light; sluggish in pitch-black darkness. */
 public class DrawnToLightPower extends AbstractPower {
 
@@ -66,10 +68,11 @@ public class DrawnToLightPower extends AbstractPower {
         if (e.getItem().getType() != Material.GLOW_BERRIES) {
             return;
         }
-        Player player = e.getPlayer();
+        UUID playerId = e.getPlayer().getUniqueId();
         // Apply next tick so vanilla's own food/saturation update doesn't overwrite ours.
         plugin().getServer().getScheduler().runTask(plugin(), () -> {
-            if (player.isOnline()) {
+            Player player = resolveActivePlayer(playerId);
+            if (player != null) {
                 player.setSaturation(Math.min(player.getFoodLevel(), player.getSaturation() + 4.0f));
             }
         });

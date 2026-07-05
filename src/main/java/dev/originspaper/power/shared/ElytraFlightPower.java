@@ -12,6 +12,7 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.Map;
+import java.util.UUID;
 
 /** Grants a permanent, protected Elytra in the chest slot that re-equips itself if removed. */
 public class ElytraFlightPower extends AbstractPower {
@@ -95,7 +96,13 @@ public class ElytraFlightPower extends AbstractPower {
             return;
         }
         if (!isWings(e.getNewItem())) {
-            plugin().getServer().getScheduler().runTaskLater(plugin(), () -> equip(e.getPlayer()), 1L);
+            UUID playerId = e.getPlayer().getUniqueId();
+            plugin().getServer().getScheduler().runTaskLater(plugin(), () -> {
+                Player player = resolveActivePlayer(playerId);
+                if (player != null) {
+                    equip(player);
+                }
+            }, 1L);
         }
     }
 
@@ -137,6 +144,20 @@ public class ElytraFlightPower extends AbstractPower {
         PlayerInventory inv = player.getInventory();
         if (isWings(inv.getChestplate())) {
             inv.setChestplate(null);
+        }
+        ItemStack[] storage = inv.getStorageContents();
+        boolean changed = false;
+        for (int i = 0; i < storage.length; i++) {
+            if (isWings(storage[i])) {
+                storage[i] = null;
+                changed = true;
+            }
+        }
+        if (changed) {
+            inv.setStorageContents(storage);
+        }
+        if (isWings(inv.getItemInOffHand())) {
+            inv.setItemInOffHand(null);
         }
     }
 }

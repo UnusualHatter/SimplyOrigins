@@ -8,6 +8,8 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 
+import java.util.UUID;
+
 /** Eating meat restores an extra half-heart. */
 public class CarnivoresBitePower extends AbstractPower {
 
@@ -23,13 +25,15 @@ public class CarnivoresBitePower extends AbstractPower {
         Player player = e.getPlayer();
         ParticleUtil.spawnTrail(Particle.HEART, player.getLocation().add(0, 1.0, 0), 3, 0.3);
         ParticleUtil.spawnTrail(Particle.HAPPY_VILLAGER, player.getLocation().add(0, 1.0, 0), 2, 0.3);
+        UUID playerId = player.getUniqueId();
         plugin().getServer().getScheduler().runTaskLater(plugin(), () -> {
-            if (!player.isOnline() || player.isDead()) {
+            Player resolved = resolveActivePlayer(playerId);
+            if (resolved == null || resolved.isDead()) {
                 return;
             }
-            var maxAttr = player.getAttribute(Attribute.MAX_HEALTH);
+            var maxAttr = resolved.getAttribute(Attribute.MAX_HEALTH);
             double max = maxAttr == null ? 20.0 : maxAttr.getValue();
-            player.setHealth(Math.min(max, player.getHealth() + 1.0)); // half a heart
+            resolved.setHealth(Math.min(max, resolved.getHealth() + 1.0)); // half a heart
         }, 1L);
     }
 }
