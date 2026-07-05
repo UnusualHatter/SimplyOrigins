@@ -3,7 +3,7 @@ export const site = {
   name: 'Feather Flux',
   tagline: 'Origins SMP para Java e Bedrock',
   description:
-    'O FeatherFlux é um servidor de Minecraft Original (Java e Bedrock). Oferecemos 16 origens (raças) pra você escolher, cada uma com seus poderes, suas fraquezas e uma progressão básica de tais habilidades.',
+    'O FeatherFlux é um servidor de Minecraft Original (Java e Bedrock). Oferecemos 21 origens (raças) pra você escolher, cada uma com seus poderes, suas fraquezas e uma progressão básica de tais habilidades.',
   /** Endereços de conexão exibidos no site (Java + Bedrock). */
   connect: {
     java: {
@@ -18,7 +18,7 @@ export const site = {
   /** Metadados técnicos exibidos no índice (sidebar) — estilo manual. */
   meta: {
     version: '26.1.2',
-    build: '1.2.6',
+    build: '1.4.0',
     status: 'Estável',
   },
   /** Links externos (placeholders — troque pelos reais). */

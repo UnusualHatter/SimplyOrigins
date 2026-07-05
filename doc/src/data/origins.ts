@@ -1,5 +1,5 @@
 /**
- * Catálogo das 16 Origins jogáveis do Feather Flux.
+ * Catálogo das 21 Origins jogáveis do Feather Flux.
  *
  * Cada Origin alimenta tanto os cards da galeria quanto a página de detalhe
  * (`/origins/[slug]`). O campo `accent` é a cor de brilho/identidade do card;
@@ -573,6 +573,175 @@ export const origins: Origin[] = [
       ],
     },
   },
+  {
+    slug: 'panda-vermelho',
+    name: 'Panda-Vermelho',
+    emoji: '🐼',
+    accent: '#fb7185',
+    category: 'Acrobata das Copas',
+    group: 'Mobilidade',
+    difficulty: 2,
+    playstyle: 'Mobilidade Florestal',
+    diet: 'Onívoro',
+    tagline: 'Sobe em árvore como quem sobe escada e desce planando.',
+    lore: 'Pequeno acrobata das florestas. No meio das árvores ninguém alcança ele: escala troncos agachado, corre pelas copas e escapa planando com a cauda.',
+    pros: [
+      'Acrobata das árvores: mais veloz sobre troncos, folhas, bambu, musgo e chão de floresta',
+      'Escalador: agachado encostado em troncos, folhas ou bambu, sobe devagar — e desce planando de leve',
+      'Cauda Fofa: Velocidade II e Queda Lenta pra fugir ou saltar entre árvores (Agachar + F, recarga 25s)',
+      'Forrageador: frutinhas e frutas-brilhantes saciam o dobro de fome',
+      'Pelagem quente: imune ao congelamento da neve em pó',
+    ],
+    cons: [
+      'Frágil: 1 coração a menos',
+      'Timidez natural: seus ataques ficam fracos quando tem pouca vida',
+      'Corpo leve: peitoral de Diamante ou Netherite desativa a acrobacia e a escalada',
+      'Corpo 15% menor',
+    ],
+    progression: {
+      objectives: ['Percorrer florestas e copas', 'Escalar troncos e bambus', 'Comer frutinhas'],
+      unlocks: [
+        { level: 3, name: 'Vitalidade Fofa', description: '+1 coração.' },
+        { level: 6, name: 'Cauda Ágil', description: 'Recarga da Cauda Fofa −30%.' },
+        { level: 10, name: 'Acrobata Mestre', description: 'Velocidade II sobre blocos de floresta.' },
+      ],
+    },
+  },
+  {
+    slug: 'tubarao',
+    name: 'Tubarão',
+    emoji: '🦈',
+    accent: '#22d3ee',
+    category: 'Predador dos Mares',
+    group: 'Aquático',
+    difficulty: 3,
+    playstyle: 'Combate Aquático',
+    diet: 'Carnívoro',
+    tagline: 'Dono da água: rápido, faminto e sempre sabe onde tem sangue.',
+    lore: 'Dentro da água é o predador do topo: nada mais rápido que qualquer um, morde mais forte e sente presas feridas de longe. Em terra firme vira um peixe fora d\'água.',
+    pros: [
+      'Respiração aquática: respira debaixo d\'água sem limite',
+      'Nadador supremo: o nado mais veloz entre todas as origens',
+      'Mordida predadora: +1 coração de dano corpo a corpo dentro da água',
+      'Faro de Sangue: molhado, sente criaturas feridas num raio de 16 blocos — elas brilham pra você',
+      'Avanço Voraz: investida submarina que morde a primeira presa no caminho (Agachar + F na água, recarga 30s)',
+    ],
+    cons: [
+      'Pele seca: 3 minutos longe de água ou chuva causam fraqueza; aos 5 minutos vem a lentidão',
+      'Desajeitado em terra: 8% mais lento fora da água',
+      'Dieta estritamente carnívora: só carne e peixe',
+      'Corpo 10% maior',
+    ],
+    progression: {
+      objectives: ['Nadar longas distâncias', 'Atacar presas na água', 'Caçar na água'],
+      unlocks: [
+        { level: 3, name: 'Mandíbula Feroz', description: '+0,5 coração de dano da mordida na água.' },
+        { level: 6, name: 'Frenesi', description: 'Recarga do Avanço Voraz −30%.' },
+        { level: 10, name: 'Terror dos Mares', description: 'Avanço mais forte e Faro de Sangue com alcance maior.' },
+      ],
+    },
+  },
+  {
+    slug: 'guaxinim',
+    name: 'Guaxinim',
+    emoji: '🦝',
+    accent: '#94a3b8',
+    category: 'Catador Noturno',
+    group: 'Furtivo',
+    difficulty: 2,
+    playstyle: 'Utilidade / Furtivo',
+    diet: 'Onívoro',
+    tagline: 'Come o que ninguém quer, acha o que ninguém viu e some quando a coisa aperta.',
+    lore: 'Oportunista de patas rápidas: vive da noite e do que encontra vasculhando por aí. Quando a situação fica feia, some numa nuvem de fumaça.',
+    pros: [
+      'Catador noturno: enxerga no escuro e durante a noite',
+      'Gourmet do lixo: carne podre, olho de aranha e batata venenosa não fazem mal — e ainda saciam mais',
+      'Sorte de Catador: chance de achar itens simples (barbante, osso, carvão...) caçando ou cavando terreno natural',
+      'Patas furtivas: agachado, monstros só percebem você de perto',
+      'Esgueirada: Velocidade II e um instante de invisibilidade pra despistar (Agachar + F, recarga 20s)',
+    ],
+    cons: [
+      'Frágil: 1 coração a menos',
+      'Corpo 15% menor',
+      'Armadura pesada estraga a furtividade: peitoral de Diamante ou Netherite desativa as Patas Furtivas e a invisibilidade',
+      'Atacar durante a Esgueirada encerra o disfarce na hora',
+    ],
+    progression: {
+      objectives: ['Vasculhar o mundo (achados extras)', 'Comer comidas duvidosas', 'Matar monstros à noite'],
+      unlocks: [
+        { level: 3, name: 'Mãos Habilidosas', description: 'Chance de achado extra aumentada.' },
+        { level: 6, name: 'Pés Leves', description: 'Recarga da Esgueirada −30%.' },
+        { level: 10, name: 'Mestre da Malandragem', description: 'A invisibilidade da Esgueirada dura 3x mais.' },
+      ],
+    },
+  },
+  {
+    slug: 'equino',
+    name: 'Equino',
+    emoji: '🐴',
+    accent: '#d9a066',
+    category: 'Corredor dos Campos',
+    group: 'Mobilidade',
+    difficulty: 2,
+    playstyle: 'Viagem / Campo Aberto',
+    diet: 'Herbívoro',
+    tagline: 'Nasceu pra galopar: quanto mais reta a estrada, mais rápido ele fica.',
+    lore: 'Feito pra estrada e pro campo aberto. Pega embalo correndo e ninguém acompanha o galope em linha reta — só não espere muito dele dentro d\'água ou em corredor apertado.',
+    pros: [
+      'Galope: correr sem parar cria impulso — após 3s fica veloz e, com 6s ao ar livre, alcança Velocidade II',
+      'Coice: dano baixo e um empurrão fortíssimo em quem estiver atrás de você (Agachar + F, recarga 25s)',
+      'Pernas fortes: Impulso de Salto permanente',
+      'Passo seguro: metade do dano de queda',
+      'Corredor de trilha: se move melhor sobre grama, terra, caminhos e feno',
+    ],
+    cons: [
+      'Herbívoro: não come carne nem peixe',
+      'Nadador ruim: 15% mais lento na água',
+      'Desajeitado em espaços apertados: fica lento sob tetos muito baixos',
+      'Peso da armadura: peitoral de Diamante ou Netherite impede o Galope',
+    ],
+    progression: {
+      objectives: ['Galopar longas distâncias', 'Acertar Coices', 'Comer vegetais e pães'],
+      unlocks: [
+        { level: 3, name: 'Arrancada', description: 'O Galope engata mais rápido.' },
+        { level: 6, name: 'Coice Firme', description: 'Recarga do Coice −30%.' },
+        { level: 10, name: 'Puro-Sangue', description: 'Velocidade III no galope a todo vapor.' },
+      ],
+    },
+  },
+  {
+    slug: 'gamba',
+    name: 'Gambá',
+    emoji: '🦨',
+    accent: '#a3e635',
+    category: 'Defensor Fedorento',
+    group: 'Furtivo',
+    difficulty: 2,
+    playstyle: 'Controle / Fuga',
+    diet: 'Onívoro',
+    tagline: 'Ninguém quer chegar perto. E é exatamente essa a ideia.',
+    lore: 'Não caça ninguém e não procura briga: só quer distância. Quem insiste em chegar perto leva um borrifo que embaça a vista, enfraquece e dá vontade de ir embora.',
+    pros: [
+      'Borrifo Fedorento: nuvem sem dano que aplica Lentidão, Fraqueza e Náusea em quem estiver perto (Agachar + F, recarga 35s)',
+      'Listras de aviso: agachado, monstros só percebem você de perto',
+      'Dieta de catador: comidas duvidosas não envenenam e saciam mais',
+      'Andarilho noturno: 8% mais rápido à noite ou em pouca luz',
+    ],
+    cons: [
+      'Frágil: 1 coração a menos',
+      'Nadador ruim: 12% mais lento na água',
+      'Corpo 10% menor',
+      'Armadura pesada: peitoral de Diamante ou Netherite desativa as listras e o bônus noturno',
+    ],
+    progression: {
+      objectives: ['Atingir alvos com o Borrifo', 'Vagar pela noite', 'Comer comidas duvidosas'],
+      unlocks: [
+        { level: 3, name: 'Vitalidade Listrada', description: '+1 coração.' },
+        { level: 6, name: 'Glândulas Rápidas', description: 'Recarga do Borrifo −30%.' },
+        { level: 10, name: 'Nuvem Pestilenta', description: 'O Borrifo alcança mais longe.' },
+      ],
+    },
+  },
 ];
 
 /** Ordem dos filtros na galeria. */
@@ -586,7 +755,7 @@ export const originGroups: OriginGroup[] = [
   'Tanque',
 ];
 
-/** Código de referência técnico estável: FF-ORG-001 … FF-ORG-016. */
+/** Código de referência técnico estável: FF-ORG-001 … FF-ORG-021. */
 export function originCode(o: Origin): string {
   return `FF-ORG-${String(origins.indexOf(o) + 1).padStart(3, '0')}`;
 }

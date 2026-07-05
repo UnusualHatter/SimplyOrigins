@@ -18,6 +18,37 @@ export interface ChangelogEntry {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: '1.4.0',
+    date: '2026-07-05',
+    summary: [
+      'v1.4.0 (05/07) — 5 Origens Novas:',
+      '• Panda-Vermelho, Tubarão, Guaxinim, Equino e Gambá',
+      '• Todas com habilidade ativa (Agachar + F) e progressão própria',
+      '• Habilidades em área agora respeitam claims, pets e mobs nomeados',
+      '• Deslogar não zera mais a recarga das habilidades',
+    ].join('\n'),
+    added: [
+      'Cinco origens novas, todas com habilidade ativa (Agachar + F), progressão do nível 1 ao 10 e página própria na Wiki — agora são 21 no total.',
+      'Panda-Vermelho: acrobata das florestas. Corre mais rápido sobre troncos, folhas e bambu, escala árvores agachado e usa a Cauda Fofa pra fugir planando entre as copas.',
+      'Tubarão: predador aquático. Nada mais rápido que qualquer origem, morde mais forte dentro da água, sente presas feridas pelo Faro de Sangue e caça com o Avanço Voraz.',
+      'Guaxinim: catador noturno. Come comida estragada numa boa, tem chance de achar itens simples caçando ou cavando terreno natural e some da vista com a Esgueirada.',
+      'Equino: corredor de campo aberto. Pega embalo galopando em linha reta, leva metade do dano de queda e manda inimigos pra longe com o Coice.',
+      'Gambá: defensor fedorento. O Borrifo Fedorento não machuca ninguém, mas aplica Lentidão, Fraqueza e Náusea em quem chegar perto — e agachado quase nenhum monstro te nota.',
+    ],
+    changed: [
+      'Habilidades em área e efeitos hostis (Bote, Cabeçada, Sopro do Dragão, Ecolocalização, Uivo do Alfa e os das origens novas) agora respeitam claims do GriefPrevention e nunca atingem pets ou mobs nomeados. O poder continua funcionando: ele só ignora os alvos protegidos.',
+      'Jogadores em mundos com PvP desligado ficam imunes aos poderes hostis das outras origens.',
+      'O plugin ficou mais leve: cada poder passivo roda no seu próprio ritmo em vez de todos serem verificados a cada segundo.',
+      'Pra staff: /origin debug mostra o estado do plugin, contadores de desempenho e o status das integrações; cada origem pode ser desligada individualmente na config, e os valores de balanceamento das origens novas são configuráveis.',
+    ],
+    fixed: [
+      'Deslogar e voltar não zera mais a recarga das habilidades ativas — o cooldown agora é salvo junto com o progresso.',
+      'Trocar de origem ou recarregar o plugin no meio de uma habilidade não deixa mais efeitos presos no jogador, e as limpezas de origem pararam de remover poções legítimas (as bebidas de verdade ficam).',
+      'Comer comida duvidosa como Guaxinim ou Gambá não limpa mais debuffs de combate aplicados por outros jogadores.',
+      'Os arquivos de progresso dos jogadores passaram a ser salvos de forma atômica, sem risco de corromper se o servidor cair no meio da gravação.',
+    ],
+  },
+  {
     version: '1.2.6',
     date: '2026-07-02',
     summary: [
