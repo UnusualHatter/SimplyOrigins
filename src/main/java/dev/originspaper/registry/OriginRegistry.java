@@ -16,6 +16,11 @@ import dev.originspaper.power.origins.demon.InfernalVisualsPower;
 import dev.originspaper.power.origins.dragon.DragonAuraPower;
 import dev.originspaper.power.origins.dragon.DragonBreathPower;
 import dev.originspaper.power.origins.dragon.RebornMagicPower;
+import dev.originspaper.power.origins.equine.EquineProgressionPower;
+import dev.originspaper.power.origins.equine.GallopPower;
+import dev.originspaper.power.origins.equine.IndoorClumsyPower;
+import dev.originspaper.power.origins.equine.RearKickPower;
+import dev.originspaper.power.origins.equine.TrailRunnerPower;
 import dev.originspaper.power.origins.fox.HuntPower;
 import dev.originspaper.power.origins.fox.PouncePower;
 import dev.originspaper.power.origins.goat.GoatGrazePower;
@@ -92,6 +97,7 @@ import dev.originspaper.power.shared.ExhaustionPower;
 import dev.originspaper.power.shared.FallDamageThresholdPower;
 import dev.originspaper.power.shared.FireImmunityPower;
 import dev.originspaper.power.shared.FlightLaunchPower;
+import dev.originspaper.power.shared.HerbivoreDietPower;
 import dev.originspaper.power.shared.LightArmorOnlyPower;
 import dev.originspaper.power.shared.NightVisionPower;
 import dev.originspaper.power.shared.NoFallDamagePower;
@@ -102,6 +108,7 @@ import dev.originspaper.power.shared.PotionImmunityPower;
 import dev.originspaper.power.shared.SilentStepsPower;
 import dev.originspaper.power.shared.TimidityPower;
 import dev.originspaper.power.shared.TrashGourmetPower;
+import dev.originspaper.power.shared.WaterSpeedPenaltyPower;
 import dev.originspaper.util.FoodUtil;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -208,6 +215,7 @@ public class OriginRegistry {
         registerRedPanda();
         registerShark();
         registerRaccoon();
+        registerEquine();
     }
 
     private void registerHuman() {
@@ -664,6 +672,38 @@ public class OriginRegistry {
                 new PowerInfo("Corpo Pequeno", "Seu corpo é 15% menor."),
                 new PowerInfo("Sem Armadura Pesada", "Peitoral de diamante/netherite desativa sua furtividade."));
         register(new Origin("raccoon", "Guaxinim", null, Material.BUNDLE, powers, infos));
+    }
+
+    private void registerEquine() {
+        List<PowerType> powers = List.of(
+                new GallopPower("equine:gallop",
+                        cfgInt("origins.equine.gallop-stage-1-seconds", 3),
+                        cfgInt("origins.equine.gallop-stage-2-seconds", 6)),
+                new PermanentEffectPower("equine:strong_legs", PotionEffectType.JUMP_BOOST, 0),
+                new DamageMultiplierPower("equine:sure_footed",
+                        1.0 - cfgInt("origins.equine.fall-damage-reduction-percent", 50) / 100.0,
+                        DamageCause.FALL),
+                new TrailRunnerPower("equine:trail_runner"),
+                new RearKickPower("equine:rear_kick",
+                        cfgSecondsToTicks("origins.equine.rear-kick-cooldown-seconds", 25),
+                        cfgDouble("origins.equine.rear-kick-radius", 3.0),
+                        cfgDouble("origins.equine.rear-kick-damage", 2.0)),
+                new HerbivoreDietPower("equine:herbivore",
+                        "§cSeu estômago herbívoro rejeita carne e peixe."),
+                new WaterSpeedPenaltyPower("equine:bad_swimmer", -0.15),
+                new IndoorClumsyPower("equine:indoor_clumsy"),
+                new EquineProgressionPower("equine:progression"));
+        List<PowerInfo> infos = List.of(
+                new PowerInfo("Galope", "Correr sem parar cria impulso: após 3s fica veloz; após 6s ao ar livre alcança Velocidade II."),
+                new PowerInfo("Pernas Fortes", "Salta um pouco mais alto."),
+                new PowerInfo("Passo Seguro", "Sofre 50% menos dano de queda."),
+                new PowerInfo("Corredor de Trilha", "Move-se um pouco melhor sobre grama, terra, caminhos e feno."),
+                new PowerInfo("Coice", "Agachar + F: golpe fraco que arremessa alvos atrás de você (recarga 25s)."),
+                new PowerInfo("Herbívoro", "Não consegue comer carne ou peixe."),
+                new PowerInfo("Nadador Ruim", "Move-se 15% mais devagar na água."),
+                new PowerInfo("Desajeitado em Espaços Apertados", "Fica levemente lento sob tetos muito baixos."),
+                new PowerInfo("Peso da Armadura", "Peitoral de diamante/netherite impede o Galope."));
+        register(new Origin("equine", "Equino", null, Material.SADDLE, powers, infos));
     }
 
     private void registerMoth() {
