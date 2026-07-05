@@ -2,11 +2,14 @@ package dev.originspaper.command;
 
 import dev.originspaper.OriginsPaper;
 import dev.originspaper.api.Origin;
+import dev.originspaper.api.PowerType;
 import dev.originspaper.gui.OriginProgressGUI;
 import dev.originspaper.gui.OriginSelectionGUI;
+import dev.originspaper.integration.IntegrationHook;
 import dev.originspaper.progression.OriginProgress;
 import dev.originspaper.progression.ProgressionManager;
 import dev.originspaper.registry.PlayerOriginData;
+import dev.originspaper.util.PerfStats;
 import dev.originspaper.util.TextUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -39,9 +42,107 @@ public class OriginCommand implements CommandExecutor, TabCompleter {
             case "reload" -> handleReload(sender);
             case "addxp" -> handleAddXp(sender, args);
             case "setlevel" -> handleSetLevel(sender, args);
-            default -> sender.sendMessage(TextUtil.msg("§cUso: /origin [set|reset|info|reload|addxp|setlevel]"));
+            case "debug" -> handleDebug(sender, args);
+            default -> sender.sendMessage(TextUtil.msg("§cUso: /origin [set|reset|info|reload|addxp|setlevel|debug]"));
         }
         return true;
+    }
+
+    private void handleDebug(CommandSender sender, String[] args) {
+        if (!sender.hasPermission("originspaper.admin")) {
+            sender.sendMessage(TextUtil.msg("§cSem permissão."));
+            return;
+        }
+        String topic = args.length >= 2 ? args[1].toLowerCase() : "";
+        switch (topic) {
+            case "" -> debugSummary(sender);
+            case "perf" -> debugPerf(sender);
+            case "integrations" -> debugIntegrations(sender);
+            case "player" -> debugPlayer(sender, args);
+            default -> sender.sendMessage(TextUtil.msg("§cUso: /origin debug [perf|integrations|player <jogador>]"));
+        }
+    }
+
+    private void debugSummary(CommandSender sender) {
+        int withOrigin = 0;
+        int totalPowers = 0;
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            PlayerOriginData d = plugin.data().get(p.getUniqueId());
+            if (d != null && d.hasOrigin()) {
+                withOrigin++;
+                totalPowers += d.getPowers().size();
+            }
+        }
+        int activeHooks = (int) plugin.integrations().hooks().stream().filter(IntegrationHook::isActive).count();
+        sender.sendMessage(TextUtil.msg("§6⬛ OriginsPaper §fv" + plugin.getPluginMeta().getVersion()));
+        sender.sendMessage(TextUtil.msg("§7Tick global: §f" + plugin.tick() + "§7 (1/s desde o enable)"));
+        sender.sendMessage(TextUtil.msg("§7Origens registradas: §f" + plugin.origins().all().size()));
+        sender.sendMessage(TextUtil.msg("§7Jogadores online com origem: §f" + withOrigin
+                + "§7/§f" + Bukkit.getOnlinePlayers().size()));
+        sender.sendMessage(TextUtil.msg("§7Instâncias de poder ativas: §f" + totalPowers));
+        sender.sendMessage(TextUtil.msg("§7Integrações ativas: §f" + activeHooks
+                + "§7/§f" + plugin.integrations().hooks().size()
+                + " §8(detalhes: /origin debug integrations)"));
+    }
+
+    private void debugPerf(CommandSender sender) {
+        sender.sendMessage(TextUtil.msg("§6⬛ Desempenho §7(acumulado desde o enable)"));
+        sender.sendMessage(TextUtil.msg("§7Ciclos processados: §f" + plugin.tick()));
+        sender.sendMessage(TextUtil.msg("§7onTick despachados: §f" + PerfStats.onTickCalls()
+                + " §8• §7pulados (cadência/event-only): §f" + PerfStats.onTickSkips()
+                + " §8• §7erros: §f" + PerfStats.onTickErrors()));
+        sender.sendMessage(TextUtil.msg("§7Varreduras de entidades: §f" + PerfStats.entityScans()));
+        sender.sendMessage(TextUtil.msg("§7Consultas de claim: §f" + PerfStats.claimChecks()
+                + " §8• §7negadas: §f" + PerfStats.claimDenials()));
+    }
+
+    private void debugIntegrations(CommandSender sender) {
+        sender.sendMessage(TextUtil.msg("§6⬛ Integrações"));
+        for (IntegrationHook hook : plugin.integrations().hooks()) {
+            String color = hook.isActive() ? "§a" : (hook.isPresent() ? "§e" : "§8");
+            sender.sendMessage(TextUtil.msg("§7- §f" + hook.name() + "§7: " + color + hook.status()));
+        }
+    }
+
+    private void debugPlayer(CommandSender sender, String[] args) {
+        if (args.length < 3) {
+            sender.sendMessage(TextUtil.msg("§cUso: /origin debug player <jogador>"));
+            return;
+        }
+        Player target = Bukkit.getPlayerExact(args[2]);
+        if (target == null) {
+            sender.sendMessage(TextUtil.msg("§cJogador não encontrado."));
+            return;
+        }
+        PlayerOriginData data = plugin.data().get(target.getUniqueId());
+        sender.sendMessage(TextUtil.msg("§6⬛ Debug de §f" + target.getName()));
+        if (data == null || !data.hasOrigin()) {
+            sender.sendMessage(TextUtil.msg("§7Sem origem selecionada."));
+            return;
+        }
+        Origin origin = data.getOrigin();
+        OriginProgress prog = data.currentProgress();
+        sender.sendMessage(TextUtil.msg("§7Origem: §f" + origin.id() + " §8(" + origin.displayName() + ")"));
+        if (prog != null) {
+            sender.sendMessage(TextUtil.msg("§7Nível: §f" + prog.level() + " §8• §7XP: §f" + prog.xp()
+                    + (prog.isMax() ? " §6(MÁX)" : "§7/§f" + ProgressionManager.xpToNext(prog.level()))));
+        }
+        sender.sendMessage(TextUtil.msg("§7Poderes ativos (§f" + data.getPowers().size() + "§7):"));
+        for (PowerType power : data.getPowers()) {
+            sender.sendMessage(TextUtil.msg("§7- §f" + power.getId()
+                    + " §8[" + power.getTickCadence().name().toLowerCase() + "]"));
+        }
+        if (data.getCooldowns().isEmpty()) {
+            sender.sendMessage(TextUtil.msg("§7Cooldowns: §fnenhum registrado"));
+        } else {
+            sender.sendMessage(TextUtil.msg("§7Cooldowns registrados:"));
+            long now = System.currentTimeMillis();
+            for (var entry : data.getCooldowns().entrySet()) {
+                long secondsAgo = (now - entry.getValue()) / 1000L;
+                sender.sendMessage(TextUtil.msg("§7- §f" + entry.getKey()
+                        + " §8(último uso há " + secondsAgo + "s)"));
+            }
+        }
     }
 
     private void handleReload(CommandSender sender) {
@@ -213,7 +314,9 @@ public class OriginCommand implements CommandExecutor, TabCompleter {
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         boolean admin = sender.hasPermission("originspaper.admin");
         // "info" is the only subcommand non-admins may use; the rest are admin-only and stay hidden.
-        List<String> adminSubs = List.of("set", "reset", "reload", "addxp", "setlevel");
+        List<String> adminSubs = List.of("set", "reset", "reload", "addxp", "setlevel", "debug");
+        // Admin subcommands whose second argument is a player name ("debug" takes a topic instead).
+        List<String> playerArgSubs = List.of("set", "reset", "addxp", "setlevel");
         List<String> out = new ArrayList<>();
         if (args.length == 1) {
             if ("info".startsWith(args[0].toLowerCase())) {
@@ -227,9 +330,22 @@ public class OriginCommand implements CommandExecutor, TabCompleter {
                 }
             }
         } else if (args.length == 2 && (args[0].equalsIgnoreCase("info")
-                || (admin && adminSubs.contains(args[0].toLowerCase())))) {
+                || (admin && playerArgSubs.contains(args[0].toLowerCase())))) {
             for (Player p : Bukkit.getOnlinePlayers()) {
                 if (p.getName().toLowerCase().startsWith(args[1].toLowerCase())) {
+                    out.add(p.getName());
+                }
+            }
+        } else if (args.length == 2 && admin && args[0].equalsIgnoreCase("debug")) {
+            for (String topic : List.of("perf", "integrations", "player")) {
+                if (topic.startsWith(args[1].toLowerCase())) {
+                    out.add(topic);
+                }
+            }
+        } else if (args.length == 3 && admin && args[0].equalsIgnoreCase("debug")
+                && args[1].equalsIgnoreCase("player")) {
+            for (Player p : Bukkit.getOnlinePlayers()) {
+                if (p.getName().toLowerCase().startsWith(args[2].toLowerCase())) {
                     out.add(p.getName());
                 }
             }

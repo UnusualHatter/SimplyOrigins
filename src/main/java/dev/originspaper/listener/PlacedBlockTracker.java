@@ -41,6 +41,14 @@ public class PlacedBlockTracker implements Listener {
         return set != null && set.contains(key(block));
     }
 
+    /**
+     * Drops all tracked placements (plugin disable). The map is static, so without this a
+     * {@code /reload} would keep the old classloader's data alive through the new one's lifetime.
+     */
+    public static void clearAll() {
+        PLACED.clear();
+    }
+
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlace(BlockPlaceEvent e) {
         Set<Long> set = PLACED.computeIfAbsent(e.getBlock().getWorld().getUID(),

@@ -1,7 +1,9 @@
 package dev.originspaper.power.origins.wolf;
 
+import dev.originspaper.api.TickCadence;
 import dev.originspaper.power.shared.AbstractPower;
 import dev.originspaper.util.ParticleUtil;
+import dev.originspaper.util.PerfStats;
 import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -16,10 +18,13 @@ public class HuntersSensePower extends AbstractPower {
     }
 
     @Override
+    public TickCadence getTickCadence() {
+        return TickCadence.EVERY_2_SECONDS; // 60-tick glow overlaps, so the highlight stays continuous
+    }
+
+    @Override
     public void onTick(Player player) {
-        if (plugin().tick() % 2 != 0) {
-            return; // every ~40 ticks
-        }
+        PerfStats.entityScan();
         for (LivingEntity entity : player.getWorld().getNearbyEntitiesByType(LivingEntity.class, player.getLocation(), 16)) {
             if (entity.equals(player)) {
                 continue;

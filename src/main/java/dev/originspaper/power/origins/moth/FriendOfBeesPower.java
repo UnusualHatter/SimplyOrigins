@@ -1,7 +1,9 @@
 package dev.originspaper.power.origins.moth;
 
+import dev.originspaper.api.TickCadence;
 import dev.originspaper.power.shared.AbstractPower;
 import dev.originspaper.util.ParticleUtil;
+import dev.originspaper.util.PerfStats;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.Bee;
@@ -26,10 +28,13 @@ public class FriendOfBeesPower extends AbstractPower {
     }
 
     @Override
+    public TickCadence getTickCadence() {
+        return TickCadence.EVERY_3_SECONDS;
+    }
+
+    @Override
     public void onTick(Player player) {
-        if (plugin().tick() % 3 != 0) {
-            return; // every ~3s
-        }
+        PerfStats.entityScan();
         for (Bee bee : player.getWorld().getNearbyEntitiesByType(Bee.class, player.getLocation(), 6)) {
             bee.setAnger(0); // keep nearby bees calm even without a target event
             if (ThreadLocalRandom.current().nextDouble() < 0.25) {

@@ -4,6 +4,7 @@ import dev.originspaper.api.ActivePowerType;
 import dev.originspaper.power.shared.AbstractPower;
 import dev.originspaper.util.GroundUtil;
 import dev.originspaper.util.ParticleUtil;
+import dev.originspaper.util.PerfStats;
 import dev.originspaper.util.SafeTargetUtil;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -117,9 +118,11 @@ public class PouncePower extends AbstractPower implements ActivePowerType {
         ParticleUtil.spawnGroundBurst(Particle.BLOCK, loc, 0.6, 12, 0.0, below);
         ParticleUtil.spawn(Particle.DAMAGE_INDICATOR, loc.clone().add(0, 0.5, 0), 4, 0.3, 0.2, 0.3, 0.0);
         double damage = blastDamage(player);
+        PerfStats.entityScan();
         for (Entity entity : player.getNearbyEntities(BLAST_RADIUS, BLAST_RADIUS, BLAST_RADIUS)) {
             if (entity instanceof LivingEntity target && !entity.equals(player)
-                    && !SafeTargetUtil.isProtected(target)) {
+                    && !SafeTargetUtil.isProtected(target)
+                    && claims().canDamage(player, target)) {
                 target.damage(damage, player); // knockback radiates from the player (blast centre)
             }
         }

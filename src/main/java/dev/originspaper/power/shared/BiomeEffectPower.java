@@ -1,5 +1,6 @@
 package dev.originspaper.power.shared;
 
+import dev.originspaper.api.TickCadence;
 import org.bukkit.block.Biome;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
@@ -15,23 +16,25 @@ public class BiomeEffectPower extends AbstractPower {
 
     private final Set<Biome> biomes;
     private final boolean applyWhenInSet;
-    private final int cadenceCycles;
+    private final TickCadence cadence;
     private final List<PotionEffect> effects;
 
     public BiomeEffectPower(String id, Set<Biome> biomes, boolean applyWhenInSet,
-                            int cadenceCycles, PotionEffect... effects) {
+                            TickCadence cadence, PotionEffect... effects) {
         super(id);
         this.biomes = biomes;
         this.applyWhenInSet = applyWhenInSet;
-        this.cadenceCycles = Math.max(1, cadenceCycles);
+        this.cadence = cadence;
         this.effects = List.of(effects);
     }
 
     @Override
+    public TickCadence getTickCadence() {
+        return cadence;
+    }
+
+    @Override
     public void onTick(Player player) {
-        if (plugin().tick() % cadenceCycles != 0) {
-            return;
-        }
         boolean inSet = biomes.contains(player.getWorld().getBiome(player.getLocation()));
         if (inSet == applyWhenInSet) {
             for (PotionEffect effect : effects) {

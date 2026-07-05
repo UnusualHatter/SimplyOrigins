@@ -1,4 +1,4 @@
-package dev.originspaper.listener;
+package dev.originspaper.integration;
 
 import com.artillexstudios.axgraves.api.events.GraveSpawnEvent;
 import com.artillexstudios.axgraves.grave.Grave;
@@ -9,22 +9,20 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 /**
- * Integration with the AxGraves plugin (Artillex-Studios).
- *
- * <p>The origins' permanent wings are a protected, self-re-equipping Elytra that the player gets
- * back automatically on respawn ({@link ElytraGuardListener#onRespawn}). They must therefore never
+ * The origins' permanent wings are a protected, self-re-equipping Elytra that the player gets
+ * back automatically on respawn ({@code ElytraGuardListener#onRespawn}). They must therefore never
  * be stored in a death grave — doing so both leaks a duplicate (the player has fresh wings on
  * respawn <em>and</em> a stored copy in the grave) and lets the item be looted out of the grave.
  *
- * <p>Our {@link ElytraGuardListener#onDeath} removes the wings from the vanilla death drops, but
+ * <p>Our {@code ElytraGuardListener#onDeath} removes the wings from the vanilla death drops, but
  * AxGraves captures the inventory through its own path, so that alone isn't enough. The moment a
  * grave spawns we strip any protected wings straight out of its storage — plugin-agnostic about how
  * they got there.
  *
- * <p>This class references AxGraves types directly, so it is only instantiated and registered when
- * the AxGraves plugin is actually present (guarded in {@link dev.originspaper.OriginsPaper}).
+ * <p>This class references AxGraves types directly, so it is only instantiated and registered by
+ * {@link AxGravesHook} when the AxGraves plugin is actually present.
  */
-public class AxGravesIntegrationListener implements Listener {
+class AxGravesGraveListener implements Listener {
 
     @EventHandler
     public void onGraveSpawn(GraveSpawnEvent e) {

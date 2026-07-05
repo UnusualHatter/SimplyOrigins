@@ -4,6 +4,7 @@ import dev.originspaper.api.ActivePowerType;
 import dev.originspaper.power.shared.AbstractPower;
 import dev.originspaper.util.GroundUtil;
 import dev.originspaper.util.ParticleUtil;
+import dev.originspaper.util.PerfStats;
 import dev.originspaper.util.SafeTargetUtil;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -99,10 +100,12 @@ public class LeapPower extends AbstractPower implements ActivePowerType {
         double search = blastRadius(player) + Math.sqrt(segLen2) + 1.0;
         LivingEntity best = null;
         double bestDist2 = Double.MAX_VALUE;
+        PerfStats.entityScan();
         for (Entity entity : to.getWorld().getNearbyEntities(to, search, search, search)) {
             if (!(entity instanceof LivingEntity living) || entity.equals(player)
-                    || SafeTargetUtil.isProtected(living)) {
-                continue; // charge passes through pets/named mobs instead of stopping on them
+                    || SafeTargetUtil.isProtected(living)
+                    || !claims().canDamage(player, living)) {
+                continue; // charge passes through pets/named/claim-protected targets
             }
             Vector p = entity.getLocation().toVector();
             double t = segLen2 < 1.0e-6 ? 0.0 : p.clone().subtract(a).dot(seg) / segLen2;
@@ -127,9 +130,11 @@ public class LeapPower extends AbstractPower implements ActivePowerType {
         double radius = blastRadius(owner);
         double damage = blastDamage(owner);
         boolean hit = false;
+        PerfStats.entityScan();
         for (Entity entity : world.getNearbyEntities(center, radius, radius, radius)) {
             if (entity instanceof LivingEntity target && !entity.equals(owner)
-                    && !SafeTargetUtil.isProtected(target)) {
+                    && !SafeTargetUtil.isProtected(target)
+                    && claims().canDamage(owner, target)) {
                 target.damage(damage, owner); // knockback radiates from the blast centre
                 hit = true;
             }

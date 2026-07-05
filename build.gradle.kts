@@ -3,19 +3,22 @@ plugins {
 }
 
 group = "dev.originspaper"
-version = "1.2.2"
+version = "1.3.0"
 
 repositories {
     mavenCentral()
     maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://repo.artillex-studios.com/releases/")
+    maven("https://jitpack.io")
 }
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:26.1.2.build.+")
-    // Soft integration: keep the origins' permanent wings out of AxGraves death graves.
-    // compileOnly + softdepend in plugin.yml — the plugin runs fine without AxGraves installed.
+    // Soft integrations: compileOnly + softdepend in plugin.yml — the plugin boots fine without
+    // any of them installed. Their classes are only touched behind presence guards (see
+    // dev.originspaper.integration).
     compileOnly("com.artillexstudios:AxGraves:1.26.0") { isTransitive = false }
+    compileOnly("com.github.TechFortress:GriefPrevention:16.18.4") { isTransitive = false }
 }
 
 java {

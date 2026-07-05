@@ -46,9 +46,16 @@ public class FlightLaunchPower extends AbstractPower implements ActivePowerType 
         ParticleUtil.spawn(Particle.GUST, c.clone().add(0, 0.5, 0), 1, 0, 0, 0, 0.0);
         launchedAt.put(player.getUniqueId(), plugin().tick());
 
+        // Resolve the player again at execution time — never act on someone who logged off,
+        // and skip if the power was removed (origin switch/reset) during the delay.
+        UUID playerId = player.getUniqueId();
         plugin().getServer().getScheduler().runTaskLater(plugin(), () -> {
-            if (!GroundUtil.isOnGround(player) && player.getInventory().getChestplate() != null) {
-                player.setGliding(true);
+            Player p = plugin().getServer().getPlayer(playerId);
+            if (p == null || !launchedAt.containsKey(playerId)) {
+                return;
+            }
+            if (!GroundUtil.isOnGround(p) && p.getInventory().getChestplate() != null) {
+                p.setGliding(true);
             }
         }, glideDelay);
     }

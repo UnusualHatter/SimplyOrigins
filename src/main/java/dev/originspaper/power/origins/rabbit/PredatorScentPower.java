@@ -1,7 +1,9 @@
 package dev.originspaper.power.origins.rabbit;
 
+import dev.originspaper.api.TickCadence;
 import dev.originspaper.power.shared.AbstractPower;
 import dev.originspaper.util.ParticleUtil;
+import dev.originspaper.util.PerfStats;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.EntityType;
@@ -20,9 +22,16 @@ public class PredatorScentPower extends AbstractPower {
         super(id);
     }
 
+    /** Awareness only — a 2s pulse is still plenty of warning at 16 blocks, at half the scan cost. */
+    @Override
+    public TickCadence getTickCadence() {
+        return TickCadence.EVERY_2_SECONDS;
+    }
+
     @Override
     public void onTick(Player player) {
         boolean sensed = false;
+        PerfStats.entityScan();
         for (LivingEntity entity : player.getWorld()
                 .getNearbyEntitiesByType(LivingEntity.class, player.getLocation(), RANGE)) {
             if (!isPredator(entity)) {

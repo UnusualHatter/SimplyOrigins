@@ -3,6 +3,7 @@ package dev.originspaper.registry;
 import dev.originspaper.api.Origin;
 import dev.originspaper.api.Origin.PowerInfo;
 import dev.originspaper.api.PowerType;
+import dev.originspaper.api.TickCadence;
 import dev.originspaper.power.origins.bat.BatGlidePower;
 import dev.originspaper.power.origins.bat.CaveMobilityPower;
 import dev.originspaper.power.origins.bear.CumbersomeClawsPower;
@@ -195,7 +196,8 @@ public class OriginRegistry {
 
     private void registerDeer() {
         List<PowerType> powers = List.of(
-                new BiomeEffectPower("deer:forest_speed", DEER_HABITAT, true, 2, effect(PotionEffectType.SPEED, 60, 0)),
+                new BiomeEffectPower("deer:forest_speed", DEER_HABITAT, true,
+                        TickCadence.EVERY_2_SECONDS, effect(PotionEffectType.SPEED, 60, 0)),
                 new DamageMultiplierPower("deer:soft_landing", 0.5, DamageCause.FALL),
                 new NaturalRunnerPower("deer:natural_runner"),
                 new AttributeModifierPower("deer:nimble_legs", Attribute.STEP_HEIGHT, 0.5),
@@ -466,9 +468,10 @@ public class OriginRegistry {
                 new NutritionPower("bear:primal_appetite", FoodUtil::isRawMeat, 2.0),
                 new HibernationPower("bear:hibernation", 2400L, org.bukkit.Sound.ENTITY_POLAR_BEAR_WARNING,
                         effect(PotionEffectType.STRENGTH, 200, 1), effect(PotionEffectType.RESISTANCE, 200, 0)),
-                new BiomeParticlePower("bear:cold_frost_visual", COLD_BIOMES, true, 2, 6, Particle.SNOWFLAKE),
-                new BiomeParticlePower("bear:away_from_forest_visual", FOREST_BIOMES, false, 3, 4,
-                        Particle.ASH, Particle.SMOKE),
+                new BiomeParticlePower("bear:cold_frost_visual", COLD_BIOMES, true,
+                        TickCadence.EVERY_2_SECONDS, 6, Particle.SNOWFLAKE),
+                new BiomeParticlePower("bear:away_from_forest_visual", FOREST_BIOMES, false,
+                        TickCadence.EVERY_3_SECONDS, 4, Particle.ASH, Particle.SMOKE),
                 new AttributeModifierPower("bear:towering", Attribute.ENTITY_INTERACTION_RANGE, 1.0),
                 new CumbersomeClawsPower("bear:cumbersome_claws"),
                 new AttributeModifierPower("bear:heavy_bones_speed", Attribute.MOVEMENT_SPEED, -0.015),

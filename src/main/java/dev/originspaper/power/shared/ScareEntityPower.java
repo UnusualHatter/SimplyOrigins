@@ -1,6 +1,8 @@
 package dev.originspaper.power.shared;
 
+import dev.originspaper.api.TickCadence;
 import dev.originspaper.util.ParticleUtil;
+import dev.originspaper.util.PerfStats;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.EntityType;
@@ -39,12 +41,15 @@ public class ScareEntityPower extends AbstractPower {
         }
     }
 
+    /** Re-issue flee paths every ~2s: still responsive (creepers move slowly) at half the cost. */
+    @Override
+    public TickCadence getTickCadence() {
+        return TickCadence.EVERY_2_SECONDS;
+    }
+
     @Override
     public void onTick(Player player) {
-        // Re-issue flee paths every ~2s: still responsive (creepers move slowly) at half the cost.
-        if (plugin().tick() % 2 != 0) {
-            return;
-        }
+        PerfStats.entityScan();
         for (LivingEntity entity : player.getWorld().getNearbyEntitiesByType(LivingEntity.class, player.getLocation(), SCARE_RADIUS)) {
             if (entity.getType() != type || !(entity instanceof Mob mob)) {
                 continue;

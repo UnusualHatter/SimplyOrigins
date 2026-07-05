@@ -3,6 +3,7 @@ package dev.originspaper.power.origins.wolf;
 import dev.originspaper.power.shared.ActiveBuffPower;
 import dev.originspaper.util.EffectUtil;
 import dev.originspaper.util.ParticleUtil;
+import dev.originspaper.util.PerfStats;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -41,8 +42,10 @@ public class AlphaHowlPower extends ActiveBuffPower {
         Location c = player.getLocation();
 
         if (levelOf(player) >= 10) { // Alcateia: fortalece aliados
+            PerfStats.entityScan();
             for (Entity entity : player.getNearbyEntities(8, 8, 8)) {
-                if (entity instanceof Player ally && !ally.equals(player)) {
+                if (entity instanceof Player ally && !ally.equals(player)
+                        && claims().canAffectPlayer(player, ally)) {
                     EffectUtil.apply(ally, PotionEffectType.STRENGTH, 200, 0);
                     ParticleUtil.spawnGroundBurst(Particle.HEART, ally.getLocation(), 0.5, 3, 0.1);
                 } else if (entity instanceof Tameable pet && pet.isTamed() && player.equals(pet.getOwner())) {

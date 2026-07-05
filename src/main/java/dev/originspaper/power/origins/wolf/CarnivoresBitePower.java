@@ -24,7 +24,11 @@ public class CarnivoresBitePower extends AbstractPower {
         ParticleUtil.spawnTrail(Particle.HEART, player.getLocation().add(0, 1.0, 0), 3, 0.3);
         ParticleUtil.spawnTrail(Particle.HAPPY_VILLAGER, player.getLocation().add(0, 1.0, 0), 2, 0.3);
         plugin().getServer().getScheduler().runTaskLater(plugin(), () -> {
-            double max = player.getAttribute(Attribute.MAX_HEALTH).getValue();
+            if (!player.isOnline() || player.isDead()) {
+                return;
+            }
+            var maxAttr = player.getAttribute(Attribute.MAX_HEALTH);
+            double max = maxAttr == null ? 20.0 : maxAttr.getValue();
             player.setHealth(Math.min(max, player.getHealth() + 1.0)); // half a heart
         }, 1L);
     }

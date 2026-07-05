@@ -3,6 +3,7 @@ package dev.originspaper.power.origins.owl;
 import dev.originspaper.api.ActivePowerType;
 import dev.originspaper.power.shared.AbstractPower;
 import dev.originspaper.util.ParticleUtil;
+import dev.originspaper.util.PerfStats;
 import dev.originspaper.util.TextUtil;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -32,18 +33,25 @@ public class EcholocationPower extends AbstractPower implements ActivePowerType 
         }
 
         int count = 0;
-        // getLivingEntities() is already scoped to the player's world, so no world check is needed.
-        for (LivingEntity entity : player.getWorld().getLivingEntities()) {
+        PerfStats.entityScan();
+        for (LivingEntity entity : player.getWorld()
+                .getNearbyEntitiesByType(LivingEntity.class, player.getLocation(), RANGE)) {
             if (entity.equals(player)) {
                 continue;
             }
-            if (entity.getLocation().distanceSquared(player.getLocation()) <= RANGE * RANGE) {
-                entity.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 100, 0, false, false, false));
-                Location head = entity.getLocation().add(0, entity.getHeight() + 0.3, 0);
-                ParticleUtil.spawnTrail(Particle.ENCHANT, head, 6, 0.2);
-                ParticleUtil.spawn(Particle.END_ROD, head, 3, 0.1, 0.1, 0.1, 0.0);
-                count++;
+            // The nearby lookup is a box; keep the original spherical range.
+            if (entity.getLocation().distanceSquared(player.getLocation()) > RANGE * RANGE) {
+                continue;
             }
+            // Revealing a player's position is a hostile effect — respect claim protection.
+            if (entity instanceof Player target && !claims().canAffectPlayer(player, target)) {
+                continue;
+            }
+            entity.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 100, 0, false, false, false));
+            Location head = entity.getLocation().add(0, entity.getHeight() + 0.3, 0);
+            ParticleUtil.spawnTrail(Particle.ENCHANT, head, 6, 0.2);
+            ParticleUtil.spawn(Particle.END_ROD, head, 3, 0.1, 0.1, 0.1, 0.0);
+            count++;
         }
         player.sendActionBar(TextUtil.msg("§bEcolocalização revelou " + count + " entidade(s)!"));
     }

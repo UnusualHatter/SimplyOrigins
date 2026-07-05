@@ -44,8 +44,19 @@ public interface PowerType {
 
     default void onMove(PlayerMoveEvent e) {}
 
-    /** Called every 20 ticks for each online player that has this power. */
+    /**
+     * Called from the single global scheduler for each online player that has this power, at the
+     * rate declared by {@link #getTickCadence()}. Never called for {@link TickCadence#EVENT_ONLY}.
+     */
     default void onTick(Player player) {}
+
+    /**
+     * How often {@link #onTick} should be dispatched. {@code AbstractPower} narrows the default to
+     * {@link TickCadence#EVENT_ONLY} automatically for classes that don't override {@code onTick}.
+     */
+    default TickCadence getTickCadence() {
+        return TickCadence.EVERY_SECOND;
+    }
 
     default void onFoodChange(FoodLevelChangeEvent e) {}
 

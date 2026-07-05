@@ -176,6 +176,28 @@ Origem de suporte focada em agricultura, exploração e mobilidade. Sem combate 
 | `/origin info [jogador]` | `originspaper.select` | Mostra a origem atual e lista as habilidades. |
 | `/origin set <jogador> <origem>` | `originspaper.admin` | Define a origem de um jogador. |
 | `/origin reset <jogador>` | `originspaper.admin` | Remove a origem e força nova escolha. |
+| `/origin reload` | `originspaper.admin` | Recarrega config, origens e integrações. |
+| `/origin addxp <jogador> <qtd>` | `originspaper.admin` | Concede XP de progressão. |
+| `/origin setlevel <jogador> <nível>` | `originspaper.admin` | Define o nível da origem atual. |
+| `/origin debug [perf\|integrations\|player <jogador>]` | `originspaper.admin` | Estado do plugin: tick global, contadores de desempenho, status das integrações e detalhes por jogador. |
+
+---
+
+## Integrações
+
+Todas as integrações são **opcionais** (softdepend): o plugin inicia e funciona normalmente sem
+nenhum outro plugin instalado. Cada hook é detectado no enable (e no `/origin reload`) e pode ser
+desligado individualmente em `config.yml` → `integrations.<hook>.enabled: false`. O status de cada
+um aparece em `/origin debug integrations`.
+
+| Plugin | O que a integração faz |
+|---|---|
+| **AxGraves** | Remove as asas protegidas das origens (coruja, grifo, dragão) do baú-túmulo no momento em que ele aparece — evita duplicação, já que as asas voltam sozinhas no respawn. |
+| **GriefPrevention** | Habilidades em área e efeitos hostis respeitam claims: Bote (raposa), Cabeçada (cabra), Sopro do Dragão, Ecolocalização (Glowing em jogadores), Uivo do Alfa (buff em jogadores) e Polinizadora (crescimento de plantações) filtram alvo a alvo — a habilidade continua funcionando, apenas ignora alvos protegidos. Mobs hostis nunca são protegidos, e a proteção de pets/mobs nomeados (`SafeTargetUtil`) vale sempre, com ou sem GriefPrevention. Em caso de erro na consulta, a proteção falha fechada (nega a ação). |
+| **Simple Voice Chat** | Apenas detecção + valores de configuração por enquanto (raio do uivo, ping de ecolocalização, abafamento de spray) — nenhum poder usa voz ainda. O nome registrado do plugin é `voicechat`. |
+| **PlaceholderAPI** | Apenas detecção — expansão de placeholders planejada. |
+| **WorldGuard** | Apenas detecção — checagem de flags de região planejada. |
+| **LuckPerms** | Apenas detecção — recursos por permissão planejados. |
 
 ---
 
@@ -188,4 +210,4 @@ Usa o Gradle Wrapper interno (precisa só de Java 25 instalado).
 ./gradlew build --stacktrace    # compila mostrando detalhes de erros
 ```
 
-O `.jar` sai em `build/libs/originspaper-<versão>.jar` (ex.: `originspaper-1.2.2.jar`). Copie para a pasta `plugins/` de um servidor Paper 26.1.2 e inicie o servidor.
+O `.jar` sai em `build/libs/originspaper-<versão>.jar` (ex.: `originspaper-1.3.0.jar`). Copie para a pasta `plugins/` de um servidor Paper 26.1.2 e inicie o servidor.

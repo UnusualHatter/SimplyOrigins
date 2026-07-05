@@ -1,5 +1,6 @@
 package dev.originspaper.power.shared;
 
+import dev.originspaper.api.TickCadence;
 import dev.originspaper.util.ParticleUtil;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -19,25 +20,27 @@ public class BiomeParticlePower extends AbstractPower {
 
     private final Set<Biome> biomes;
     private final boolean applyWhenInSet;
-    private final int cadenceCycles;
+    private final TickCadence cadence;
     private final int count;
     private final List<Particle> particles;
 
     public BiomeParticlePower(String id, Set<Biome> biomes, boolean applyWhenInSet,
-                              int cadenceCycles, int count, Particle... particles) {
+                              TickCadence cadence, int count, Particle... particles) {
         super(id);
         this.biomes = biomes;
         this.applyWhenInSet = applyWhenInSet;
-        this.cadenceCycles = Math.max(1, cadenceCycles);
+        this.cadence = cadence;
         this.count = count;
         this.particles = List.of(particles);
     }
 
     @Override
+    public TickCadence getTickCadence() {
+        return cadence;
+    }
+
+    @Override
     public void onTick(Player player) {
-        if (plugin().tick() % cadenceCycles != 0) {
-            return;
-        }
         boolean inSet = biomes.contains(player.getWorld().getBiome(player.getLocation()));
         if (inSet != applyWhenInSet) {
             return;

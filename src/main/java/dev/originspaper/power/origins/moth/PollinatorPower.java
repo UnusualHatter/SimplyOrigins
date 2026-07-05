@@ -65,7 +65,15 @@ public class PollinatorPower extends AbstractPower {
                     if (ThreadLocalRandom.current().nextDouble() >= CHANCE_PER_BLOCK) {
                         continue;
                     }
-                    if (grow(base.clone().add(dx, dy, dz).getBlock())) {
+                    Block block = base.clone().add(dx, dy, dz).getBlock();
+                    if (!isSupported(block.getType())) {
+                        continue;
+                    }
+                    // Growing crops is a block modification — don't touch farms in foreign claims.
+                    if (!claims().canModifyBlock(player, block)) {
+                        continue;
+                    }
+                    if (grow(block)) {
                         grewAny = true;
                     }
                 }

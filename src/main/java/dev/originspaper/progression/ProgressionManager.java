@@ -107,6 +107,17 @@ public class ProgressionManager {
         }
     }
 
+    /** Hides every tracked boss bar (plugin disable) so none linger on players' screens. */
+    public void clearAllBars() {
+        for (Map.Entry<UUID, BossBar> entry : bars.entrySet()) {
+            Player player = plugin.getServer().getPlayer(entry.getKey());
+            if (player != null) {
+                player.hideBossBar(entry.getValue());
+            }
+        }
+        bars.clear();
+    }
+
     private void announceLevelUp(Player player, Origin origin, int level) {
         player.showTitle(Title.title(
                 TextUtil.msg("§6§lNível " + level),

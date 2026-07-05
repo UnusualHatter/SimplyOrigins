@@ -3,6 +3,8 @@ package dev.originspaper.power.origins.dragon;
 import dev.originspaper.api.ActivePowerType;
 import dev.originspaper.power.shared.AbstractPower;
 import dev.originspaper.util.ParticleUtil;
+import dev.originspaper.util.PerfStats;
+import dev.originspaper.util.SafeTargetUtil;
 import dev.originspaper.util.TextUtil;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -45,9 +47,18 @@ public class DragonBreathPower extends AbstractPower implements ActivePowerType 
         spawnConeParticles(world, eye, dir, range);
 
         int hits = 0;
+        PerfStats.entityScan();
         for (Entity entity : player.getNearbyEntities(range, range, range)) {
             if (!(entity instanceof LivingEntity target) || entity.equals(player)
                     || entity instanceof ArmorStand) {
+                continue;
+            }
+            // The cone is untargeted area damage: never roast pets or name-tagged mobs.
+            if (SafeTargetUtil.isProtected(target)) {
+                continue;
+            }
+            // Respect land claims (per-target, so the breath still works outside the claim).
+            if (!claims().canDamage(player, target)) {
                 continue;
             }
             // Aim at the target's torso, then keep only what falls inside the forward cone.

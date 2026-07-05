@@ -1,7 +1,58 @@
 # OriginsPaper configuration
+
 # Whether players are forced to pick an origin on first join (cannot close the GUI until chosen)
 force-selection-on-join: true
 # Delay in ticks before the selection GUI opens on join
 join-gui-delay-ticks: 20
 # Verbose logging: prints per-power apply/remove and skill activity to the console
 debug: false
+
+performance:
+  # When > 0 (and debug is on), logs a dispatch summary (onTick calls/skips, entity scans,
+  # claim checks) every N seconds. The same numbers are always available via /origin debug perf.
+  log-tick-summary-seconds: 0
+
+# Soft integrations with third-party plugins. Every hook is optional: the plugin boots and runs
+# normally with none of them installed. Setting enabled: false skips a hook even when the plugin
+# is present. Changes apply on /origin reload.
+integrations:
+  axgraves:
+    # Strips the origins' protected wings out of AxGraves death graves (anti-duplication).
+    enabled: true
+  griefprevention:
+    # Claim-aware filtering for area/hostile abilities (Pounce, Leap, Dragon's Breath,
+    # Echolocation, Alpha's Howl, Pollinator). Filtering is per target: the ability still fires,
+    # it just skips protected targets. Protection fails closed on lookup errors.
+    enabled: true
+    # Area damage cannot hit claim-protected targets (hostile mobs are always fair game).
+    protect-claims-from-origin-aoe: true
+    # Non-damage effects (Glowing reveal, buffs) cannot reach players inside claims the caster
+    # is not trusted in.
+    block-hostile-origin-effects-in-other-claims: true
+    # Allow effects/damage inside claims the caster owns or has build trust in.
+    allow-effects-in-own-claims: true
+    # Allow effects/damage inside admin claims.
+    allow-effects-in-admin-claims: false
+  simple-voice-chat:
+    # Detection + tuning values only for now; no power uses voice chat yet. The plugin's
+    # registered name is "voicechat".
+    enabled: true
+    wolf-howl-radius: 32
+    bat-echolocation-radius: 24
+    skunk-spray-muffle-seconds: 5
+    stealth-reduces-voice-range: true
+  placeholderapi:
+    # Detection only — placeholder expansion planned.
+    enabled: true
+  worldguard:
+    # Detection only — region-flag checks planned.
+    enabled: true
+  luckperms:
+    # Detection only — permission-driven features planned.
+    enabled: true
+
+# Reserved for future balance tuning (damage caps, cooldown scaling). Empty for now.
+balance: {}
+
+# Reserved for future per-origin toggles (e.g. disabling an origin server-wide). Empty for now.
+origins: {}

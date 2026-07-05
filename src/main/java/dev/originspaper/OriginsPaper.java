@@ -1,9 +1,10 @@
 package dev.originspaper;
 
 import dev.originspaper.api.PowerType;
+import dev.originspaper.api.TickCadence;
 import dev.originspaper.command.OriginCommand;
+import dev.originspaper.integration.IntegrationManager;
 import dev.originspaper.listener.ActiveSkillListener;
-import dev.originspaper.listener.AxGravesIntegrationListener;
 import dev.originspaper.listener.ElytraGuardListener;
 import dev.originspaper.listener.OriginSelectionListener;
 import dev.originspaper.listener.PlacedBlockTracker;
@@ -13,6 +14,7 @@ import dev.originspaper.registry.OriginRegistry;
 import dev.originspaper.registry.PlayerDataManager;
 import dev.originspaper.registry.PlayerOriginData;
 import dev.originspaper.util.OriginsLogger;
+import dev.originspaper.util.PerfStats;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -25,7 +27,9 @@ public final class OriginsPaper extends JavaPlugin {
     private OriginRegistry originRegistry;
     private PlayerDataManager dataManager;
     private ProgressionManager progression;
+    private IntegrationManager integrations;
     private long tick;
+    private int tickSummaryEverySeconds;
 
     @Override
     public void onEnable() {
@@ -34,24 +38,23 @@ public final class OriginsPaper extends JavaPlugin {
 
         boolean debug = getConfig().getBoolean("debug", false);
         this.log = new OriginsLogger(getLogger(), debug);
+        this.tickSummaryEverySeconds = getConfig().getInt("performance.log-tick-summary-seconds", 0);
         log.info("Initialising OriginsPaper...");
 
         this.originRegistry = new OriginRegistry();
         this.dataManager = new PlayerDataManager(this);
         this.progression = new ProgressionManager(this);
 
+        // Third-party detection before any player data loads, so powers applied below already see
+        // the final claim-protection service.
+        this.integrations = new IntegrationManager(this);
+        integrations.enableAll();
+
         getServer().getPluginManager().registerEvents(new PowerEventListener(this), this);
         getServer().getPluginManager().registerEvents(new ActiveSkillListener(this), this);
         getServer().getPluginManager().registerEvents(new OriginSelectionListener(this), this);
         getServer().getPluginManager().registerEvents(new ElytraGuardListener(this), this);
         getServer().getPluginManager().registerEvents(new PlacedBlockTracker(), this);
-
-        // Optional AxGraves integration — only touch its classes if the plugin is actually present,
-        // otherwise instantiating the listener would throw NoClassDefFoundError (softdepend).
-        if (getServer().getPluginManager().getPlugin("AxGraves") != null) {
-            getServer().getPluginManager().registerEvents(new AxGravesIntegrationListener(), this);
-            log.info("AxGraves detected — grave integration enabled (origin wings stay out of graves).");
-        }
 
         OriginCommand command = new OriginCommand(this);
         if (getCommand("origin") != null) {
@@ -84,9 +87,20 @@ public final class OriginsPaper extends JavaPlugin {
                 dataManager.unload(player, false);
             }
         }
+        if (progression != null) {
+            progression.clearAllBars();
+        }
+        if (integrations != null) {
+            integrations.disableAll();
+        }
+        PlacedBlockTracker.clearAll();
         log.info("Disabled.");
     }
 
+    /**
+     * Drives every active power's {@code onTick} at its declared {@link TickCadence}. Event-only
+     * powers are never dispatched; slower powers only run on their cycle.
+     */
     private void globalTick() {
         tick++;
         for (Player player : getServer().getOnlinePlayers()) {
@@ -95,24 +109,40 @@ public final class OriginsPaper extends JavaPlugin {
                 continue;
             }
             for (PowerType power : data.getPowers()) {
+                if (!power.getTickCadence().shouldRun(tick)) {
+                    PerfStats.tickSkip();
+                    continue;
+                }
                 try {
+                    PerfStats.tickCall();
                     power.onTick(player);
                 } catch (Exception e) {
+                    PerfStats.tickError();
                     log.warn("onTick error in " + power.getId() + " for " + player.getName(), e);
                 }
             }
         }
+        if (tickSummaryEverySeconds > 0 && tick % tickSummaryEverySeconds == 0) {
+            log.debug("tick=" + tick + " onTick calls=" + PerfStats.onTickCalls()
+                    + " skips=" + PerfStats.onTickSkips() + " errors=" + PerfStats.onTickErrors()
+                    + " entityScans=" + PerfStats.entityScans() + " claimChecks=" + PerfStats.claimChecks()
+                    + " claimDenials=" + PerfStats.claimDenials());
+        }
     }
 
     /**
-     * Reloads {@code config.yml} and rebuilds the origin registry, then re-applies every online
-     * player's saved origin from the fresh registry. Safe to call at runtime via {@code /origin reload}.
+     * Reloads {@code config.yml}, re-detects integrations and rebuilds the origin registry, then
+     * re-applies every online player's saved origin from the fresh registry. Safe to call at
+     * runtime via {@code /origin reload}.
      */
     public void reload() {
         reloadConfig();
         boolean debug = getConfig().getBoolean("debug", false);
         this.log = new OriginsLogger(getLogger(), debug);
+        this.tickSummaryEverySeconds = getConfig().getInt("performance.log-tick-summary-seconds", 0);
         log.info("Reloading OriginsPaper...");
+
+        integrations.reload();
 
         // Strip every online player's current powers cleanly, rebuild the registry (fresh power
         // instances), then re-apply each player's origin from disk against the new registry.
@@ -126,9 +156,10 @@ public final class OriginsPaper extends JavaPlugin {
         this.originRegistry = new OriginRegistry();
         for (Player player : getServer().getOnlinePlayers()) {
             dataManager.load(player);
+            progression.showBar(player); // refresh the level bar against the reloaded state
         }
 
-        log.info("Reloaded — " + originRegistry.all().size() + " origins, config refreshed."
+        log.info("Reloaded — " + originRegistry.all().size() + " origins, config and integrations refreshed."
                 + (debug ? " [DEBUG mode ON]" : ""));
     }
 
@@ -155,5 +186,9 @@ public final class OriginsPaper extends JavaPlugin {
 
     public ProgressionManager progression() {
         return progression;
+    }
+
+    public IntegrationManager integrations() {
+        return integrations;
     }
 }

@@ -48,7 +48,7 @@ public class MightyPawsPower extends AbstractPower {
         if (last == null) {
             return true; // Hasn't been recorded yet, assume active
         }
-        return System.currentTimeMillis() - last <= (maxAwaySeconds * 50L); // maxAwaySeconds is in ticks, 50ms per tick
+        return System.currentTimeMillis() - last <= maxAwaySeconds * 1000L;
     }
 
     @Override
