@@ -39,6 +39,10 @@ import dev.originspaper.power.origins.owl.NightHunterPower;
 import dev.originspaper.power.origins.owl.SilentFlightPower;
 import dev.originspaper.power.origins.rabbit.PredatorScentPower;
 import dev.originspaper.power.origins.rabbit.RabbitDashPower;
+import dev.originspaper.power.origins.redpanda.ClimberPower;
+import dev.originspaper.power.origins.redpanda.FluffyTailPower;
+import dev.originspaper.power.origins.redpanda.RedPandaProgressionPower;
+import dev.originspaper.power.origins.redpanda.TreeAcrobatPower;
 import dev.originspaper.power.origins.wolf.AlphaHowlPower;
 import dev.originspaper.power.origins.wolf.CarnivoresBitePower;
 import dev.originspaper.power.origins.wolf.DayNightSpeedPower;
@@ -188,6 +192,7 @@ public class OriginRegistry {
         registerGryphon();
         registerDragon();
         registerMoth();
+        registerRedPanda();
     }
 
     private void registerHuman() {
@@ -550,6 +555,39 @@ public class OriginRegistry {
                 new PowerInfo("Faro de Predador", "Sente lobos, raposas e gatos próximos e os destaca, dando tempo de fugir."),
                 new PowerInfo("Corpo Pequeno", "Seu corpo é 20% menor."));
         register(new Origin("rabbit", "Coelho", null, Material.RABBIT_FOOT, powers, infos));
+    }
+
+    private void registerRedPanda() {
+        List<PowerType> powers = new java.util.ArrayList<>(List.of(
+                new FluffyTailPower("red_panda:fluffy_tail",
+                        cfgSecondsToTicks("origins.red_panda.fluffy-tail-cooldown-seconds", 25),
+                        cfgInt("origins.red_panda.fluffy-tail-speed-seconds", 4) * 20,
+                        cfgInt("origins.red_panda.fluffy-tail-slow-falling-seconds", 5) * 20),
+                new NutritionPower("red_panda:berry_forager",
+                        m -> m == Material.SWEET_BERRIES || m == Material.GLOW_BERRIES, 2.0),
+                new DamageImmunityPower("red_panda:cold_fur", DamageCause.FREEZE),
+                new AttributeModifierPower("red_panda:fragile", Attribute.MAX_HEALTH,
+                        -2.0 * cfgInt("origins.red_panda.max-health-penalty-hearts", 1)),
+                new TimidityPower("red_panda:timid"),
+                new AttributeModifierPower("red_panda:small_body", Attribute.SCALE, -0.15),
+                new RedPandaProgressionPower("red_panda:progression")));
+        if (cfgBool("origins.red_panda.tree-acrobat-enabled", true)) {
+            powers.add(0, new TreeAcrobatPower("red_panda:tree_acrobat"));
+        }
+        if (cfgBool("origins.red_panda.climber-enabled", true)) {
+            powers.add(1, new ClimberPower("red_panda:climber"));
+        }
+        List<PowerInfo> infos = List.of(
+                new PowerInfo("Acrobata das Árvores", "Velocidade sobre troncos, folhas, bambu, musgo e chão de floresta."),
+                new PowerInfo("Escalador", "Agachado encostado em troncos, folhas ou bambu, sobe lentamente — e desce planando de leve."),
+                new PowerInfo("Cauda Fofa", "Agachar + F: Velocidade II por 4s e Queda Lenta por 5s — fuga, salto entre árvores e aterrissagem (recarga 25s)."),
+                new PowerInfo("Forrageadora", "Frutinhas e frutas-brilhantes saciam o dobro de fome."),
+                new PowerInfo("Pelagem Quente", "Imune ao congelamento da neve em pó."),
+                new PowerInfo("Frágil", "Possui 1 coração a menos."),
+                new PowerInfo("Tímido", "Fica fraco com pouca vida."),
+                new PowerInfo("Corpo Leve", "Peitoral de diamante/netherite desativa a acrobacia e a escalada."),
+                new PowerInfo("Corpo Pequeno", "Seu corpo é 15% menor."));
+        register(new Origin("red_panda", "Panda-Vermelho", null, Material.BAMBOO, powers, infos));
     }
 
     private void registerMoth() {
