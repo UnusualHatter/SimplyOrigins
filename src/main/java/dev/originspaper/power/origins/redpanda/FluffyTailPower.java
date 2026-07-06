@@ -2,38 +2,31 @@ package dev.originspaper.power.origins.redpanda;
 
 import dev.originspaper.api.ActivePowerType;
 import dev.originspaper.power.shared.AbstractPower;
-import dev.originspaper.util.AttributeUtil;
 import dev.originspaper.util.EffectUtil;
 import dev.originspaper.util.ParticleUtil;
+import dev.originspaper.util.PerfStats;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-
 /**
- * Active skill: a fluffy burst of momentum — Speed II plus Slow Falling, made for tree-to-tree
- * hops, escapes and fall recovery. Pure mobility: no damage, no claim concerns.
+ * Active skill: a soothing tail flourish — Regeneration I for the red panda and every nearby
+ * player. Support tool, zero damage; allies inside claims the panda isn't trusted in are skipped
+ * (same rule as any other player-affecting power).
  */
 public class FluffyTailPower extends AbstractPower implements ActivePowerType {
 
-    private final long cooldownTicks;
-    private final int speedTicks;
-    private final int slowFallTicks;
-    private final Map<UUID, Long> speedActivations = new ConcurrentHashMap<>();
-    private final Map<UUID, Long> slowFallActivations = new ConcurrentHashMap<>();
+    private static final double REGEN_RADIUS = 6.0;
 
-    public FluffyTailPower(String id, long cooldownTicks, int speedTicks, int slowFallTicks) {
+    private final long cooldownTicks;
+    private final int regenTicks;
+
+    public FluffyTailPower(String id, long cooldownTicks, int regenTicks) {
         super(id);
         this.cooldownTicks = cooldownTicks;
-        this.speedTicks = speedTicks;
-        this.slowFallTicks = slowFallTicks;
+        this.regenTicks = regenTicks;
     }
 
     private int levelOf(Player player) {
@@ -43,36 +36,22 @@ public class FluffyTailPower extends AbstractPower implements ActivePowerType {
 
     @Override
     public void onActivate(Player player) {
-        UUID playerId = player.getUniqueId();
-        long activation = System.nanoTime();
-        speedActivations.put(playerId, activation);
-        slowFallActivations.put(playerId, activation);
-        AttributeUtil.set(player, Attribute.MOVEMENT_SPEED, id + ".speed", 0.40,
-                AttributeModifier.Operation.ADD_SCALAR); // Speed II equivalent
-        EffectUtil.apply(player, PotionEffectType.SLOW_FALLING, slowFallTicks, 0);
-        plugin().getServer().getScheduler().runTaskLater(plugin(), () -> {
-            if (speedActivations.remove(playerId, activation)) {
-                Player resolved = resolveActivePlayer(playerId);
-                if (resolved != null) {
-                    AttributeUtil.clear(resolved, Attribute.MOVEMENT_SPEED, id + ".speed");
-                }
+        EffectUtil.apply(player, PotionEffectType.REGENERATION, regenTicks, 0);
+
+        PerfStats.entityScan();
+        for (Player ally : player.getWorld().getNearbyPlayers(player.getLocation(), REGEN_RADIUS)) {
+            if (ally.equals(player) || !claims().canAffectPlayer(player, ally)) {
+                continue;
             }
-        }, Math.max(1L, speedTicks));
-        plugin().getServer().getScheduler().runTaskLater(plugin(), () -> {
-            if (slowFallActivations.remove(playerId, activation)) {
-                Player resolved = resolveActivePlayer(playerId);
-                if (resolved != null) {
-                    EffectUtil.clearTemporary(resolved, PotionEffectType.SLOW_FALLING,
-                            slowFallTicks, 0);
-                }
-            }
-        }, Math.max(1L, slowFallTicks));
+            EffectUtil.apply(ally, PotionEffectType.REGENERATION, regenTicks, 0);
+            ParticleUtil.spawnTrail(Particle.HEART, ally.getLocation().add(0, 1.2, 0), 2, 0.3);
+        }
 
         Location c = player.getLocation();
         player.getWorld().playSound(c, Sound.ENTITY_PANDA_SNEEZE, 0.8f, 1.4f);
-        ParticleUtil.spawnGroundBurst(Particle.CLOUD, c, 0.6, 10, 0.05);
-        ParticleUtil.spawnTrail(Particle.CHERRY_LEAVES, c.clone().add(0, 1.0, 0), 6, 0.4);
-        ParticleUtil.spawn(Particle.SWEEP_ATTACK, c.clone().add(0, 0.6, 0), 1, 0, 0, 0, 0.0);
+        ParticleUtil.spawnGroundBurst(Particle.HEART, c, 0.8, 6, 0.1);
+        ParticleUtil.spawnTrail(Particle.CHERRY_LEAVES, c.clone().add(0, 1.0, 0), 8, 0.5);
+        ParticleUtil.spawnRing(Particle.HAPPY_VILLAGER, c.clone().add(0, 0.3, 0), 1.5, 14, 0.0);
     }
 
     @Override
@@ -86,12 +65,6 @@ public class FluffyTailPower extends AbstractPower implements ActivePowerType {
 
     @Override
     public void onRemove(Player player) {
-        UUID playerId = player.getUniqueId();
-        if (speedActivations.remove(playerId) != null) {
-            AttributeUtil.clear(player, Attribute.MOVEMENT_SPEED, id + ".speed");
-        }
-        if (slowFallActivations.remove(playerId) != null) {
-            EffectUtil.clearTemporary(player, PotionEffectType.SLOW_FALLING, slowFallTicks, 0);
-        }
+        EffectUtil.clearTemporary(player, PotionEffectType.REGENERATION, regenTicks, 0);
     }
 }

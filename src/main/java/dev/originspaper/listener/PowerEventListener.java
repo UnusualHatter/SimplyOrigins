@@ -172,4 +172,9 @@ public class PowerEventListener implements Listener {
             dispatch(e.getEntity().getKiller(), p -> p.onEntityDeath(e));
         }
     }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onPurchase(io.papermc.paper.event.player.PlayerPurchaseEvent e) {
+        dispatch(e.getPlayer(), p -> p.onVillagerTrade(e));
+    }
 }

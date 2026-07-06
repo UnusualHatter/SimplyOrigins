@@ -1,6 +1,5 @@
 ---
 import Base from '../../layouts/Base.astro';
-import Stars from '../../components/Stars.astro';
 import Icon from '../../components/Icon.astro';
 import { origins, getAdjacentOrigins, originCode, type Origin } from '../../data/origins';
 
@@ -56,7 +55,7 @@ const specs = [
         }
         <div class="spec-cell">
           <dt>Dificuldade</dt>
-          <dd class="spec-diff"><Stars value={origin.difficulty} /> <span>{difficultyLabel}</span></dd>
+          <dd>{difficultyLabel}</dd>
         </div>
       </dl>
 
@@ -239,16 +238,6 @@ const specs = [
     font-weight: 500;
     color: var(--text);
   }
-  .spec-diff {
-    display: flex;
-    flex-direction: column;
-    gap: 0.3rem;
-  }
-  .spec-diff span {
-    font-size: 0.8rem;
-    color: var(--text-dim);
-  }
-
   /* ---- Pros / cons ---- */
   .po-cols {
     display: grid;

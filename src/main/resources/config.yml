@@ -62,9 +62,8 @@ origins:
     enabled: true
     max-health-penalty-hearts: 1
     fluffy-tail-cooldown-seconds: 25
-    fluffy-tail-speed-seconds: 4
-    fluffy-tail-slow-falling-seconds: 5
-    tree-acrobat-enabled: true
+    # Duration of the area Regeneration granted by Fluffy Tail (self + nearby players).
+    fluffy-tail-regen-seconds: 5
     climber-enabled: true
   shark:
     enabled: true
@@ -75,6 +74,8 @@ origins:
     dry-skin-warning-seconds: 180
     dry-skin-penalty-seconds: 300
     predator-bite-extra-damage: 2
+    # Seconds the Feeding Rush bite keeps the prey bleeding (1 damage/s; 0 disables).
+    feeding-rush-bleed-seconds: 4
   raccoon:
     enabled: true
     scurry-cooldown-seconds: 20
@@ -82,6 +83,8 @@ origins:
     scurry-invisibility-seconds: 1
     scavenger-luck-chance: 0.07
     scavenger-luck-enabled: true
+    # Chance of a villager purchase coming out free (ingredients refunded; 30s internal cooldown).
+    thief-chance: 0.10
     max-health-penalty-hearts: 1
   equine:
     enabled: true
@@ -90,7 +93,6 @@ origins:
     rear-kick-cooldown-seconds: 25
     rear-kick-radius: 3
     rear-kick-damage: 2
-    fall-damage-reduction-percent: 50
   skunk:
     enabled: true
     stink-spray-cooldown-seconds: 35

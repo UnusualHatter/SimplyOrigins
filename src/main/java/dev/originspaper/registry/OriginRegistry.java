@@ -49,10 +49,11 @@ import dev.originspaper.power.origins.raccoon.RaccoonProgressionPower;
 import dev.originspaper.power.origins.raccoon.RaccoonScurryPower;
 import dev.originspaper.power.origins.raccoon.ScavengersLuckPower;
 import dev.originspaper.power.origins.raccoon.SneakyPawsPower;
+import dev.originspaper.power.origins.raccoon.ThiefPower;
 import dev.originspaper.power.origins.redpanda.ClimberPower;
 import dev.originspaper.power.origins.redpanda.FluffyTailPower;
+import dev.originspaper.power.origins.redpanda.ForagerPower;
 import dev.originspaper.power.origins.redpanda.RedPandaProgressionPower;
-import dev.originspaper.power.origins.redpanda.TreeAcrobatPower;
 import dev.originspaper.power.origins.shark.ApexSwimmerPower;
 import dev.originspaper.power.origins.shark.BloodSensePower;
 import dev.originspaper.power.origins.shark.DrySkinPower;
@@ -606,15 +607,14 @@ public class OriginRegistry {
     private void registerRedPanda() {
         int cooldownSeconds = cfgInt("origins.red_panda.fluffy-tail-cooldown-seconds",
                 25, 1, 3600);
-        int speedSeconds = cfgInt("origins.red_panda.fluffy-tail-speed-seconds",
-                4, 1, 60);
-        int slowFallSeconds = cfgInt("origins.red_panda.fluffy-tail-slow-falling-seconds",
-                5, 1, 60);
+        int regenSeconds = cfgInt("origins.red_panda.fluffy-tail-regen-seconds",
+                5, 1, 30);
         int healthPenalty = cfgInt("origins.red_panda.max-health-penalty-hearts",
                 1, 0, 9);
         List<PowerType> powers = new java.util.ArrayList<>(List.of(
                 new FluffyTailPower("red_panda:fluffy_tail",
-                        cooldownSeconds * 20L, speedSeconds * 20, slowFallSeconds * 20),
+                        cooldownSeconds * 20L, regenSeconds * 20),
+                new ForagerPower("red_panda:forager"),
                 new NutritionPower("red_panda:berry_forager",
                         m -> m == Material.SWEET_BERRIES || m == Material.GLOW_BERRIES, 2.0),
                 new DamageImmunityPower("red_panda:cold_fur", DamageCause.FREEZE),
@@ -623,24 +623,18 @@ public class OriginRegistry {
                 new TimidityPower("red_panda:timid"),
                 new AttributeModifierPower("red_panda:small_body", Attribute.SCALE, -0.15),
                 new RedPandaProgressionPower("red_panda:progression")));
-        if (cfgBool("origins.red_panda.tree-acrobat-enabled", true)) {
-            powers.add(0, new TreeAcrobatPower("red_panda:tree_acrobat"));
-        }
         if (cfgBool("origins.red_panda.climber-enabled", true)) {
             powers.add(1, new ClimberPower("red_panda:climber"));
         }
         List<PowerInfo> infos = List.of(
-                new PowerInfo("Acrobata das Árvores", "Velocidade sobre troncos, folhas, bambu, musgo e chão de floresta."),
-                new PowerInfo("Escalador", "Agachado encostado em troncos, folhas ou bambu, sobe lentamente — e desce planando de leve."),
-                new PowerInfo("Cauda Fofa", "Agachar + F: Velocidade II por " + speedSeconds
-                        + "s e Queda Lenta por " + slowFallSeconds
-                        + "s — fuga, salto entre árvores e aterrissagem (recarga "
-                        + cooldownSeconds + "s)."),
-                new PowerInfo("Forrageadora", "Frutinhas e frutas-brilhantes saciam o dobro de fome."),
+                new PowerInfo("Escalador", "Agachado encostado numa parede, escala como uma aranha até 4 blocos de altura."),
+                new PowerInfo("Cauda Fofa", "Agachar + F: Regeneração por " + regenSeconds
+                        + "s pra você e jogadores próximos (recarga " + cooldownSeconds + "s)."),
+                new PowerInfo("Forrageador", "Agachado, come bambu e ovos com clique direito no ar; frutinhas e frutas-brilhantes saciam o dobro."),
                 new PowerInfo("Pelagem Quente", "Imune ao congelamento da neve em pó."),
                 new PowerInfo("Frágil", "Possui " + healthPenalty + " coração(ões) a menos."),
                 new PowerInfo("Tímido", "Fica fraco com pouca vida."),
-                new PowerInfo("Corpo Leve", "Peitoral de diamante/netherite desativa a acrobacia e a escalada."),
+                new PowerInfo("Corpo Leve", "Peitorais de diamante/netherite desativam a escalada."),
                 new PowerInfo("Corpo Pequeno", "Seu corpo é 15% menor."));
         register(new Origin("red_panda", "Panda-Vermelho", null, Material.BAMBOO, powers, infos));
     }
@@ -656,6 +650,8 @@ public class OriginRegistry {
                 30, 1, 3600);
         double rushDamage = cfgDouble("origins.shark.feeding-rush-damage",
                 4.0, 0.0, 40.0);
+        int rushBleedSeconds = cfgInt("origins.shark.feeding-rush-bleed-seconds",
+                4, 0, 15);
         int dryWarning = cfgInt("origins.shark.dry-skin-warning-seconds",
                 180, 0, 86400);
         int configuredDryPenalty = cfgInt("origins.shark.dry-skin-penalty-seconds",
@@ -671,25 +667,28 @@ public class OriginRegistry {
                 new PredatorBitePower("shark:predator_bite", biteDamage),
                 new BloodSensePower("shark:blood_sense", senseRadius,
                         senseHealthPercent / 100.0),
-                new FeedingRushPower("shark:feeding_rush", rushCooldown * 20L, rushDamage),
+                new FeedingRushPower("shark:feeding_rush", rushCooldown * 20L, rushDamage,
+                        rushBleedSeconds),
                 new DrySkinPower("shark:dry_skin", dryWarning, dryPenalty),
                 new LandClumsyPower("shark:land_clumsy", -0.08),
                 new CarnivoreDietPower("shark:carnivore"),
                 new AttributeModifierPower("shark:large_body", Attribute.SCALE, 0.1),
                 new SharkProgressionPower("shark:progression"));
         List<PowerInfo> infos = List.of(
-                new PowerInfo("Respiração Aquática", "Respira perfeitamente debaixo d'água."),
-                new PowerInfo("Nadador Supremo", "Nada muito mais rápido que qualquer criatura na água."),
+                new PowerInfo("Respiração Aquática", "Respira debaixo d'água sem limite."),
+                new PowerInfo("Nadador Supremo", "O nado mais veloz dentre todas as origens (equivalente ao Dolphin's Grace)."),
                 new PowerInfo("Mordida Predadora", "Causa +" + biteDamage
                         + " de dano corpo a corpo enquanto estiver na água."),
                 new PowerInfo("Faro de Sangue", "Molhado, sente criaturas abaixo de "
-                        + senseHealthPercent + "% de vida num raio de " + senseRadius + " blocos."),
-                new PowerInfo("Avanço Voraz", "Agachar + F (na água): investida submarina de "
-                        + rushDamage + " de dano (recarga " + rushCooldown + "s)."),
+                        + senseHealthPercent + "% de vida num raio de " + senseRadius
+                        + " blocos — elas brilham para você."),
+                new PowerInfo("Avanço Voraz", "Agachar + F (na água): investida que morde ("
+                        + rushDamage + " de dano) e deixa a presa sangrando por "
+                        + rushBleedSeconds + "s (recarga " + rushCooldown + "s)."),
                 new PowerInfo("Pele Seca", "Após " + dryWarning + "s seco fica fraco; após "
-                        + dryPenalty + "s, também lento. Molhar-se zera o tempo."),
-                new PowerInfo("Desajeitado em Terra", "Levemente mais lento fora da água."),
-                new PowerInfo("Carnívoro", "Só consegue comer carne e peixe."),
+                        + dryPenalty + "s recebe lentidão. Molhar-se zera o tempo."),
+                new PowerInfo("Desajeitado em Terra", "8% mais lento fora da água."),
+                new PowerInfo("Carnívoro", "Só pode comer carne."),
                 new PowerInfo("Corpo Grande", "Seu corpo é 10% maior."));
         register(new Origin("shark", "Tubarão", null, Material.PRISMARINE_SHARD, powers, infos));
     }
@@ -705,9 +704,12 @@ public class OriginRegistry {
                 1, 0, 9);
         double scavengerChance = cfgDouble("origins.raccoon.scavenger-luck-chance",
                 0.07, 0.0, 0.25);
+        double thiefChance = cfgDouble("origins.raccoon.thief-chance",
+                0.10, 0.0, 0.5);
         List<PowerType> powers = new java.util.ArrayList<>(List.of(
                 new NightScavengerPower("raccoon:night_scavenger"),
                 new TrashGourmetPower("raccoon:trash_gourmet", 2.0f),
+                new ThiefPower("raccoon:thief", thiefChance),
                 new SneakyPawsPower("raccoon:sneaky_paws"),
                 new RaccoonScurryPower("raccoon:scurry",
                         cooldownSeconds * 20L, speedSeconds * 20, invisibilitySeconds * 20),
@@ -721,16 +723,16 @@ public class OriginRegistry {
         }
         List<PowerInfo> infos = List.of(
                 new PowerInfo("Catador Noturno", "Enxerga no escuro e durante a noite."),
-                new PowerInfo("Gourmet do Lixo", "Comidas duvidosas não envenenam e dão saturação extra."),
-                new PowerInfo("Sorte de Catador", "Ao caçar ou vasculhar terreno natural, tem "
-                        + Math.round(scavengerChance * 100) + "% de chance de achar um item simples."),
-                new PowerInfo("Patas Furtivas", "Agachado e sem peitoral pesado, monstros só percebem você de perto."),
+                new PowerInfo("Gourmet do Lixo", "Carne podre, olhos de aranha e batatas venenosas não envenenam e saciam mais fome."),
+                new PowerInfo("Ladrãozinho", "Tem " + Math.round(thiefChance * 100)
+                        + "% de chance de comprar de graça (roubar) dos villagers."),
+                new PowerInfo("Patas Furtivas", "Agachado e sem peitoral pesado, monstros só o percebem bem de perto."),
                 new PowerInfo("Esgueirada", "Agachar + F: Velocidade II por " + speedSeconds
                         + "s e invisibilidade por " + invisibilitySeconds
-                        + "s; atacar encerra o efeito (recarga " + cooldownSeconds + "s)."),
+                        + "s; atacar encerra a invisibilidade na hora (recarga " + cooldownSeconds + "s)."),
                 new PowerInfo("Frágil", "Possui " + healthPenalty + " coração(ões) a menos."),
                 new PowerInfo("Corpo Pequeno", "Seu corpo é 15% menor."),
-                new PowerInfo("Sem Armadura Pesada", "Peitoral de diamante/netherite desativa sua furtividade."));
+                new PowerInfo("Sem Armadura Pesada", "Peitorais de diamante/netherite desativam o Patas Furtivas e a invisibilidade."));
         register(new Origin("raccoon", "Guaxinim", null, Material.BUNDLE, powers, infos));
     }
 
@@ -744,8 +746,6 @@ public class OriginRegistry {
             warnInvalidConfig("origins.equine.gallop-stage-2-seconds",
                     configuredStageTwo, gallopStageTwo, "> gallop-stage-1-seconds");
         }
-        int fallReduction = cfgInt("origins.equine.fall-damage-reduction-percent",
-                50, 0, 100);
         int kickCooldown = cfgInt("origins.equine.rear-kick-cooldown-seconds",
                 25, 1, 3600);
         double kickRadius = cfgDouble("origins.equine.rear-kick-radius",
@@ -756,9 +756,6 @@ public class OriginRegistry {
                 new GallopPower("equine:gallop",
                         gallopStageOne, gallopStageTwo),
                 new PermanentEffectPower("equine:strong_legs", PotionEffectType.JUMP_BOOST, 0),
-                new DamageMultiplierPower("equine:sure_footed",
-                        1.0 - fallReduction / 100.0,
-                        DamageCause.FALL),
                 new TrailRunnerPower("equine:trail_runner"),
                 new RearKickPower("equine:rear_kick",
                         kickCooldown * 20L, kickRadius, kickDamage),
@@ -768,20 +765,17 @@ public class OriginRegistry {
                 new IndoorClumsyPower("equine:indoor_clumsy"),
                 new EquineProgressionPower("equine:progression"));
         List<PowerInfo> infos = List.of(
-                new PowerInfo("Galope", "Correr sem parar cria impulso: após " + gallopStageOne
-                        + "s fica veloz; após " + gallopStageTwo
-                        + "s ao ar livre alcança Velocidade II."),
-                new PowerInfo("Pernas Fortes", "Salta um pouco mais alto."),
-                new PowerInfo("Passo Seguro", "Sofre " + fallReduction + "% menos dano de queda."),
-                new PowerInfo("Corredor de Trilha", "Move-se um pouco melhor sobre grama, terra, caminhos e feno."),
-                new PowerInfo("Coice", "Agachar + F: causa " + kickDamage
-                        + " de dano e arremessa alvos até " + kickRadius
+                new PowerInfo("Galope", "Boost de velocidade ao correr — com " + gallopStageTwo
+                        + "s de corrida em campo aberto alcança Velocidade II."),
+                new PowerInfo("Pernas Fortes", "Impulso de Salto permanente."),
+                new PowerInfo("Corredor de Trilha", "Se move melhor sobre grama, terra, caminhos (paths) e feno."),
+                new PowerInfo("Coice", "Agachar + F: dano e forte repulsão em inimigos até " + kickRadius
                         + " blocos atrás de você (recarga " + kickCooldown + "s)."),
-                new PowerInfo("Herbívoro", "Não consegue comer carne ou peixe."),
+                new PowerInfo("Herbívoro", "Não come carne nem peixe."),
                 new PowerInfo("Nadador Ruim", "Move-se 15% mais devagar na água."),
                 new PowerInfo("Desajeitado em Espaços Apertados", "Fica levemente lento sob tetos muito baixos."),
-                new PowerInfo("Peso da Armadura", "Peitoral de diamante/netherite impede o Galope."));
-        register(new Origin("equine", "Equino", null, Material.SADDLE, powers, infos));
+                new PowerInfo("Peso da Armadura", "Peitorais de diamante/netherite impedem o Galope."));
+        register(new Origin("equine", "Cavalo", null, Material.SADDLE, powers, infos));
     }
 
     private void registerSkunk() {
@@ -820,7 +814,7 @@ public class OriginRegistry {
                 new SkunkProgressionPower("skunk:progression"));
         List<PowerInfo> infos = List.of(
                 new PowerInfo("Listras de Aviso", "Agachado e sem peitoral pesado, monstros só percebem você de perto."),
-                new PowerInfo("Borrifo Fedorento", "Agachar + F: cone sem dano de "
+                new PowerInfo("Spray Fedorento", "Agachar + F: spray sem dano de "
                         + sprayRadius + " blocos; jogadores sofrem Lentidão por " + playerSlowness
                         + "s, Fraqueza por " + playerWeakness + "s e Náusea por "
                         + playerNausea + "s (recarga " + sprayCooldown + "s)."),

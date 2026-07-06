@@ -125,10 +125,10 @@ public final class ProgressionDefs {
                             u(10, "Aura de Vida", "Concede Saturação a jogadores próximos ao polinizar.")))),
             Map.entry("red_panda", def(
                     List.of(o("Percorrer florestas e copas", 5), o("Escalar troncos e bambus", 2),
-                            o("Comer frutinhas", 6)),
-                    List.of(u(3, "Vitalidade Fofa", "+1 coração de vida máxima."),
+                            o("Comer frutinhas e ovos", 6)),
+                    List.of(u(3, "Vitalidade Fofa", "-1 de dano de queda geral."),
                             u(6, "Cauda Ágil", "Recarga da Cauda Fofa reduzida em 30%."),
-                            u(10, "Acrobata Mestre", "Velocidade II sobre blocos de floresta.")))),
+                            u(10, "Acrobata Mestre", "Pode escalar até 5 blocos de altura sem cair.")))),
             Map.entry("shark", def(
                     List.of(o("Nadar longas distâncias", 5), o("Atacar presas na água", 6),
                             o("Caçar na água", 15)),
@@ -148,11 +148,11 @@ public final class ProgressionDefs {
                             u(6, "Coice Firme", "Recarga do Coice reduzida em 30%."),
                             u(10, "Puro-Sangue", "Velocidade III no galope a todo vapor.")))),
             Map.entry("skunk", def(
-                    List.of(o("Atingir alvos com o Borrifo", 5), o("Vagar pela noite", 4),
+                    List.of(o("Atingir alvos com o Spray", 5), o("Vagar pela noite", 4),
                             o("Comer comidas duvidosas", 6)),
                     List.of(u(3, "Vitalidade Listrada", "+1 coração de vida máxima."),
-                            u(6, "Glândulas Rápidas", "Recarga do Borrifo Fedorento reduzida em 30%."),
-                            u(10, "Nuvem Pestilenta", "O Borrifo alcança mais longe.")))));
+                            u(6, "Glândulas Rápidas", "Recarga do Spray Fedorento reduzida em 30%."),
+                            u(10, "Nuvem Pestilenta", "O Spray alcança mais longe.")))));
 
     public static OriginProgression get(String originId) {
         return originId == null ? null : DEFS.get(originId.toLowerCase());

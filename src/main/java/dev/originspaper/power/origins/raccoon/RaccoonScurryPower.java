@@ -75,16 +75,15 @@ public class RaccoonScurryPower extends AbstractPower implements ActivePowerType
         ParticleUtil.spawnGroundBurst(Particle.POOF, c, 0.4, 6, 0.03);
     }
 
-    /** Attacking blows the cover: the scurry's stealth (and dash) end immediately. */
+    /** Attacking blows the cover: the invisibility ends on the spot (the dash speed runs out). */
     @Override
     public void onDamageByEntity(EntityDamageByEntityEvent e) {
         Player player = e.getDamager() instanceof Player direct ? direct
                 : e.getDamager() instanceof Projectile projectile
                         && projectile.getShooter() instanceof Player shooter ? shooter : null;
-        if (player != null && scurrying.remove(player.getUniqueId()) != null) {
-            AttributeUtil.clear(player, Attribute.MOVEMENT_SPEED, id + ".speed");
+        if (player != null && scurrying.containsKey(player.getUniqueId())) {
             EffectUtil.clearTemporary(player, PotionEffectType.INVISIBILITY,
-                    Math.max(invisibilityTicks, speedTicks), 0);
+                    invisibilityTicks * 3, 0);
         }
     }
 

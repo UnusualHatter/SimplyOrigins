@@ -167,36 +167,36 @@ Origem de suporte focada em agricultura, exploração e mobilidade. Sem combate 
 - **Corpo Delicado:** não usa armadura de Diamante ou Netherite.
 
 ### 🐾 Panda-Vermelho
-- **Acrobata das Árvores:** Velocidade I sobre troncos, folhas, bambu e chão natural de floresta.
-- **Escalador:** agachado junto a troncos, folhas ou bambu, sobe devagar e com controle.
-- **Cauda Fofa** (`Agachar + F`): Velocidade II por 4s e Queda Lenta por 5s (recarga de 25s).
-- **Forrageadora:** frutas silvestres alimentam e saturam melhor.
+- **Escalador:** agachado encostado numa parede, escala como uma aranha até 4 blocos de altura (5 no nível 10).
+- **Cauda Fofa** (`Agachar + F`): Regeneração por 5s para você e jogadores próximos (recarga de 25s).
+- **Forrageador:** agachado, come bambu e ovos com clique direito no ar; frutas silvestres saciam o dobro.
 - **Pelagem Quente:** imune a congelamento.
 - **Frágil e Tímido:** 1 coração a menos e Fraqueza I com pouca vida.
-- **Corpo Leve:** peitoral de diamante/netherite desativa acrobacia e escalada.
+- **Corpo Leve:** peitorais de diamante/netherite desativam a escalada.
 
 ### 🦈 Tubarão
 - **Respiração Aquática:** respira embaixo d'água.
 - **Nadador Supremo:** grande bônus de velocidade submerso.
 - **Mordida Predadora:** +1 coração de dano corpo a corpo enquanto estiver na água.
 - **Faro de Sangue:** quando molhado, revela criaturas feridas próximas sem expor jogadores protegidos.
-- **Avanço Voraz** (`Agachar + F`, somente na água): investida que morde e empurra a primeira presa válida (recarga de 30s).
+- **Avanço Voraz** (`Agachar + F`, somente na água): investida que morde a primeira presa válida e a deixa sangrando por 4s (recarga de 30s).
 - **Pele Seca:** após 3 minutos seco recebe Fraqueza; após 5, também Lentidão. Água ou chuva reinicia o tempo.
 - **Desajeitado em Terra:** 8% mais lento fora d'água.
-- **Carnívoro:** só come carne e peixe.
+- **Carnívoro:** só pode comer carne.
 
 ### 🦝 Guaxinim
 - **Catador Noturno:** visão noturna em pouca luz e à noite.
 - **Gourmet do Lixo:** comidas duvidosas não envenenam e dão saturação extra.
 - **Sorte de Catador:** pequena chance de achar itens simples ao caçar ou vasculhar terreno natural; sem itens valiosos, blocos colocados ou áreas protegidas.
+- **Ladrãozinho:** chance de uma compra com villagers sair de graça (os ingredientes voltam pro bolso).
 - **Patas Furtivas:** agachado, monstros só percebem você de perto.
 - **Esgueirada** (`Agachar + F`): Velocidade II por 3s e invisibilidade breve; atacar encerra o efeito (recarga de 20s).
 - **Frágil:** 1 coração a menos.
 - **Sem Armadura Pesada:** peitoral de diamante/netherite desativa a furtividade.
 
-### 🐎 Equino
-- **Galope:** correr continuamente concede Velocidade I após 3s e Velocidade II após 6s em terreno aberto.
-- **Pernas Fortes e Passo Seguro:** Salto I e 50% menos dano de queda.
+### 🐎 Cavalo
+- **Galope:** boost de velocidade ao correr — com 6s de corrida em campo aberto alcança Velocidade II.
+- **Pernas Fortes:** Impulso de Salto permanente.
 - **Corredor de Trilha:** pequeno bônus sobre grama, terra, caminhos, plantações e feno.
 - **Coice** (`Agachar + F`): pouco dano e forte empurrão em cone atrás do jogador (recarga de 25s).
 - **Herbívoro:** não come carne ou peixe.
@@ -206,7 +206,7 @@ Origem de suporte focada em agricultura, exploração e mobilidade. Sem combate 
 
 ### 🦨 Gambá
 - **Listras de Aviso:** agachado, monstros só percebem você de perto.
-- **Borrifo Fedorento** (`Agachar + F`): cone sem dano que causa Lentidão, Fraqueza e Náusea breve; jogadores recebem durações menores (recarga de 35s).
+- **Spray Fedorento** (`Agachar + F`): spray sem dano que causa Lentidão, Fraqueza e Náusea breve; jogadores recebem durações menores (recarga de 35s).
 - **Dieta de Catador:** comidas duvidosas são seguras e dão saturação extra.
 - **Andarilho Noturno:** 8% mais rápido à noite ou em pouca luz.
 - **Frágil:** 1 coração a menos.
@@ -240,7 +240,7 @@ um aparece em `/origin debug integrations`.
 | Plugin | O que a integração faz |
 |---|---|
 | **AxGraves** | Remove as asas protegidas das origens (coruja, grifo, dragão) do baú-túmulo no momento em que ele aparece — evita duplicação, já que as asas voltam sozinhas no respawn. |
-| **GriefPrevention** | Habilidades em área e efeitos hostis respeitam claims: Bote, Cabeçada, Sopro do Dragão, Ecolocalização, Uivo do Alfa, Polinizadora, Avanço Voraz/Faro de Sangue, Sorte de Catador, Coice e Borrifo Fedorento filtram alvo a alvo — a habilidade continua funcionando, apenas ignora alvos protegidos. Mobs hostis nunca são protegidos, e a proteção de pets/mobs nomeados (`SafeTargetUtil`) vale sempre, com ou sem GriefPrevention. Em caso de erro na consulta, a proteção falha fechada (nega a ação). |
+| **GriefPrevention** | Habilidades em área e efeitos hostis respeitam claims: Bote, Cabeçada, Sopro do Dragão, Ecolocalização, Uivo do Alfa, Polinizadora, Avanço Voraz/Faro de Sangue, Cauda Fofa, Sorte de Catador, Coice e Spray Fedorento filtram alvo a alvo — a habilidade continua funcionando, apenas ignora alvos protegidos. Mobs hostis nunca são protegidos, e a proteção de pets/mobs nomeados (`SafeTargetUtil`) vale sempre, com ou sem GriefPrevention. Em caso de erro na consulta, a proteção falha fechada (nega a ação). |
 | **Simple Voice Chat** | Apenas detecção + valores de configuração por enquanto (raio do uivo, ping de ecolocalização, abafamento de spray) — nenhum poder usa voz ainda. O nome registrado do plugin é `voicechat`. |
 | **PlaceholderAPI** | Apenas detecção — expansão de placeholders planejada. |
 | **WorldGuard** | Apenas detecção — checagem de flags de região planejada. |

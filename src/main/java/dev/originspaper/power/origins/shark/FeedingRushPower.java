@@ -20,26 +20,37 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Active skill: a short underwater lunge that bites the first prey in its path. Water-gated via
- * {@link #canActivate} so a dry-land press never burns the cooldown. Modelled on the goat charge's
- * segment sweep so a fast dash can't tunnel through the target.
+ * Active skill: a short underwater lunge that bites the first prey in its path and leaves it
+ * bleeding (1 damage per second, driven by the global tick — no scheduler per bite). Water-gated
+ * via {@link #canActivate} so a dry-land press never burns the cooldown. Modelled on the goat
+ * charge's segment sweep so a fast dash can't tunnel through the target.
  */
 public class FeedingRushPower extends AbstractPower implements ActivePowerType {
 
     private static final double DASH_SPEED = 1.8;
     private static final double HIT_RADIUS = 1.3;
     private static final long MAX_RUSH_MS = 1200L;
+    private static final double BLEED_DAMAGE_PER_SECOND = 1.0;
+    /** Bleeding stops if the prey gets this far from the shark (escaped/teleported). */
+    private static final double BLEED_MAX_DISTANCE_SQUARED = 64.0 * 64.0;
+
+    /** An open wound: which entity is bleeding for this shark and for how much longer. */
+    private record Bleed(UUID preyId, int secondsLeft) {}
 
     private final long cooldownTicks;
     private final double damage;
+    private final int bleedSeconds;
 
     /** Players currently mid-rush (activation timestamp). */
     private final Map<UUID, Long> rushing = new ConcurrentHashMap<>();
+    /** Active bleed per shark (one at a time; a new bite replaces the previous wound). */
+    private final Map<UUID, Bleed> bleeds = new ConcurrentHashMap<>();
 
-    public FeedingRushPower(String id, long cooldownTicks, double damage) {
+    public FeedingRushPower(String id, long cooldownTicks, double damage, int bleedSeconds) {
         super(id);
         this.cooldownTicks = cooldownTicks;
         this.damage = damage;
+        this.bleedSeconds = bleedSeconds;
     }
 
     private int levelOf(Player player) {
@@ -116,10 +127,42 @@ public class FeedingRushPower extends AbstractPower implements ActivePowerType {
         return best;
     }
 
+    /**
+     * Ticks the open wound once per second: re-checks protection every pulse (the prey may have
+     * fled into a claim or a no-PvP world) and stops on death, distance or world change.
+     */
+    @Override
+    public void onTick(Player player) {
+        Bleed bleed = bleeds.get(player.getUniqueId());
+        if (bleed == null) {
+            return;
+        }
+        var entity = plugin().getServer().getEntity(bleed.preyId());
+        if (!(entity instanceof LivingEntity prey) || !prey.isValid() || prey.isDead()
+                || !prey.getWorld().equals(player.getWorld())
+                || prey.getLocation().distanceSquared(player.getLocation()) > BLEED_MAX_DISTANCE_SQUARED
+                || SafeTargetUtil.isProtectedFromHostile(player, prey)
+                || !claims().canDamage(player, prey)) {
+            bleeds.remove(player.getUniqueId());
+            return;
+        }
+        prey.damage(BLEED_DAMAGE_PER_SECOND, player);
+        ParticleUtil.spawnTrail(Particle.DUST, prey.getLocation().add(0, prey.getHeight() * 0.6, 0),
+                4, 0.25, ParticleUtil.dust(org.bukkit.Color.fromRGB(160, 10, 10), 1.1f));
+        if (bleed.secondsLeft() <= 1) {
+            bleeds.remove(player.getUniqueId());
+        } else {
+            bleeds.put(player.getUniqueId(), new Bleed(bleed.preyId(), bleed.secondsLeft() - 1));
+        }
+    }
+
     private void bite(Player player, LivingEntity prey) {
         // Nv10 "Terror dos Mares": the lunge bites harder.
         double total = damage + (levelOf(player) >= 10 ? 2.0 : 0.0);
         prey.damage(total, player);
+        if (bleedSeconds > 0) {
+            bleeds.put(player.getUniqueId(), new Bleed(prey.getUniqueId(), bleedSeconds));
+        }
 
         Vector away = prey.getLocation().toVector().subtract(player.getLocation().toVector());
         if (away.lengthSquared() < 1.0e-4) {
@@ -158,5 +201,6 @@ public class FeedingRushPower extends AbstractPower implements ActivePowerType {
     @Override
     public void onRemove(Player player) {
         rushing.remove(player.getUniqueId());
+        bleeds.remove(player.getUniqueId());
     }
 }

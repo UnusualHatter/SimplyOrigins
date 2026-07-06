@@ -1,5 +1,4 @@
 ---
-import Stars from './Stars.astro';
 import { originCode, type Origin } from '../data/origins';
 
 interface Props {
@@ -19,7 +18,6 @@ const code = originCode(origin);
 >
   <div class="oc-top">
     <span class="oc-code">{code}</span>
-    <Stars value={origin.difficulty} />
   </div>
   <div class="oc-id">
     <span class="oc-glyph" aria-hidden="true">{origin.emoji}</span>

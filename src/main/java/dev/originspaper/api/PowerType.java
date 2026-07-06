@@ -81,4 +81,7 @@ public interface PowerType {
     default void onProjectileHit(ProjectileHitEvent e) {}
 
     default void onEntityDeath(org.bukkit.event.entity.EntityDeathEvent e) {}
+
+    /** Fired when the player completes a merchant purchase (villager / wandering trader). */
+    default void onVillagerTrade(io.papermc.paper.event.player.PlayerPurchaseEvent e) {}
 }

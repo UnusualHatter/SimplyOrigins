@@ -5,5 +5,7 @@ export default defineConfig({
   // A antiga galeria /origins virou a Wiki. Mantém links/marcadores antigos vivos.
   redirects: {
     '/origins': '/wiki/origens',
+    // O Equino virou Cavalo na 1.4.0.
+    '/origins/equino': '/origins/cavalo',
   },
 });
