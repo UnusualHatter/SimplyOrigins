@@ -7,22 +7,22 @@ export const site = {
   /** Endereços de conexão exibidos no site (Java + Bedrock). */
   connect: {
     java: {
-      main: 'feathersmp.playit.plus',
-      secondary: 'star-jade.sa.mcjoin.link',
+      main: '100.105.145.99',
+      secondary: 'a definir',
     },
     bedrock: {
-      ip: '198.22.204.31',
-      port: 1038,
+      ip: '100.105.145.99',
+      port: '19132',
     },
   },
   /** Metadados técnicos exibidos no índice (sidebar) — estilo manual. */
   meta: {
-    version: '26.1.2',
-    build: '1.4.0',
+    version: '26.2',
+    build: '1.4.1',
     status: 'Estável',
   },
   /** Links externos (placeholders — troque pelos reais). */
-  discord: 'https://discord.gg/AWFKUEJ5QS',
+  discord: 'https://discord.gg/apxnyRPm8d',
   /** Itens do menu principal. */
   nav: [
     { label: 'Início', href: '/' },

@@ -94,7 +94,9 @@ public class ProgressionManager {
     public void handleQuit(Player player) {
         PlayerOriginData data = plugin.data().get(player.getUniqueId());
         if (data != null && data.hasOrigin()) {
-            save(player, data);
+            // Health is read before the powers are stripped, while bonus hearts still count.
+            plugin.data().persistence().save(player.getUniqueId(), data.getOrigin().id(),
+                    data.getProgressMap(), data.getCooldowns(), player.isDead() ? Double.NaN : player.getHealth());
         }
         clearBar(player);
     }

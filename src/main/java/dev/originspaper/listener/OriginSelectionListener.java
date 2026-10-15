@@ -18,6 +18,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -79,7 +80,9 @@ public class OriginSelectionListener implements Listener {
 
     /**
      * Freezes a player in place until they pick an origin: they can still look around (so the
-     * selection GUI is usable) but cannot walk away while the choice is pending.
+     * selection GUI is usable) but cannot walk away while the choice is pending. Falling is let
+     * through: holding someone in mid-air (reset while gliding or jumping) gets them kicked for
+     * flying.
      */
     @EventHandler
     public void onMove(PlayerMoveEvent e) {
@@ -93,8 +96,9 @@ public class OriginSelectionListener implements Listener {
         }
         Location from = e.getFrom();
         Location to = e.getTo();
+        double y = to != null && to.getY() < from.getY() ? to.getY() : from.getY();
         // Keep their position, but carry over the new yaw/pitch so they can still look around.
-        e.setTo(new Location(from.getWorld(), from.getX(), from.getY(), from.getZ(),
+        e.setTo(new Location(from.getWorld(), from.getX(), y, from.getZ(),
                 to != null ? to.getYaw() : from.getYaw(),
                 to != null ? to.getPitch() : from.getPitch()));
     }
@@ -115,6 +119,16 @@ public class OriginSelectionListener implements Listener {
                 player.closeInventory();
                 player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5f, 1.2f);
             }
+        }
+    }
+
+    /** Dragging onto our screens would drop the stack into an inventory that is thrown away. */
+    @EventHandler
+    public void onDrag(InventoryDragEvent e) {
+        InventoryHolder holder = e.getView().getTopInventory().getHolder();
+        if (holder instanceof SelectionHolder || holder instanceof DetailHolder
+                || holder instanceof ProgressHolder) {
+            e.setCancelled(true);
         }
     }
 

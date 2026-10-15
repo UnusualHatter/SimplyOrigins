@@ -3,7 +3,7 @@ plugins {
 }
 
 group = "dev.originspaper"
-version = "1.4.0"
+version = "1.4.1"
 
 repositories {
     mavenCentral()
@@ -13,12 +13,12 @@ repositories {
 }
 
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:26.1.2.build.+")
+    compileOnly("io.papermc.paper:paper-api:26.2.build.129-stable")
     // Soft integrations: compileOnly + softdepend in plugin.yml — the plugin boots fine without
     // any of them installed. Their classes are only touched behind presence guards (see
     // dev.originspaper.integration).
     compileOnly("com.artillexstudios:AxGraves:1.26.0") { isTransitive = false }
-    compileOnly("com.github.TechFortress:GriefPrevention:16.18.4") { isTransitive = false }
+    compileOnly("com.github.TechFortress:GriefPrevention:16.18.7") { isTransitive = false }
 }
 
 java {

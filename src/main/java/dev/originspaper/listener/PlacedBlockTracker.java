@@ -1,14 +1,20 @@
 package dev.originspaper.listener;
 
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.Directional;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPistonExtendEvent;
+import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -51,7 +57,11 @@ public class PlacedBlockTracker implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlace(BlockPlaceEvent e) {
-        Set<Long> set = PLACED.computeIfAbsent(e.getBlock().getWorld().getUID(),
+        track(e.getBlock());
+    }
+
+    private static void track(Block block) {
+        Set<Long> set = PLACED.computeIfAbsent(block.getWorld().getUID(),
                 k -> Collections.synchronizedSet(new LinkedHashSet<>()));
         synchronized (set) {
             if (set.size() >= MAX_PER_WORLD) {
@@ -61,8 +71,43 @@ public class PlacedBlockTracker implements Listener {
                     it.remove(); // evict oldest
                 }
             }
-            set.add(key(e.getBlock()));
+            set.add(key(block));
         }
+    }
+
+    // The placed flag follows a block a piston moves; otherwise a piston loop would turn placed
+    // blocks back into "natural" ones and reopen the farm.
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onPistonExtend(BlockPistonExtendEvent e) {
+        movePlaced(e.getBlock(), e.getBlocks(), true);
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onPistonRetract(BlockPistonRetractEvent e) {
+        movePlaced(e.getBlock(), e.getBlocks(), false);
+    }
+
+    private static void movePlaced(Block piston, List<Block> moved, boolean extending) {
+        if (moved.isEmpty() || !(piston.getBlockData() instanceof Directional directional)) {
+            return;
+        }
+        Set<Long> set = PLACED.get(piston.getWorld().getUID());
+        if (set == null) {
+            return;
+        }
+        BlockFace facing = directional.getFacing();
+        BlockFace motion = extending ? facing : facing.getOppositeFace();
+        List<Block> destinations = new ArrayList<>();
+        synchronized (set) {
+            // Remove every source before adding destinations: in a pushed row one block's
+            // destination is the next block's source.
+            for (Block block : moved) {
+                if (set.remove(key(block))) {
+                    destinations.add(block.getRelative(motion));
+                }
+            }
+        }
+        destinations.forEach(PlacedBlockTracker::track);
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

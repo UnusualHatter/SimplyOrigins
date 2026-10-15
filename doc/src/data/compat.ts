@@ -45,6 +45,16 @@ export const compatItems: CompatItem[] = [
     note: 'Plugin: CustomPlayerModels (Paper).',
   },
   {
+    slug: 'veinminer-client',
+    name: 'VeinMiner — addon de atalho (opcional)',
+    category: 'suportado',
+    status: 'Opcional',
+    tone: 'info',
+    desc: 'O VeinMiner roda no servidor e funciona para todo mundo, sem instalar nada. O addon de atalho é só um extra do seu lado: ele mostra a prévia do veio antes de quebrar e, com ele, a mineração em veio passa a valer para qualquer bloco, não só minérios.',
+    note: 'Opcional, e só para Java com Fabric, NeoForge ou Quilt. Sem ele você continua minerando veios de minérios normalmente, inclusive no Bedrock.',
+    tutorial: 'coleta',
+  },
+  {
     slug: 'voxy',
     name: 'Voxy',
     category: 'suportado',
@@ -81,7 +91,7 @@ export const compatItems: CompatItem[] = [
     category: 'acesso',
     status: 'Funciona',
     tone: 'ok',
-    desc: 'O servidor aceita várias versões do Minecraft Java, então nem todo mundo precisa jogar exatamente na mesma versão.',
+    desc: 'O servidor roda na 26.2, que é a versão recomendada. Versões mais antigas do Minecraft Java também entram, mas os blocos e mobs novos aparecem trocados por coisas parecidas.',
     note: 'ViaVersion + ViaBackwards.',
   },
 

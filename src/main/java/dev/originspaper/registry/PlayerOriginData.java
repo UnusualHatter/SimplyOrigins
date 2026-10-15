@@ -19,6 +19,9 @@ public class PlayerOriginData {
     private final Map<String, Long> cooldowns = new HashMap<>();
     /** Progression per origin id, so switching away and back keeps each origin's level/XP. */
     private final Map<String, OriginProgress> progress = new HashMap<>();
+    /** Health lost to max-health clamping across a logout or reload, given back once max returns. */
+    private double pendingHeal;
+    private int pendingHealTicks;
 
     public PlayerOriginData(UUID playerId) {
         this.playerId = playerId;
@@ -56,6 +59,19 @@ public class PlayerOriginData {
     /** Backing map of all per-origin progression (used for persistence). */
     public Map<String, OriginProgress> getProgressMap() {
         return progress;
+    }
+
+    public double getPendingHeal() {
+        return pendingHeal;
+    }
+
+    public int getPendingHealTicks() {
+        return pendingHealTicks;
+    }
+
+    public void setPendingHeal(double amount, int ticks) {
+        this.pendingHeal = Math.max(0.0, amount);
+        this.pendingHealTicks = Math.max(0, ticks);
     }
 
     /** Current origin's level, or 1 if no origin is selected. */

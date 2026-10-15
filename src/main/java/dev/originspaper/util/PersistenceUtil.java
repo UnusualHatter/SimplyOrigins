@@ -3,6 +3,7 @@ package dev.originspaper.util;
 import dev.originspaper.OriginsPaper;
 import dev.originspaper.progression.OriginProgress;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
@@ -36,23 +37,52 @@ public final class PersistenceUtil {
         return new File(dataDir, id + ".yml");
     }
 
-    public String loadOrigin(UUID id) {
+    /**
+     * Parses the player's file, or returns {@code null} if there is none. A file that fails to
+     * parse is moved aside instead of being read as empty: read as empty, the next save would
+     * overwrite it and the player's origin and progress would be gone for good.
+     */
+    private YamlConfiguration read(UUID id) {
         File f = originFile(id);
         if (!f.exists()) {
             return null;
         }
-        YamlConfiguration cfg = YamlConfiguration.loadConfiguration(f);
-        return cfg.getString("origin");
+        YamlConfiguration cfg = new YamlConfiguration();
+        try {
+            cfg.load(f);
+            return cfg;
+        } catch (IOException | InvalidConfigurationException e) {
+            File quarantine = new File(dataDir, id + ".yml.corrupt-" + System.currentTimeMillis());
+            try {
+                Files.move(f.toPath(), quarantine.toPath());
+                plugin.getLogger().log(Level.SEVERE, "Unreadable data file for " + id
+                        + " moved to " + quarantine.getName() + "; restore it by hand.", e);
+            } catch (IOException moveError) {
+                plugin.getLogger().log(Level.SEVERE, "Unreadable data file for " + id
+                        + " could not be moved aside", moveError);
+            }
+            return null;
+        }
+    }
+
+    public String loadOrigin(UUID id) {
+        YamlConfiguration cfg = read(id);
+        return cfg == null ? null : cfg.getString("origin");
+    }
+
+    /** Health the player had at logout before origin modifiers were stripped, or NaN. */
+    public double loadLogoutHealth(UUID id) {
+        YamlConfiguration cfg = read(id);
+        return cfg == null ? Double.NaN : cfg.getDouble("logout-health", Double.NaN);
     }
 
     /** Loads every origin's saved progression for this player (empty map if none). */
     public Map<String, OriginProgress> loadProgress(UUID id) {
         Map<String, OriginProgress> map = new HashMap<>();
-        File f = originFile(id);
-        if (!f.exists()) {
+        YamlConfiguration cfg = read(id);
+        if (cfg == null) {
             return map;
         }
-        YamlConfiguration cfg = YamlConfiguration.loadConfiguration(f);
         ConfigurationSection section = cfg.getConfigurationSection("progress");
         if (section != null) {
             for (String originId : section.getKeys(false)) {
@@ -67,11 +97,13 @@ public final class PersistenceUtil {
     /** Loads only cooldown ids belonging to the currently selected origin. */
     public Map<String, Long> loadCooldowns(UUID id, Set<String> allowedPowerIds) {
         Map<String, Long> map = new HashMap<>();
-        File f = originFile(id);
-        if (!f.exists() || allowedPowerIds.isEmpty()) {
+        if (allowedPowerIds.isEmpty()) {
             return map;
         }
-        YamlConfiguration cfg = YamlConfiguration.loadConfiguration(f);
+        YamlConfiguration cfg = read(id);
+        if (cfg == null) {
+            return map;
+        }
         ConfigurationSection section = cfg.getConfigurationSection("cooldowns");
         if (section == null) {
             return map;
@@ -95,6 +127,12 @@ public final class PersistenceUtil {
     /** Writes the chosen origin and the full per-origin progression map. */
     public void save(UUID id, String originId, Map<String, OriginProgress> progress,
                      Map<String, Long> cooldowns) {
+        save(id, originId, progress, cooldowns, Double.NaN);
+    }
+
+    /** As {@link #save}, also recording the logout health so the next join can restore it. */
+    public void save(UUID id, String originId, Map<String, OriginProgress> progress,
+                     Map<String, Long> cooldowns, double logoutHealth) {
         File f = originFile(id);
         File temp = new File(dataDir, id + ".yml.tmp");
         YamlConfiguration cfg = new YamlConfiguration();
@@ -109,6 +147,9 @@ public final class PersistenceUtil {
             if (timestamp > 0L && timestamp <= now + 5000L) {
                 cfg.set("cooldowns." + entry.getKey(), timestamp);
             }
+        }
+        if (Double.isFinite(logoutHealth) && logoutHealth > 0.0) {
+            cfg.set("logout-health", logoutHealth);
         }
         try {
             cfg.save(temp);

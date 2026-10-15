@@ -18,6 +18,10 @@ import dev.originspaper.util.PerfStats;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 /** Plugin entry point: owns the registry, the player-data manager and the single global tick. */
 public final class OriginsPaper extends JavaPlugin {
 
@@ -83,7 +87,8 @@ public final class OriginsPaper extends JavaPlugin {
                 if (d != null && d.hasOrigin()) {
                     // awardXp only writes to disk on level-up, so flush progress before unloading.
                     dataManager.persistence().save(player.getUniqueId(), d.getOrigin().id(),
-                            d.getProgressMap(), d.getCooldowns());
+                            d.getProgressMap(), d.getCooldowns(),
+                            player.isDead() ? Double.NaN : player.getHealth());
                 }
                 dataManager.unload(player, false);
             }
@@ -122,6 +127,7 @@ public final class OriginsPaper extends JavaPlugin {
                     log.warn("onTick error in " + power.getId() + " for " + player.getName(), e);
                 }
             }
+            dataManager.tickPendingHeal(player, data);
         }
         if (tickSummaryEverySeconds > 0 && tick % tickSummaryEverySeconds == 0) {
             log.debug("tick=" + tick + " onTick calls=" + PerfStats.onTickCalls()
@@ -147,6 +153,11 @@ public final class OriginsPaper extends JavaPlugin {
 
         // Strip every online player's current powers cleanly, rebuild the registry (fresh power
         // instances), then re-apply each player's origin from disk against the new registry.
+        // Health is captured first: stripping bonus max health clamps it.
+        Map<UUID, Double> healthBefore = new HashMap<>();
+        for (Player player : getServer().getOnlinePlayers()) {
+            healthBefore.put(player.getUniqueId(), player.getHealth());
+        }
         for (Player player : getServer().getOnlinePlayers()) {
             PlayerOriginData d = dataManager.get(player.getUniqueId());
             if (d != null && d.hasOrigin()) {
@@ -158,6 +169,10 @@ public final class OriginsPaper extends JavaPlugin {
         this.originRegistry = new OriginRegistry();
         for (Player player : getServer().getOnlinePlayers()) {
             dataManager.load(player);
+            PlayerOriginData d = dataManager.get(player.getUniqueId());
+            if (d != null && d.hasOrigin()) {
+                dataManager.queueLogoutHeal(player, d, healthBefore.getOrDefault(player.getUniqueId(), Double.NaN));
+            }
             progression.showBar(player); // refresh the level bar against the reloaded state
         }
 

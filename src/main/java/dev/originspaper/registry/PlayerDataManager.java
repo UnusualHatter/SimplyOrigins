@@ -18,6 +18,12 @@ import java.util.concurrent.ConcurrentHashMap;
 /** Owns the live {@link PlayerOriginData} for every online player and drives apply/remove. */
 public class PlayerDataManager {
 
+    /**
+     * Global ticks (1/s) to keep giving back health lost across a logout. Progression bonus hearts
+     * are re-applied by their power's onTick, so the max only returns after the first cycles.
+     */
+    private static final int PENDING_HEAL_TICKS = 10;
+
     private final OriginsPaper plugin;
     private final PersistenceUtil persistence;
     private final Map<UUID, PlayerOriginData> data = new ConcurrentHashMap<>();
@@ -56,6 +62,12 @@ public class PlayerDataManager {
                         .map(PowerType::getId)
                         .collect(java.util.stream.Collectors.toUnmodifiableSet());
                 d.getCooldowns().putAll(persistence.loadCooldowns(player.getUniqueId(), powerIds));
+                double logoutHealth = persistence.loadLogoutHealth(player.getUniqueId());
+                if (Double.isFinite(logoutHealth)) {
+                    queueLogoutHeal(player, d, logoutHealth);
+                    // Consume it: a crash before the next save must not replay the heal.
+                    persistence.save(player.getUniqueId(), origin.id(), d.getProgressMap(), d.getCooldowns());
+                }
             } else {
                 plugin.log().warn(player.getName() + " had unknown saved origin '" + originId + "' — ignored.");
             }
@@ -64,11 +76,46 @@ public class PlayerDataManager {
         }
     }
 
+    /**
+     * Stripping powers on logout removes bonus max health, which clamps current health before
+     * the player is saved. Remember the difference so it is given back once the bonus returns.
+     * Only what the clamp took is restored, never above the health the player logged out with.
+     */
+    public void queueLogoutHeal(Player player, PlayerOriginData d, double logoutHealth) {
+        if (!Double.isFinite(logoutHealth) || player.isDead()) {
+            return;
+        }
+        double lost = logoutHealth - player.getHealth();
+        d.setPendingHeal(lost, lost > 0.0 ? PENDING_HEAL_TICKS : 0);
+    }
+
+    /** Gives back queued health as far as the current max allows; called from the global tick. */
+    public void tickPendingHeal(Player player, PlayerOriginData d) {
+        if (d.getPendingHeal() <= 0.0) {
+            return;
+        }
+        AttributeInstance maxHpAttr = player.getAttribute(Attribute.MAX_HEALTH);
+        if (maxHpAttr != null && !player.isDead()) {
+            double room = maxHpAttr.getValue() - player.getHealth();
+            double give = Math.min(d.getPendingHeal(), Math.max(0.0, room));
+            if (give > 0.0) {
+                player.setHealth(player.getHealth() + give);
+            }
+            d.setPendingHeal(d.getPendingHeal() - give, d.getPendingHealTicks() - 1);
+        } else {
+            d.setPendingHeal(0.0, 0);
+        }
+        if (d.getPendingHealTicks() <= 0) {
+            d.setPendingHeal(0.0, 0);
+        }
+    }
+
     /** Admin/selection entry point: switch the player to an origin and persist it. */
     public void setOrigin(Player player, Origin origin) {
         PlayerOriginData d = getOrCreate(player.getUniqueId());
         plugin.log().info(player.getName() + " selected origin: " + origin.displayName());
         // Deliberate selection (GUI choice / admin set): fill the player up to the new max.
+        d.setPendingHeal(0.0, 0);
         applyOrigin(player, d, origin, true);
         d.progress(origin.id()); // ensure a level-1 progression entry exists for this origin
         persistence.save(player.getUniqueId(), origin.id(), d.getProgressMap(), d.getCooldowns());
@@ -102,6 +149,7 @@ public class PlayerDataManager {
         PlayerOriginData d = data.get(player.getUniqueId());
         if (d != null) {
             removeAll(player, d);
+            d.setPendingHeal(0.0, 0);
             d.setOrigin(null);
             d.getPowers().clear();
             d.getCooldowns().clear();

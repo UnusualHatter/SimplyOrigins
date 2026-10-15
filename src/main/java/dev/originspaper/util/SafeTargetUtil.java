@@ -1,5 +1,6 @@
 package dev.originspaper.util;
 
+import org.bukkit.GameRules;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Tameable;
@@ -29,6 +30,7 @@ public final class SafeTargetUtil {
             return true;
         }
         return target instanceof Player
-                && (!source.getWorld().equals(target.getWorld()) || !source.getWorld().getPVP());
+                && (!source.getWorld().equals(target.getWorld())
+                        || !source.getWorld().getGameRuleValue(GameRules.PVP));
     }
 }

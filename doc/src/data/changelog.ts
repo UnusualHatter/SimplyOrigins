@@ -18,6 +18,31 @@ export interface ChangelogEntry {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: '2.0',
+    date: '2026-09-25',
+    summary: [
+      'FeatherFlux 2.0 (25/09) — servidor na 26.2:',
+      '• Minecraft 26.2: cavernas de enxofre, Cubo de Enxofre, blocos de enxofre e cinábrio',
+      '• Todos os plugins atualizados, mundo e progresso mantidos',
+      '• Discos personalizados voltaram a ter som',
+    ].join('\n'),
+    added: [
+      'O servidor agora roda no Minecraft 26.2. Chegam as cavernas de enxofre, o Cubo de Enxofre, os blocos de enxofre e cinábrio e o disco "Bounce".',
+    ],
+    changed: [
+      'O mundo foi convertido pra 26.2 sem resetar nada: construções, baús, claims, origens, níveis e inventários continuam como estavam.',
+      'Todos os plugins foram atualizados para versões feitas para a 26.2, incluindo Geyser (Bedrock), ViaVersion, CoreProtect, LuckPerms, AxGraves, GSit, Skript e Simple Voice Chat.',
+      'Dungeons and Taverns atualizado para a versão da 26.2. Os encantamentos das dungeons e as estruturas já geradas continuam iguais.',
+      'OriginsPaper atualizado para a versão 1.4.1, ajustada para a 26.2: o Demônio continua imune a bloco de magma e os poderes em área seguem respeitando o PvP desligado.',
+      'A versão recomendada para entrar agora é a 26.2. Versões mais antigas do Java ainda entram, mas veem os blocos e mobs novos trocados por coisas parecidas.',
+    ],
+    fixed: [
+      'Discos personalizados voltaram a tocar a música e mostrar a textura certa: o servidor estava mandando um pacote de recursos que não existia mais.',
+      'Quem usa o mod SeeU voltou a ver os jogadores distantes: o plugin do servidor estava numa versão antiga e ignorava o mod.',
+      'Quem ganhou corações extras pela progressão não perde mais vida ao sair e voltar pro servidor.',
+    ],
+  },
+  {
     version: '1.4.0',
     date: '2026-07-05',
     summary: [

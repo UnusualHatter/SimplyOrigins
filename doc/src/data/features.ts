@@ -125,9 +125,10 @@ export const features: Feature[] = [
   },
   {
     slug: 'veinminer',
-    name: 'Minerar veios de minérios por completo',
+    name: 'Minerar veios por completo',
     category: 'mundo',
-    desc: 'Coleta dos minérios conectados de um veio usando a ferramenta adequada.',
+    desc: 'Coleta dos minérios conectados de um veio usando a ferramenta adequada. Com o addon de atalho instalado no seu jogo, isso passa a valer para qualquer bloco: pedra, terra, areia, madeira e o que mais estiver conectado.',
+    note: 'Sem o addon, funciona só em minérios. Até 100 blocos por veio, agachado e com a ferramenta certa.',
     plugin: 'VeinMiner',
     tutorial: 'coleta',
   },

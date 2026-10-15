@@ -1,8 +1,8 @@
 name: OriginsPaper
 version: "${version}"
 main: dev.originspaper.OriginsPaper
-api-version: "26.1"
-description: Sistema de Origens (Origins) para Paper 26.1.2
+api-version: "26.2"
+description: Sistema de Origens (Origins) para Paper 26.2
 authors: [OriginsPaper]
 # "voicechat" is Simple Voice Chat's registered plugin name.
 softdepend: [AxGraves, GriefPrevention, voicechat, PlaceholderAPI, WorldGuard, LuckPerms]

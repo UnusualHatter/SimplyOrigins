@@ -1,5 +1,53 @@
 # TODO
 
+## ✅ CONCLUÍDO — OriginsPaper 1.4.1 no Paper 26.2 (25/09/2026)
+
+Instalado no servidor junto com a "FeatherFlux 2.0". Build limpo contra
+`paper-api:26.2.build.129-stable` com `-Xlint:all` (só resta um `this-escape`
+inofensivo em `ElytraFlightPower`).
+
+Correções:
+- **Magma (26.2):** o dano de magma agora chega como `CONTACT`, então
+  `FireImmunityPower` testa `DamageType.HOT_FLOOR` pelo `DamageSource`. Antes da
+  correção o Demônio morria em magma na 26.2 ("discovered the floor was lava").
+- **PvP:** `World.getPVP()` trocado por `getGameRuleValue(GameRules.PVP)`.
+- **Vida ao relogar:** os corações extras da progressão só voltam no `onTick`,
+  e o logout removia o bônus antes do save — um Humano nível 10 saía com 24/24
+  e voltava com 20. Agora a vida de logout é salva (`logout-health`) e devolvida
+  quando o máximo volta, sem passar do valor de saída (não vira cura grátis).
+  Vale também para `/origin reload` e para o desligamento do servidor.
+- **Arquivo corrompido:** um `data/<uuid>.yml` ilegível era lido como vazio e o
+  próximo save apagava a origem e a progressão. Agora ele é movido para
+  `<uuid>.yml.corrupt-<timestamp>` com erro no log, para restaurar à mão.
+- **Seleção forçada:** o congelamento prendia o jogador no ar (reset planando
+  ou pulando) e o Paper expulsava por voo. Cair agora é permitido.
+- **GUIs:** arrastar itens para as telas do plugin é cancelado (o item ia para
+  um inventário descartado).
+- **Farm de XP com pistão:** o marcador de "bloco colocado" acompanha o bloco
+  empurrado/puxado por pistão.
+- `api-version: "26.2"`, paper-api fixo, GriefPrevention 16.18.7. AxGraves
+  segue compilando contra 1.26.0 (a 1.32 não está no repositório Maven); a API
+  usada (`GraveSpawnEvent`, `Grave.getGui/updateHologram`) foi conferida no jar
+  1.32.0 do servidor.
+
+Revisado sem mudança necessária: os 23 mapas por jogador dos poderes são
+limpos no `onRemove`; os 12 `runTaskLater` resolvem o jogador por UUID e checam
+se o poder ainda está ativo; os 32 valores de config têm limite; os comandos
+validam permissão, jogador, origem e números.
+
+Testado com bots (mineflayer via ViaVersion) numa cópia do servidor: magma
+(Demônio 20/20, Humano 20→5), relog 24→24 e 10→10, queda congelado sem kick,
+Spray do Gambá com pvp false/true, arquivo corrompido, as 21 origens no nível
+10 ativando habilidade sem nenhum erro no log, e nenhum modificador ou asa
+sobrando depois de passar pelas 21.
+
+Ideias para uma próxima versão (conteúdo novo da 26.2): atributos
+`BOUNCINESS`, `FRICTION_MODIFIER`, `AIR_DRAG_MODIFIER`; bioma `SULFUR_CAVES`,
+mob `SULFUR_CUBE`, blocos de enxofre/cinábrio. Decisão em aberto: fogueira
+(`DamageType.CAMPFIRE`) nunca esteve na imunidade do Demônio.
+
+---
+
 ## ✅ CONCLUÍDO — proteger pets/entidades nomeadas do dano em área
 
 Feito em v1.1.7:

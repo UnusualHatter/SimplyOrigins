@@ -214,8 +214,15 @@ export const tutorials: Tutorial[] = [
       'Para ativar o TreeFeller, agache e quebre o tronco com um machado.',
       'Para ativar o VeinMiner, agache e quebre um minério com a ferramenta correta.',
       'Antes de começar, confira se há espaço no inventário e durabilidade na ferramenta.',
+      'Opcional: instale o addon de atalho no seu jogo para ver a prévia do veio e minerar veios de qualquer bloco, não só minérios.',
     ],
-    note: 'Os recursos só são ativados enquanto você estiver agachado.',
+    note: 'Os recursos só são ativados enquanto você estiver agachado. O addon é opcional e só existe para Java com Fabric, NeoForge ou Quilt — sem ele o VeinMiner continua funcionando em minérios, inclusive no Bedrock.',
+    links: [
+      {
+        label: 'Baixar o addon de atalho (opcional)',
+        url: 'https://modrinth.com/mod/veinminer-client',
+      },
+    ],
   },
   {
     slug: 'imagens',
