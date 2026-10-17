@@ -18,6 +18,34 @@ export interface ChangelogEntry {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: '2.1',
+    date: '2026-10-17',
+    summary: [
+      'FeatherFlux 2.1 (17/10) — balanceamento e discos:',
+      '• Lobo ganha o Soco Dilacerante no nível 5 (sangramento)',
+      '• Cabra: sem Investida; a Cabeçada agora arremessa',
+      '• Discos por link do YouTube, Spotify e SoundCloud + /disco pegar',
+      '• Noite passa com metade dos jogadores dormindo',
+    ].join('\n'),
+    added: [
+      'Lobo: nova habilidade Soco Dilacerante, liberada no nível 5. Acerte um golpe agachado e o alvo sangra por 5 segundos (meio coração por segundo, atravessando armadura). Recarga de 12 segundos.',
+      'Discos: dá para criar com links do YouTube, do Spotify e do SoundCloud, pelo comando /disco <link> ou colando o link na página do /disco enviar. Links do Spotify são procurados no YouTube, porque o Spotify não libera o áudio. Também aceita vídeo MP4/WEBM como arquivo.',
+      'Discos: /disco pegar <número> (ou o botão [pegar] no /disco meus) entrega de novo uma cópia de um disco que você criou.',
+    ],
+    changed: [
+      'Cabra: a Investida (golpe correndo com dano extra e empurrão enorme) foi removida. Em troca, a Cabeçada (Agachar + F) arremessa quem estiver na explosão; o alvo atingido de frente voa mais longe. No nível 6, o Impacto aumenta esse arremesso.',
+      'Para pular a noite, agora basta metade dos jogadores online dormir (antes era um quarto).',
+      'As dicas automáticas no chat aparecem a cada 10 minutos (antes era a cada 5).',
+      'Discos: a página de envio tem a opção de link, e os erros explicam o motivo (link de álbum, vídeo longo demais, vídeo privado).',
+    ],
+    fixed: [
+      'Cabra: o Estômago de Cabra voltou a funcionar (agachado, clique direito no ar com o item na mão). Desde a 26.2 o servidor ignorava esse clique. O texto do poder também dizia que a Cabra não comia comida, o que não é verdade.',
+      'Panda-Vermelho: comer bambu e ovos agachado voltou a funcionar, pelo mesmo motivo.',
+      'Raposa: a fraqueza que impede usar escudo voltou a valer também quando ela levanta o escudo sem mirar num bloco.',
+      'Site: o Discord da JustMagic agora tem link também no tutorial de grief e na página de recursos.',
+    ],
+  },
+  {
     version: '2.0',
     date: '2026-09-25',
     summary: [

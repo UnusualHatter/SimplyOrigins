@@ -48,6 +48,11 @@ const byCategory = featureCategories.map((c) => ({
                     <Icon name="check" size={13} /> {f.note}
                   </p>
                 )}
+                {f.link && (
+                  <a class="fc-tutorial" href={f.link.url} target="_blank" rel="noopener">
+                    {f.link.label} <Icon name="external" size={12} />
+                  </a>
+                )}
                 {f.tutorial && (
                   <a class="fc-tutorial" href={`/tutoriais#${f.tutorial}`}>
                     Ver tutorial <Icon name="arrow-right" size={13} />

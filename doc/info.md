@@ -299,7 +299,7 @@ export const site = {
     java: { main: 'feathersmp.playit.plus', secondary: 'star-jade.sa.mcjoin.link' },
     bedrock: { ip: '198.22.204.31', port: 1038 },
   },
-  discord: 'https://discord.gg/AWFKUEJ5QS',
+  discord: 'https://discord.gg/apxnyRPm8d',
   nav: [ /* 4 itens */ ],
 };
 ```
@@ -517,7 +517,7 @@ Nenhum framework JS (React, Vue, etc.) é usado. Todo JS é vanilla, inline nos 
 | **Java** | IP secundário | `star-jade.sa.mcjoin.link` |
 | **Bedrock** | IP | `198.22.204.31` |
 | **Bedrock** | Porta | `1038` |
-| **Discord** | Convite | `https://discord.gg/AWFKUEJ5QS` |
+| **Discord** | Convite | `https://discord.gg/apxnyRPm8d` |
 
 ---
 

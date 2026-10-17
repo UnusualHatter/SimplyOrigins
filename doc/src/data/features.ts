@@ -6,6 +6,8 @@
  * referência (não precisa aparecer em destaque pro jogador).
  */
 
+import { site } from './site';
+
 export interface FeatureCategory {
   key: string;
   label: string;
@@ -33,6 +35,8 @@ export interface Feature {
   plugin?: string;
   /** Tutorial relacionado, quando houver. */
   tutorial?: string;
+  /** Link externo (ex.: Discord). */
+  link?: { label: string; url: string };
 }
 
 export const features: Feature[] = [
@@ -82,6 +86,7 @@ export const features: Feature[] = [
     category: 'protecao',
     desc: 'Histórico de blocos, containers, explosões e outras alterações que permite investigar e restaurar áreas.',
     note: 'A equipe atende relatos pelo Discord.',
+    link: { label: 'Discord do servidor', url: site.discord },
     plugin: 'CoreProtect',
     tutorial: 'grief',
   },
@@ -155,8 +160,11 @@ export const features: Feature[] = [
     slug: 'customdiscs',
     name: 'Discos de música personalizados',
     category: 'criacao',
-    desc: 'O servidor oferece discos de músicas customizadas! Só a staff pode criá-los, mas todo mundo pode ouvi-los normalmente em jukeboxes (eles vêm junto nas resource packs).',
-    plugin: 'URLCustomDiscs',
+    command: '/disco <link> · /disco enviar · /disco meus · /disco pegar <nº>',
+    desc: 'Qualquer jogador cria discos com músicas do YouTube, do Spotify, do SoundCloud ou com um arquivo de áudio. O disco toca em qualquer jukebox e todo mundo ouve, porque o som vem no pacote de recursos do servidor.',
+    note: 'Até 5 discos por semana por jogador. Dá para pegar de novo os discos que você criou.',
+    plugin: 'FeatherDiscos',
+    tutorial: 'discos',
   },
   {
     slug: 'dynamiclight',

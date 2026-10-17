@@ -82,7 +82,7 @@ const byCategory = tutorialCategories.map((category) => ({
                   <div class="tutorial-links">
                     {tutorial.links.map((link) => (
                       <a href={link.url} target="_blank" rel="noopener">
-                        <Icon name="download" size={14} />
+                        <Icon name={link.icon ?? 'download'} size={14} />
                         <span>{link.label}</span>
                         <Icon name="external" size={12} />
                       </a>

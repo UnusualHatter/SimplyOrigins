@@ -24,6 +24,8 @@ export interface Tutorial {
   links?: {
     label: string;
     url: string;
+    /** Ícone do botão (padrão: download). */
+    icon?: string;
   }[];
 }
 
@@ -133,10 +135,11 @@ export const tutorials: Tutorial[] = [
     steps: [
       'Anote as coordenadas do local e, se souber, o horário aproximado do grief.',
       'Evite reconstruir ou retirar blocos antes da análise, pois isso deixa o histórico mais fácil de entender.',
-      'Envie as coordenadas e uma breve explicação no Discord do servidor.',
+      'Envie as coordenadas e uma breve explicação no Discord do servidor (botão abaixo).',
       'Aguarde o retorno da equipe. Ela vai consultar o CoreProtect, identificar as alterações e restaurar o que for necessário.',
     ],
     note: 'O CoreProtect registra blocos quebrados, containers acessados, explosões e outras mudanças feitas no mundo.',
+    links: [{ label: 'Entrar no Discord do servidor', url: site.discord, icon: 'discord' }],
   },
   {
     slug: 'bloqueio',
@@ -223,6 +226,21 @@ export const tutorials: Tutorial[] = [
         url: 'https://modrinth.com/mod/veinminer-client',
       },
     ],
+  },
+  {
+    slug: 'discos',
+    title: 'Criar seus próprios discos de música',
+    category: 'mundo',
+    summary: 'Transforme uma música do YouTube, do Spotify, do SoundCloud ou um arquivo seu num disco que toca em qualquer jukebox.',
+    steps: [
+      'Com um link: use /disco <link> e, se quiser, um nome depois do link. Ex.: /disco https://youtu.be/... Minha música.',
+      'Com um arquivo (MP3, WAV, OGG, FLAC, M4A ou vídeo MP4): use /disco enviar e clique no link que aparece no chat. Na página você também pode colar um link e escolher a cor do disco.',
+      'Espere o aviso no chat: o disco vai direto para o seu inventário. Se ele estiver cheio, libere espaço e use /disco receber.',
+      'Perdeu o disco ou quer outra cópia? Use /disco meus e clique em [pegar], ou /disco pegar <número>.',
+      'Coloque o disco numa jukebox. A música ambiente do jogo pausa sozinha perto dela enquanto o disco toca.',
+    ],
+    commands: ['/disco <link> [nome]', '/disco enviar', '/disco meus', '/disco pegar <nº>', '/disco cota'],
+    note: 'Cada jogador cria até 5 discos por semana (renova segunda à meia-noite). Falhas não gastam a cota. Links do Spotify são procurados no YouTube, porque o Spotify não deixa baixar o áudio. Músicas de até 8 minutos.',
   },
   {
     slug: 'imagens',

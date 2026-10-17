@@ -111,7 +111,7 @@ export const compatItems: CompatItem[] = [
     category: 'geral',
     status: 'Obrigatório',
     tone: 'info',
-    desc: 'Resource pack do servidor com as texturas, os modelos e os arquivos usados pelos discos personalizados.',
+    desc: 'Pacote de recursos do servidor com os sons e as texturas dos discos criados pelos jogadores. Ele é enviado ao entrar e atualizado sozinho quando alguém cria um disco novo.',
     tutorial: 'entrar',
   },
 ];

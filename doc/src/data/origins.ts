@@ -250,12 +250,19 @@ export const origins: Origin[] = [
       'Ataques mais letais durante a noite (+1 de dano)',
       'Faro aguçado: destaca criaturas próximas',
       'Uivo do Alfa: uiva e ganha vida extra temporária (Agachar + F)',
+      'Soco Dilacerante (nível 5): golpe agachado faz o alvo sangrar, atravessando armadura',
     ],
     cons: ['Metabolismo acelerado: gasta fome mais rápido à noite'],
     progression: {
       objectives: ['Matar monstros', 'Matar à noite (bônus de XP)', 'Derrotar um chefe'],
       unlocks: [
         { level: 3, name: 'Presas Afiadas', description: '+1 de dano à noite.' },
+        {
+          level: 5,
+          name: 'Soco Dilacerante',
+          description:
+            'Acerte um golpe agachado e o alvo sangra: meio coração por segundo durante 5s, atravessando armadura. Recarga de 12s.',
+        },
         { level: 6, name: 'Líder', description: 'Recarga do Uivo do Alfa reduzida.' },
         {
           level: 10,
@@ -381,24 +388,23 @@ export const origins: Origin[] = [
     category: 'Aríete da Montanha',
     group: 'Combate',
     difficulty: 3,
-    playstyle: 'Montanhês / Investida',
+    playstyle: 'Montanhês / Cabeçada',
     diet: 'Onívoro',
     tagline: 'Cabeçada primeiro, perguntas depois.',
     lore: 'Cabeçeia inimigos e obstáculos, pula alto e sempre cai sem se machucar. É resistente ao frio e consegue comer QUASE qualquer coisa.',
     pros: [
-      'Cabeçada: avança em linha reta e dá dano em área ao atingir um inimigo (Agachar + F)',
-      'Investida: golpes enquanto estiver correndo causam dano extra e forte repulsão',
+      'Cabeçada: avança em linha reta, explode em área ao atingir um inimigo e arremessa quem estiver perto (Agachar + F)',
       'Passo firme: ignora qualquer dano de queda',
       'Salto montanhês: pula 2 blocos de altura',
       'Resistência extrema ao frio da neve em pó',
-      'Estômago de aço: come QUASE qualquer item (menos ferramentas, armas e armaduras) pra matar a fome (Agachar + clique direito)',
+      'Estômago de aço: além da comida normal, mordisca QUASE qualquer item pra matar a fome (agachado, clique direito no ar olhando pra frente). Ferramentas, armas, armaduras e itens de usar ficam a salvo',
     ],
     cons: ['Vitalidade menor: 2 corações a menos'],
     progression: {
       objectives: ['Matar monstros', 'Caçar animais', 'Acertar com a Cabeçada'],
       unlocks: [
         { level: 3, name: 'Cabeça Dura', description: 'Dano da Cabeçada aumentado.' },
-        { level: 6, name: 'Impacto', description: 'Dano e repulsão da Investida maiores.' },
+        { level: 6, name: 'Impacto', description: 'A Cabeçada arremessa os alvos mais longe.' },
         { level: 10, name: 'Avalanche', description: 'Área da explosão da Cabeçada maior.' },
       ],
     },
