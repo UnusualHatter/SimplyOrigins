@@ -7,9 +7,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDeathEvent;
 
 /**
- * Goat progression XP from hunting. The level milestones are skill-shaped, so they live in the
- * active powers: harder/bigger headbutts in {@link LeapPower} (Nv3 damage, Nv10 radius, plus the
- * "Acertar Cabeçadas" XP), and a stronger Ram knockback in {@link RamPower} (Nv6).
+ * Goat progression XP from hunting. The level milestones are skill-shaped, so they live in
+ * {@link LeapPower}: Nv3 damage, Nv6 knockback, Nv10 radius, plus the "Acertar Cabeçadas" XP.
  */
 public class GoatProgressionPower extends ProgressionPower {
 

@@ -67,6 +67,7 @@ public final class ProgressionDefs {
                     List.of(o("Matar monstros", 15), o("Matar à noite (bônus)", 25),
                             o("Derrotar um chefe", 200)),
                     List.of(u(3, "Presas Afiadas", "+1 de dano de mordida à noite."),
+                            u(5, "Soco Dilacerante", "Golpe agachado faz o alvo sangrar: meio coração por segundo durante 5s, atravessando armadura (recarga de 12s)."),
                             u(6, "Líder", "Recarga do Uivo do Alfa reduzida."),
                             u(10, "Alcateia", "À noite ganha Força I; o uivo fortalece aliados próximos.")))),
             Map.entry("fox", def(
@@ -91,7 +92,7 @@ public final class ProgressionDefs {
                     List.of(o("Matar monstros", 10), o("Caçar animais", 6),
                             o("Acertar Cabeçadas", 8)),
                     List.of(u(3, "Crânio Duro", "Dano da Cabeçada aumentado."),
-                            u(6, "Impacto", "Dano e empurrão da Investida reforçados."),
+                            u(6, "Impacto", "A Cabeçada arremessa os alvos mais longe."),
                             u(10, "Avalanche", "A explosão da Cabeçada fica maior.")))),
             Map.entry("feline", def(
                     List.of(o("Matar monstros", 12), o("Caçar animais", 6),

@@ -9,6 +9,7 @@ import dev.originspaper.util.SitStackUtil;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -121,8 +122,16 @@ public class PowerEventListener implements Listener {
         dispatch(e.getPlayer(), p -> p.onArmorChange(e));
     }
 
-    @EventHandler(ignoreCancelled = true)
+    /**
+     * Not {@code ignoreCancelled}: Bukkit reports every air click as cancelled (there is no block to
+     * use), so that flag silently dropped all RIGHT_CLICK_AIR input. Only skip when the item use
+     * itself was denied too, i.e. another plugin really cancelled it.
+     */
+    @EventHandler
     public void onInteract(PlayerInteractEvent e) {
+        if (e.useItemInHand() == Event.Result.DENY && e.useInteractedBlock() == Event.Result.DENY) {
+            return;
+        }
         dispatch(e.getPlayer(), p -> p.onInteract(e));
     }
 

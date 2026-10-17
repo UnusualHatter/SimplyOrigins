@@ -70,6 +70,7 @@ Sem vantagens nem desvantagens.
 - **Presas Noturnas:** +1 de dano à noite.
 - **Sentido de Caçador:** destaca criaturas próximas.
 - **Uivo do Alfa** (`Agachar + F`): ganha absorção e uiva.
+- **Soco Dilacerante** (nível 5+): um golpe agachado faz o alvo sangrar — meio coração por segundo durante 5s, atravessando armadura (recarga de 12s).
 
 ### 🦊 Raposa
 - **Bote** (`Agachar + F`): salto que explode em área ao aterrissar, ou causa dano extra se acertar no ar.
@@ -108,13 +109,12 @@ Sem vantagens nem desvantagens.
 - **Corpo Pequeno:** 20% menor.
 
 ### 🐐 Cabra
-- **Cabeçada** (`Agachar + F`): arremete em linha reta; explode em área ao atingir um inimigo ou ao parar.
-- **Investida:** golpes correndo causam dano extra e forte empurrão.
+- **Cabeçada** (`Agachar + F`): arremete em linha reta; explode em área ao atingir um inimigo ou ao parar e arremessa quem estiver perto (o alvo atingido de frente voa mais longe).
 - **Passo Firme:** nunca sofre dano de queda.
 - **Salto Montanhês:** pulo permanente, salta cerca de 2 blocos de altura.
 - **Isolado:** imune ao congelamento da neve em pó.
 - **Pequeno:** 2 corações a menos.
-- **Estômago de Cabra:** come qualquer coisa; agachar + clique no ar com um bloco na mão o mordisca (recupera meio ponto de fome).
+- **Estômago de Cabra:** além da comida normal, mordisca quase qualquer item — agachado, clique direito no ar olhando para a frente (recupera meio ponto de fome). Ferramentas, armas, armaduras e itens de usar não são comidos.
 
 ### 🐈 Felino
 - **Acrobacia:** sem dano de queda.

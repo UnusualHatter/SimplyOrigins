@@ -25,7 +25,6 @@ import dev.originspaper.power.origins.fox.HuntPower;
 import dev.originspaper.power.origins.fox.PouncePower;
 import dev.originspaper.power.origins.goat.GoatGrazePower;
 import dev.originspaper.power.origins.goat.LeapPower;
-import dev.originspaper.power.origins.goat.RamPower;
 import dev.originspaper.power.origins.gryphon.FreshAirPower;
 import dev.originspaper.power.origins.moth.DrawnToLightPower;
 import dev.originspaper.power.origins.moth.FlutterGlidePower;
@@ -70,6 +69,7 @@ import dev.originspaper.power.origins.wolf.CarnivoresBitePower;
 import dev.originspaper.power.origins.wolf.DayNightSpeedPower;
 import dev.originspaper.power.origins.wolf.HuntersSensePower;
 import dev.originspaper.power.origins.wolf.NightFangsPower;
+import dev.originspaper.power.origins.wolf.RendingStrikePower;
 import dev.originspaper.power.origins.human.HumanProgressionPower;
 import dev.originspaper.power.origins.otter.OtterProgressionPower;
 import dev.originspaper.power.origins.deer.DeerProgressionPower;
@@ -417,6 +417,7 @@ public class OriginRegistry {
                 new CarnivoresBitePower("wolf:carnivore_bite"),
                 new NightFangsPower("wolf:night_fangs"),
                 new HuntersSensePower("wolf:hunters_sense"),
+                new RendingStrikePower("wolf:rending_strike"),
                 new AlphaHowlPower("wolf:alpha_howl", 2400L, org.bukkit.Sound.ENTITY_WOLF_GROWL,
                         effect(PotionEffectType.ABSORPTION, 200, 1)));
         List<PowerInfo> infos = List.of(
@@ -427,7 +428,8 @@ public class OriginRegistry {
                 new PowerInfo("Mordida Carnívora", "Comer carne cura meio coração extra."),
                 new PowerInfo("Presas Noturnas", "Causa +2 de dano à noite."),
                 new PowerInfo("Sentido de Caçador", "Destaca criaturas próximas."),
-                new PowerInfo("Uivo do Alfa", "Agachar + F: ganha absorção e uiva."));
+                new PowerInfo("Uivo do Alfa", "Agachar + F: ganha absorção e uiva."),
+                new PowerInfo("Soco Dilacerante", "Nível 5+: acerte um golpe agachado para fazer o alvo sangrar (meio coração por segundo durante 5s, atravessa armadura). Recarga de 12s."));
         register(new Origin("wolf", "Lobo", null, Material.BONE, powers, infos));
     }
 
@@ -484,7 +486,6 @@ public class OriginRegistry {
     private void registerGoat() {
         List<PowerType> powers = List.of(
                 new LeapPower("goat:leap"),
-                new RamPower("goat:ram"),
                 new NoFallDamagePower("goat:sure_footed"),
                 new PermanentEffectPower("goat:mountain_leap", PotionEffectType.JUMP_BOOST, 1),
                 new DamageImmunityPower("goat:insulated", DamageCause.FREEZE),
@@ -492,13 +493,12 @@ public class OriginRegistry {
                 new GoatGrazePower("goat:graze"),
                 new GoatProgressionPower("goat:progression"));
         List<PowerInfo> infos = List.of(
-                new PowerInfo("Cabeçada", "Agachar + F: arremete em linha reta; explode em área ao atingir um inimigo ou ao parar."),
-                new PowerInfo("Investida", "Golpes correndo causam dano extra e forte empurrão."),
+                new PowerInfo("Cabeçada", "Agachar + F: arremete em linha reta; explode em área ao atingir um inimigo ou ao parar, arremessando quem estiver perto. O alvo atingido de frente voa mais longe."),
                 new PowerInfo("Passo Firme", "Nunca sofre dano de queda."),
                 new PowerInfo("Salto Montanhês", "Pulo permanente: salta cerca de 2 blocos de altura."),
                 new PowerInfo("Isolado", "Imune ao congelamento da neve em pó."),
                 new PowerInfo("Pequeno", "Possui 2 corações a menos."),
-                new PowerInfo("Estômago de Cabra", "Come quase qualquer coisa (menos comida, ferramentas, armas e armaduras). Agachar + clique com a direita no ar com o item na mão para mordiscá-lo e recuperar meio ponto de fome."));
+                new PowerInfo("Estômago de Cabra", "Come comida normalmente e também quase qualquer item: agache e clique com o direito no ar, olhando para a frente, com o item na mão para mordiscá-lo (+meio ponto de fome). Ferramentas, armas, armaduras e itens de usar (pérolas, poções, baldes...) não são comidos."));
         register(new Origin("goat", "Cabra", null, Material.GOAT_HORN, powers, infos));
     }
 
